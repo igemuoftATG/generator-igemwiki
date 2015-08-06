@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/igemuoftATG/wiki2015#readme",
   "devDependencies": {
+    "coffee-script": "^1.9.3",
     "gulp": "^3.9.0",
     "gulp-compile-handlebars": "^0.5.0",
     "gulp-rename": "^1.2.2"
