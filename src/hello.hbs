@@ -2,6 +2,10 @@
 <p>Hello {{teamName}}</p>
 <p>HELLO! {{capitals teamName}}</p>
 
-<a href="{{links.attributions}}">attributions</a>
+<ul>
+{{#each links}}
+    <li> <a href="{{this}}">{{this}}</a> </li>
+{{/each}}
+</ul>
 
 {{> footer}}
