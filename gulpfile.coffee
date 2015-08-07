@@ -6,7 +6,7 @@ gutil = require "gulp-util"
 
 # Read some files into variables
 fs = require "fs"
-templateData = JSON.parse(fs.readFileSync('./src/templates/template.json'))
+templateData = JSON.parse(fs.readFileSync('./src/template.json'))
 
 buildTemplateStruct = (templateData) ->
     templateDataStruct = new Object()
