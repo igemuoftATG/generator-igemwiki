@@ -21,9 +21,8 @@ buildTemplateStruct = (templateData) ->
 templateDataDev = buildTemplateStruct(templateData)
 templateDataLive = buildTemplateStruct(templateData)
 
-year = "2015"
 teamName = templateData.teamName
-
+year = templateData.year
 for link in Object.keys(templateData.links)
     linkVal = templateData.links[link]
     templateDataDev.links[link] = "#{linkVal}.html"
