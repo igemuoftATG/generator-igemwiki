@@ -3,6 +3,7 @@ gulp = require "gulp"
 handlebars = require "gulp-compile-handlebars"
 rename = require "gulp-rename"
 gutil = require "gulp-util"
+combiner = require "stream-combiner2"
 
 # Read some files into variables
 fs = require "fs"
@@ -28,37 +29,27 @@ for link in Object.keys(templateData.links)
     templateDataDev.links[link] = "#{linkVal}.html"
     templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
 
-
 paths =
     partials: './src/partials'
 
-hbsOptions =
-    batch: [paths.partials],
-    helpers:
-        capitals : (str) ->
-            return str.toUpperCase();
+helpers = require "./helpers"
+compileHbs = (templateData, dest) ->
+    hbsOptions =
+        batch: [paths.partials],
+        helpers: helpers
 
-# compileHbs = (templateData) ->
-#     gutil.log(templateData)
-#     return gulp.src("./src/hello.bhs")
-#         .pipe(handlebars(templateData, hbsOptions))
-#         .pipe(rename("index.html"))
-#         .pipe(gulp.dest("build-dev"))
-#
-# gulp.task "handlebars:dev", ->
-#     return compileHbs(templateDataDev)
+    return combiner(
+        gulp.src("./src/hello.hbs"),
+        handlebars(templateData, hbsOptions),
+        rename("index.html"),
+        gulp.dest(dest)
+    )
 
 gulp.task "handlebars:dev", ->
-    return gulp.src "src/hello.hbs"
-        .pipe(handlebars(templateDataDev, hbsOptions))
-        .pipe(rename("index.html"))
-        .pipe(gulp.dest("build-dev"))
+    return compileHbs(templateDataDev, "build-dev")
 
 gulp.task "handlebars:live", ->
-    return gulp.src "src/hello.hbs"
-        .pipe(handlebars(templateDataLive, hbsOptions))
-        .pipe(rename("index.html"))
-        .pipe(gulp.dest("build-live"))
+    return compileHbs(templateDataLive, "build-live")
 
 gulp.task "handlebars", ["handlebars:dev", "handlebars:live"]
 
