@@ -5,8 +5,11 @@ rename = require "gulp-rename"
 gutil = require "gulp-util"
 combiner = require "stream-combiner2"
 
-# Read some files into variables
+# NodeJS modules
 fs = require "fs"
+path = require "path"
+
+# The data for our handlebars templates
 templateData = JSON.parse(fs.readFileSync('./src/template.json'))
 
 buildTemplateStruct = (templateData) ->
@@ -33,23 +36,25 @@ paths =
     partials: './src/partials'
 
 helpers = require "./helpers"
-compileHbs = (templateData, dest) ->
+compileAllHbs = (templateData, dest) ->
     hbsOptions =
         batch: [paths.partials],
         helpers: helpers
 
     return combiner(
-        gulp.src("./src/hello.hbs"),
+        gulp.src("./src/**/*.hbs"),
         handlebars(templateData, hbsOptions),
-        rename("index.html"),
+        rename((path) ->
+            path.extname = ".html"
+        ),
         gulp.dest(dest)
     )
 
 gulp.task "handlebars:dev", ->
-    return compileHbs(templateDataDev, "build-dev")
+    return compileAllHbs(templateDataDev, "build-dev")
 
 gulp.task "handlebars:live", ->
-    return compileHbs(templateDataLive, "build-live")
+    return compileAllHbs(templateDataLive, "build-live")
 
 gulp.task "handlebars", ["handlebars:dev", "handlebars:live"]
 
