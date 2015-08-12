@@ -36,7 +36,7 @@ for link in Object.keys(templateData.links)
 for template in Object.keys(templateData.templates)
     templateVal = templateData.templates[template]
     templateDataDev.templates[template] = fs.readFileSync("./build-dev/templates/#{template}.html")
-    templateDataLive.templates[template] = "{{#{templateVal}}}"
+    templateDataLive.templates[template] = "{{#{teamName}/#{templateVal}}}"
 
 
 paths =
