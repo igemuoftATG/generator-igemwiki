@@ -1,9 +1,11 @@
 # Gulp and related plugins
-gulp = require "gulp"
-handlebars = require "gulp-compile-handlebars"
-rename = require "gulp-rename"
-gutil = require "gulp-util"
-combiner = require "stream-combiner2"
+gulp        = require "gulp"
+handlebars  = require "gulp-compile-handlebars"
+rename      = require "gulp-rename"
+gutil       = require "gulp-util"
+watch       = require 'gulp-watch'
+combiner    = require "stream-combiner2"
+browserSync = require('browser-sync').create()
 
 # NodeJS modules
 fs = require "fs"
@@ -24,26 +26,33 @@ buildTemplateStruct = (templateData) ->
 
     return templateDataStruct
 
-templateDataDev = buildTemplateStruct(templateData)
-templateDataLive = buildTemplateStruct(templateData)
+fillTemplates = ->
+    templateDataDev = buildTemplateStruct(templateData)
+    templateDataLive = buildTemplateStruct(templateData)
 
-teamName = templateData.teamName
-year = templateData.year
-for link in Object.keys(templateData.links)
-    linkVal = templateData.links[link]
-    templateDataDev.links[link] = "#{linkVal}.html"
-    templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
-for template in Object.keys(templateData.templates)
-    templateVal = templateData.templates[template]
-    templateDataDev.templates[template] = fs.readFileSync("./build-dev/templates/#{template}.html")
-    templateDataLive.templates[template] = "{{#{teamName}/#{templateVal}}}"
+    teamName = templateData.teamName
+    year = templateData.year
+    for link in Object.keys(templateData.links)
+        linkVal = templateData.links[link]
+        templateDataDev.links[link] = "#{linkVal}.html"
+        templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
+    for template in Object.keys(templateData.templates)
+        templateVal = templateData.templates[template]
+        templateDataDev.templates[template] = fs.readFileSync("./build-dev/templates/#{template}.html")
+        templateDataLive.templates[template] = "{{#{teamName}/#{templateVal}}}"
 
+    return {
+        dev: templateDataDev
+        live: templateDataLive
+    }
 
 paths =
     partials: './src/templates'
 
 helpers = require "./helpers"
 compileAllHbs = (templateData, dest) ->
+    gutil.log templateData.templates.head
+
     hbsOptions =
         batch: [paths.partials],
         helpers: helpers
@@ -55,14 +64,21 @@ compileAllHbs = (templateData, dest) ->
             path.extname = ".html"
         ),
         gulp.dest(dest)
-    )
+    ).on 'end', ->
+        browserSync.reload()
 
 gulp.task "handlebars:dev", ->
-    return compileAllHbs(templateDataDev, "build-dev")
+    return compileAllHbs(fillTemplates().dev, "build-dev")
 
 gulp.task "handlebars:live", ->
-    return compileAllHbs(templateDataLive, "build-live")
+    return compileAllHbs(fillTemplates().live, "build-live")
 
-gulp.task "handlebars", ["handlebars:dev", "handlebars:live"]
+gulp.task 'serve', ['handlebars:dev'], ->
+    browserSync.init
+        server:
+            baseDir: './build-dev'
 
-gulp.task "default", ["handlebars"]
+    watch './src/**/*.hbs', ->
+        gulp.start('handlebars:dev')
+
+gulp.task "default", ['serve']
