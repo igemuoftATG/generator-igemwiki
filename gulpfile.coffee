@@ -19,6 +19,8 @@ buildTemplateStruct = (templateData) ->
         templateDataStruct[k] = templateData[k]
     # Clear links
     templateDataStruct.links = new Object()
+    # Clear templates
+    templateDataStruct.templates = new Object()
 
     return templateDataStruct
 
@@ -31,9 +33,14 @@ for link in Object.keys(templateData.links)
     linkVal = templateData.links[link]
     templateDataDev.links[link] = "#{linkVal}.html"
     templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
+for template in Object.keys(templateData.templates)
+    templateVal = templateData.templates[template]
+    templateDataDev.templates[template] = fs.readFileSync("./build-dev/templates/#{template}.html")
+    templateDataLive.templates[template] = "{{#{templateVal}}}"
+
 
 paths =
-    partials: './src/partials'
+    partials: './src/templates'
 
 helpers = require "./helpers"
 compileAllHbs = (templateData, dest) ->

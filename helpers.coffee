@@ -1,5 +1,3 @@
-helpers =
-    capitals : (str) ->
+module.exports =
+    capitals: (str) ->
         return str.toUpperCase();
-
-module.exports = helpers

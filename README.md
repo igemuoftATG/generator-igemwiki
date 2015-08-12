@@ -1,10 +1,34 @@
-# iGEM Toronto Wiki 2015
+# iGEM Toronto Wiki Generator 2015
 
-Repo for wiki development.
+Repo for wiki *generator* development.
 
-Currently I have just copied the source of every wiki page, and the two templates.
+## Features
 
-## Toronto Pages
+The core of this generator is built around compiling one set of
+[handlebars](http://handlebarsjs.com/) templates into a `live` and `dev`
+version. The `dev` version located within `./build-dev` can be locally hosted
+with all *navigational* URIs pointing to local files. On the other hand, the
+`live` version located within `./build-live` uses links that follow the iGEM
+Wiki namespacing conventions.
+
+* compile `./src/**/*.hbs` into `./build-dev/**/*.html` and `./build-live/**/*.html`
+* working handlebars variables inside pages *and* templates
+
+## ToDos
+
+* working templates *within* templates
+* implement markdown compiling for page content
+* add browserSync to gulpfile
+
+## Guide
+
+### Defining page links
+
+### Creating new pages
+
+### Creating new templates
+
+## Original Toronto Pages
 
 Retrieved from [here](http://2015.igem.org/wiki/index.php?title=Special%3AAllPages&from=Team%3AToronto&to=Team%3AToronto%2FTeam&namespace=0)
 
