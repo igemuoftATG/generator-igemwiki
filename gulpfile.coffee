@@ -5,6 +5,7 @@ rename      = require "gulp-rename"
 gutil       = require "gulp-util"
 watch       = require 'gulp-watch'
 combiner    = require "stream-combiner2"
+sass        = require 'gulp-sass'
 browserSync = require('browser-sync').create()
 
 # NodeJS modules
@@ -48,6 +49,12 @@ fillTemplates = ->
 paths =
     partials: './src/templates'
 
+globs =
+    sass: './src/styles/sass/*.scss'
+
+dests =
+    css: './src/styles'
+
 Helpers = require "./helpers"
 helpers = new Helpers(handlebars.Handlebars, templateData)
 compileAllHbs = (templateData, dest) ->
@@ -71,6 +78,15 @@ gulp.task "handlebars:dev", ->
 
 gulp.task "handlebars:live", ->
     return compileAllHbs(fillTemplates().live, "build-live")
+
+gulp.task 'sass', ->
+    return gulp
+        .src(globs.sass)
+        .pipe(sass({
+            includePaths: ['./bower_components/compass-mixins/lib']
+        }).on('error', sass.logError))
+        .pipe(gulp.dest(dests.css))
+        .pipe(browserSync.stream())
 
 gulp.task 'serve', ['handlebars:dev'], ->
     browserSync.init

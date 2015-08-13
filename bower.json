@@ -1,0 +1,19 @@
+{
+  "name": "wiki2015",
+  "version": "0.0.0",
+  "homepage": "https://github.com/igemuoftATG/wiki2015",
+  "authors": [
+    "Julian Mazzitelli <mazzitelli.julian@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "compass-mixins": "~1.0.2"
+  }
+}

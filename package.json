@@ -26,5 +26,8 @@
     "gulp-watch": "^4.3.4",
     "handlebars": "^3.0.3",
     "stream-combiner2": "^1.0.2"
+  },
+  "dependencies": {
+    "gulp-sass": "^2.0.4"
   }
 }

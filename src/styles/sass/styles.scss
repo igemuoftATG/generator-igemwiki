@@ -1,0 +1,15 @@
+@import 'compass';
+@import 'mixins';
+@import 'lumxcolors';
+@import 'colours';
+@import 'dimensions';
+@import 'scrollbar';
+
+html, body {
+    height : 100%;
+    width  : 100%;
+}
+
+canvas {
+    display: block
+}
