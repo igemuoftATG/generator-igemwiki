@@ -4,9 +4,6 @@ hbs = require 'handlebars'
 templateData = JSON.parse(fs.readFileSync("#{__dirname}/src/template.json"))
 
 module.exports =
-    capitals: (str) ->
-        return str.toUpperCase();
-
     template: (templateName, mode) ->
         template = hbs.compile(fs.readFileSync("#{__dirname}/src/templates/#{templateName}.hbs", 'utf8'))
         if mode is 'dev'

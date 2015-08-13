@@ -9,9 +9,6 @@
   templateData = JSON.parse(fs.readFileSync(__dirname + "/src/template.json"));
 
   module.exports = {
-    capitals: function(str) {
-      return str.toUpperCase();
-    },
     template: function(templateName, mode) {
       var template;
       template = hbs.compile(fs.readFileSync(__dirname + "/src/templates/" + templateName + ".hbs", 'utf8'));

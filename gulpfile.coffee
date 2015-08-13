@@ -21,8 +21,6 @@ buildTemplateStruct = (templateData) ->
         templateDataStruct[k] = templateData[k]
     # Clear links
     templateDataStruct.links = new Object()
-    # Clear templates
-    # templateDataStruct.templates = new Object()
 
     return templateDataStruct
 
@@ -38,11 +36,6 @@ fillTemplates = ->
         linkVal = templateData.links[link]
         templateDataDev.links[link] = "#{linkVal}.html"
         templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
-    # for template in Object.keys(templateData.templates)
-    #     templateVal = templateData.templates[template]
-    #     # templateDataDev.templates[template] = (fs.readFileSync("./build-dev/templates/#{template}.html")).toString()
-    #     templateDataDev.templates[template] = templateVal
-    #     templateDataLive.templates[template] = "{{#{teamName}/#{templateVal}}}"
 
     return {
         dev: templateDataDev
@@ -54,8 +47,6 @@ paths =
 
 helpers = require "./helpers"
 compileAllHbs = (templateData, dest) ->
-    gutil.log templateData.templates.head
-
     hbsOptions =
         batch: [paths.partials],
         helpers: helpers
