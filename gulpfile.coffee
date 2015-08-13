@@ -22,13 +22,15 @@ buildTemplateStruct = (templateData) ->
     # Clear links
     templateDataStruct.links = new Object()
     # Clear templates
-    templateDataStruct.templates = new Object()
+    # templateDataStruct.templates = new Object()
 
     return templateDataStruct
 
 fillTemplates = ->
     templateDataDev = buildTemplateStruct(templateData)
+    templateDataDev.mode = 'dev'
     templateDataLive = buildTemplateStruct(templateData)
+    templateDataLive.mode = 'live'
 
     teamName = templateData.teamName
     year = templateData.year
@@ -36,10 +38,11 @@ fillTemplates = ->
         linkVal = templateData.links[link]
         templateDataDev.links[link] = "#{linkVal}.html"
         templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
-    for template in Object.keys(templateData.templates)
-        templateVal = templateData.templates[template]
-        templateDataDev.templates[template] = fs.readFileSync("./build-dev/templates/#{template}.html")
-        templateDataLive.templates[template] = "{{#{teamName}/#{templateVal}}}"
+    # for template in Object.keys(templateData.templates)
+    #     templateVal = templateData.templates[template]
+    #     # templateDataDev.templates[template] = (fs.readFileSync("./build-dev/templates/#{template}.html")).toString()
+    #     templateDataDev.templates[template] = templateVal
+    #     templateDataLive.templates[template] = "{{#{teamName}/#{templateVal}}}"
 
     return {
         dev: templateDataDev
@@ -79,6 +82,7 @@ gulp.task 'serve', ['handlebars:dev'], ->
             baseDir: './build-dev'
 
     watch './src/**/*.hbs', ->
+        fillTemplates()
         gulp.start('handlebars:dev')
 
 gulp.task "default", ['serve']
