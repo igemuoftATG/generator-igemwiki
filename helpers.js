@@ -14,12 +14,24 @@
       templateData = tplateData;
       return {
         template: this.template,
-        capitals: this.capitals
+        capitals: this.capitals,
+        link: this.link
       };
     }
 
     Helpers.prototype.capitals = function(str) {
       return str.toUpperCase();
+    };
+
+    Helpers.prototype.link = function(linkName, mode) {
+      if (linkName === 'index') {
+        return "index.html";
+      }
+      if (mode === 'live') {
+        return linkName;
+      } else {
+        return linkName + ".html";
+      }
     };
 
     Helpers.prototype.template = function(templateName, mode) {

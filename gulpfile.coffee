@@ -35,7 +35,10 @@ fillTemplates = ->
     for link in Object.keys(templateData.links)
         linkVal = templateData.links[link]
         templateDataDev.links[link] = "#{linkVal}.html"
-        templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
+        if linkVal is "index"
+            templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}"
+        else
+            templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
 
     return {
         dev: templateDataDev

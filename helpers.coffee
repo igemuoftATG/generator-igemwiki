@@ -9,12 +9,23 @@ class Helpers
         templateData = tplateData
 
         return {
-            template: @template
-            capitals: @capitals
+            template : @template
+            capitals : @capitals
+            link     : @link
         }
 
     capitals: (str) ->
         return str.toUpperCase()
+
+    link: (linkName, mode) ->
+        if linkName is 'index'
+            return "index.html"
+
+        if mode is 'live'
+            return linkName
+            # return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{linkName}"
+        else
+            return "#{linkName}.html"
 
     template: (templateName, mode) ->
         template = hbs.compile(fs.readFileSync("#{__dirname}/src/templates/#{templateName}.hbs", 'utf8'))
