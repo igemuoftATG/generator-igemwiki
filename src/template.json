@@ -23,6 +23,7 @@
     },
     "templates": {
         "head"   : "head",
-        "footer" : "footer"
+        "footer" : "footer",
+        "all_teams" : "All_Teams"
     }
 }

@@ -45,7 +45,8 @@ fillTemplates = ->
 paths =
     partials: './src/templates'
 
-helpers = require "./helpers"
+Helpers = require "./helpers"
+helpers = new Helpers(handlebars.Handlebars, templateData)
 compileAllHbs = (templateData, dest) ->
     hbsOptions =
         batch: [paths.partials],
@@ -60,6 +61,7 @@ compileAllHbs = (templateData, dest) ->
         gulp.dest(dest)
     ).on 'end', ->
         browserSync.reload()
+
 
 gulp.task "handlebars:dev", ->
     return compileAllHbs(fillTemplates().dev, "build-dev")
