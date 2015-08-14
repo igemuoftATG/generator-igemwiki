@@ -79,6 +79,7 @@ gulp.task "handlebars:dev", ->
 gulp.task "handlebars:live", ->
     return compileAllHbs(fillTemplates().live, "build-live")
 
+# Compile `.scss` into `.css`
 gulp.task 'sass', ->
     return gulp
         .src(globs.sass)
@@ -88,13 +89,18 @@ gulp.task 'sass', ->
         .pipe(gulp.dest(dests.css))
         .pipe(browserSync.stream())
 
-gulp.task 'serve', ['handlebars:dev'], ->
+gulp.task 'serve', ['sass', 'handlebars:dev'], ->
     browserSync.init
         server:
             baseDir: './build-dev'
+            routes:
+                '/styles' : './src/styles'
 
     watch './src/**/*.hbs', ->
         fillTemplates()
         gulp.start('handlebars:dev')
+
+    watch globs.sass, ->
+        gulp.start('sass')
 
 gulp.task "default", ['serve']

@@ -1,4 +1,5 @@
-fs = require 'fs'
+fs   = require 'fs'
+path = require 'path'
 
 hbs = new Object()
 templateData = new Object()
@@ -9,13 +10,26 @@ class Helpers
         templateData = tplateData
 
         return {
-            template : @template
-            capitals : @capitals
-            link     : @link
+            template  : @template
+            capitals  : @capitals
+            link      : @link
+            cssInject : @cssInject
         }
 
     capitals: (str) ->
         return str.toUpperCase()
+
+    cssInject: (mode) ->
+        content = new String()
+        styles = fs.readdirSync('./src/styles')
+        for stylesheet in styles
+            if path.extname(stylesheet) is '.css'
+                if mode is 'live'
+                    content += "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />"
+                else
+                    content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />"
+
+        return new hbs.SafeString(content)
 
     link: (linkName, mode) ->
         if linkName is 'index'
