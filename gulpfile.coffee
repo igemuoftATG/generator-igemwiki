@@ -94,7 +94,8 @@ gulp.task 'serve', ['sass', 'handlebars:dev'], ->
         server:
             baseDir: './build-dev'
             routes:
-                '/styles' : './src/styles'
+                '/styles'   : './src/styles'
+                '/preamble' : './src/preamble'
 
     watch './src/**/*.hbs', ->
         fillTemplates()

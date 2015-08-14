@@ -44,6 +44,10 @@ class Helpers
     template: (templateName, mode) ->
         template = hbs.compile(fs.readFileSync("#{__dirname}/src/templates/#{templateName}.hbs", 'utf8'))
         if mode is 'live'
+            # Don't add preamble to live build
+            if templateName is 'preamble'
+                return new hbs.SafeString('')
+
             return new hbs.SafeString("{{#{templateData.teamName}/#{templateName}}}")
         else
             # Assume 'dev' mode if undefined

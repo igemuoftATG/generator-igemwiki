@@ -58,6 +58,9 @@
       var template;
       template = hbs.compile(fs.readFileSync(__dirname + "/src/templates/" + templateName + ".hbs", 'utf8'));
       if (mode === 'live') {
+        if (templateName === 'preamble') {
+          return new hbs.SafeString('');
+        }
         return new hbs.SafeString("{{" + templateData.teamName + "/" + templateName + "}}");
       } else {
         return new hbs.SafeString(template(templateData));
