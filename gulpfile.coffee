@@ -1,5 +1,6 @@
 # Gulp and related plugins
 gulp       = require 'gulp'
+coffee     = require 'gulp-coffee'
 handlebars = require 'gulp-compile-handlebars'
 concat     = require 'gulp-concat'
 cssmin     = require 'gulp-cssmin'
@@ -62,9 +63,18 @@ globs =
 dests =
     css: './src/styles'
 
-Helpers = require "./helpers"
-helpers = new Helpers(handlebars.Handlebars, templateData)
+
 compileAllHbs = (templateData, dest) ->
+    Helpers = require "./helpers"
+    helpers = new Helpers(handlebars.Handlebars, templateData)
+    gutil.log(helpers)
+
+    keys = Object.keys(require.cache)
+    for key in keys
+        if key.indexOf('helpers.js') isnt -1 and key.indexOf('node_modules') is -1
+            delete require.cache[key]
+
+
     hbsOptions =
         batch: [paths.partials],
         helpers: helpers
@@ -78,6 +88,14 @@ compileAllHbs = (templateData, dest) ->
         gulp.dest(dest)
     ).on 'end', ->
         browserSync.reload()
+
+gulp.task 'coffeescript:helpers', ->
+    return gulp
+        .src('./helpers.coffee')
+        .pipe(coffee().on('error', gutil.log))
+        .pipe(gulp.dest('.'))
+
+gulp.task 'helpers', ['coffeescript:helpers']
 
 gulp.task "handlebars:dev", ->
     return compileAllHbs(fillTemplates().dev, "build-dev")
@@ -139,5 +157,8 @@ gulp.task 'serve', ['sass', 'build:dev'], ->
 
     watch globs.sass, ->
         gulp.start('sass')
+
+    watch './helpers.coffee', ->
+        gulp.start('helpers')
 
 gulp.task "default", ['serve']
