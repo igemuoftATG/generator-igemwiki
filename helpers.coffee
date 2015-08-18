@@ -33,7 +33,7 @@ class Helpers
                     content += "<script src=http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js></script>\n\t"
                 else
                     if script isnt 'vendor.min.js'
-                        content += "<script src=\"js/#{script}\"></script>"
+                        content += "<script src=\"js/#{script}\"></script>\n\t"
 
         return new hbs.SafeString(content)
 

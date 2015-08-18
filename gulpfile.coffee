@@ -6,13 +6,19 @@ concat     = require 'gulp-concat'
 cssmin     = require 'gulp-cssmin'
 rename     = require 'gulp-rename'
 sass       = require 'gulp-sass'
+sourcemaps = require 'gulp-sourcemaps'
 uglify     = require 'gulp-uglify'
 gutil      = require 'gulp-util'
 watch      = require 'gulp-watch'
 
 # NodeJS modules
+browserify     = require 'browserify'
+buffer         = require 'vinyl-buffer'
+coffeeify      = require 'coffeeify'
+globby         = require 'globby'
 mainBowerFiles = require 'main-bower-files'
 combiner       = require 'stream-combiner2'
+source         = require 'vinyl-source-stream'
 browserSync    = require('browser-sync').create()
 wiredep        = require('wiredep').stream
 
@@ -28,9 +34,11 @@ files =
     helpers  : 'helpers'
 
 globs =
-    sass : './src/styles/sass/*.scss'
-    js   : './src/**/*.js'
-    hbs  : './src/**/*.hbs'
+    sass      : './src/styles/sass/*.scss'
+    libCoffee : './src/lib/**/*.coffee'
+    libJS     : './src/lib/**/*.js'
+    js        : './src/**/*.js'
+    hbs       : './src/**/*.hbs'
 
 dests =
     dev:
@@ -115,8 +123,35 @@ gulp.task 'sass', ->
         .pipe(sass({
             includePaths: ['./bower_components/compass-mixins/lib']
         }).on('error', sass.logError))
-        .pipe(gulp.dest(dests.dev.css))
+        .pipe(gulp.dest(dests.live.css))
         .pipe(browserSync.stream())
+
+# Compile `.coffee` into `.js`; browserify
+gulp.task 'browserify', ->
+    globby [globs.libCoffee, globs.libJS], (err,entries) ->
+        if err
+            gutil.log()
+            return
+
+        b = browserify({
+            entries: entries
+            extensions: ['.coffee', '.js']
+            debug: true
+            transform: [coffeeify]
+        })
+
+        combined = combiner.obj([
+            b.bundle(),
+            source('bundle.js'),
+            buffer(),
+            sourcemaps.init({loadMaps: true}),
+            sourcemaps.write('./maps'),
+            gulp.dest(dests.live.js)
+        ])
+
+        combined.on('error', gutil.log)
+
+        return combined
 
 # **bower:js**
 gulp.task 'bower:js', ->
@@ -147,7 +182,7 @@ gulp.task 'wiredep', ['handlebars:dev'], ->
         .pipe(gulp.dest(dests.dev.folder))
 
 # **build:dev**
-gulp.task 'build:dev', ['wiredep']
+gulp.task 'build:dev', ['wiredep', 'browserify']
 
 # **build:live**
 gulp.task 'build:live', ['handlebars:live', 'bower']
@@ -169,6 +204,9 @@ gulp.task 'serve', ['sass', 'build:dev'], ->
 
     watch globs.sass, ->
         gulp.start('sass')
+
+    watch [globs.libCoffee, globs.libJS], ->
+        gulp.start('browserify')
 
     watch "#{files.helpers}.coffee", ->
         gulp.start('coffeescript:helpers')
