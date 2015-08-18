@@ -29,6 +29,7 @@ files =
 
 globs =
     sass : './src/styles/sass/*.scss'
+    js   : './src/**/*.js'
     hbs  : './src/**/*.hbs'
 
 dests =
@@ -162,7 +163,7 @@ gulp.task 'serve', ['sass', 'build:dev'], ->
                 '/js'               : './src/js'
                 '/preamble'         : './src/preamble'
 
-    watch globs.hbs, ->
+    watch [globs.hbs, globs.js], ->
         fillTemplates()
         gulp.start('build:dev')
 

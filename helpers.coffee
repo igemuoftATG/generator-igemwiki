@@ -25,12 +25,12 @@ class Helpers
         scripts = fs.readdirSync('./src/js')
 
         if mode isnt 'live'
-            content += "<!-- bower:js -->\n\t<!-- endbower -->\n"
+            content += "<!-- bower:js -->\n\t<!-- endbower -->\n\t"
 
         for script in scripts
             if path.extname(script) is '.js'
                 if mode is 'live'
-                    content += "<script src=http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js></script>"
+                    content += "<script src=http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js></script>\n\t"
                 else
                     if script isnt 'vendor.min.js'
                         content += "<script src=\"js/#{script}\"></script>"

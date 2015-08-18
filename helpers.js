@@ -31,13 +31,13 @@
       content = new String();
       scripts = fs.readdirSync('./src/js');
       if (mode !== 'live') {
-        content += "<!-- bower:js -->\n\t<!-- endbower -->\n";
+        content += "<!-- bower:js -->\n\t<!-- endbower -->\n\t";
       }
       for (i = 0, len = scripts.length; i < len; i++) {
         script = scripts[i];
         if (path.extname(script) === '.js') {
           if (mode === 'live') {
-            content += "<script src=http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/js/" + script + "?action=raw&type=text/js></script>";
+            content += "<script src=http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/js/" + script + "?action=raw&type=text/js></script>\n\t";
           } else {
             if (script !== 'vendor.min.js') {
               content += "<script src=\"js/" + script + "\"></script>";
