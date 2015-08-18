@@ -14,20 +14,43 @@ class Helpers
             capitals  : @capitals
             link      : @link
             cssInject : @cssInject
+            jsInject  : @jsInject
         }
 
     capitals: (str) ->
         return str.toUpperCase()
 
+    jsInject: (mode) ->
+        content = new String()
+        scripts = fs.readdirSync('./src/js')
+
+        if mode isnt 'live'
+            content += "<!-- bower:js -->\n\t<!-- endbower -->\n"
+
+        for script in scripts
+            if path.extname(script) is '.js'
+                if mode is 'live'
+                    content += "<script src=http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js></script>"
+                else
+                    if script isnt 'vendor.min.js'
+                        content += "<script src=\"js/#{script}\"></script>"
+
+        return new hbs.SafeString(content)
+
     cssInject: (mode) ->
         content = new String()
         styles = fs.readdirSync('./src/styles')
+
+        if mode isnt 'live'
+            content += "<!-- bower:css -->\n\t<!-- endbower -->\n\t"
+
         for stylesheet in styles
             if path.extname(stylesheet) is '.css'
                 if mode is 'live'
-                    content += "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />"
+                    content += "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t"
                 else
-                    content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />"
+                    if stylesheet isnt 'vendor.min.css'
+                        content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />\n\t"
 
         return new hbs.SafeString(content)
 

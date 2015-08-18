@@ -1,15 +1,22 @@
 # Gulp and related plugins
-gulp        = require "gulp"
-handlebars  = require "gulp-compile-handlebars"
-rename      = require "gulp-rename"
-gutil       = require "gulp-util"
-watch       = require 'gulp-watch'
-combiner    = require "stream-combiner2"
-sass        = require 'gulp-sass'
-browserSync = require('browser-sync').create()
+gulp       = require 'gulp'
+handlebars = require 'gulp-compile-handlebars'
+concat     = require 'gulp-concat'
+cssmin     = require 'gulp-cssmin'
+rename     = require 'gulp-rename'
+sass       = require 'gulp-sass'
+uglify     = require 'gulp-uglify'
+gutil      = require 'gulp-util'
+watch      = require 'gulp-watch'
 
 # NodeJS modules
-fs = require "fs"
+mainBowerFiles = require 'main-bower-files'
+combiner       = require 'stream-combiner2'
+browserSync    = require('browser-sync').create()
+wiredep        = require('wiredep').stream
+
+# NodeJS Internal Modules
+fs   = require "fs"
 path = require "path"
 
 # The data for our handlebars templates
@@ -72,7 +79,6 @@ compileAllHbs = (templateData, dest) ->
     ).on 'end', ->
         browserSync.reload()
 
-
 gulp.task "handlebars:dev", ->
     return compileAllHbs(fillTemplates().dev, "build-dev")
 
@@ -89,17 +95,47 @@ gulp.task 'sass', ->
         .pipe(gulp.dest(dests.css))
         .pipe(browserSync.stream())
 
-gulp.task 'serve', ['sass', 'handlebars:dev'], ->
+gulp.task 'bower:js', ->
+    return gulp
+        .src(mainBowerFiles('**/*.js'), { base: './bower_components'})
+        .pipe(concat('vendor.js'))
+        .pipe(uglify().on('error', gutil.log))
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('./src/js'))
+
+gulp.task 'bower:css', ->
+    return gulp
+        .src(mainBowerFiles('**/*.css'), { base: './bower_components'})
+        .pipe(concat('vendor.css'))
+        .pipe(cssmin())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('./src/styles'))
+
+gulp.task 'bower', ['bower:js', 'bower:css']
+
+gulp.task 'wiredep', ['handlebars:dev'], ->
+    return gulp
+        .src('./build-dev/index.html')
+        .pipe(wiredep())
+        .pipe(gulp.dest('./build-dev'))
+
+gulp.task 'build:dev', ['wiredep']
+
+gulp.task 'build:live', ['handlebars:live', 'bower']
+
+gulp.task 'serve', ['sass', 'build:dev'], ->
     browserSync.init
         server:
             baseDir: './build-dev'
             routes:
-                '/styles'   : './src/styles'
-                '/preamble' : './src/preamble'
+                '/styles'           : './src/styles'
+                '/bower_components' : './bower_components'
+                '/js'               : './src/js'
+                '/preamble'         : './src/preamble'
 
     watch './src/**/*.hbs', ->
         fillTemplates()
-        gulp.start('handlebars:dev')
+        gulp.start('build:dev')
 
     watch globs.sass, ->
         gulp.start('sass')
