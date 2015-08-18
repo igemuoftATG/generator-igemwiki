@@ -55,14 +55,16 @@ class Helpers
         return new hbs.SafeString(content)
 
     link: (linkName, mode) ->
-        if linkName is 'index'
-            return "index.html"
-
         if mode is 'live'
-            return linkName
-            # return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{linkName}"
+            if linkName is 'index'
+                return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}"
+            else
+                return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{linkName}"
         else
-            return "#{linkName}.html"
+            if linkName is 'index'
+                return 'index.html'
+            else
+                return "#{linkName}.html"
 
     template: (templateName, mode) ->
         template = hbs.compile(fs.readFileSync("#{__dirname}/src/templates/#{templateName}.hbs", 'utf8'))

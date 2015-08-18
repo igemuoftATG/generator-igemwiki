@@ -28,8 +28,6 @@ buildTemplateStruct = (templateData) ->
     # Duplicate templateData
     for k in Object.keys(templateData)
         templateDataStruct[k] = templateData[k]
-    # Clear links
-    templateDataStruct.links = new Object()
 
     return templateDataStruct
 
@@ -38,16 +36,6 @@ fillTemplates = ->
     templateDataDev.mode = 'dev'
     templateDataLive = buildTemplateStruct(templateData)
     templateDataLive.mode = 'live'
-
-    teamName = templateData.teamName
-    year = templateData.year
-    for link in Object.keys(templateData.links)
-        linkVal = templateData.links[link]
-        templateDataDev.links[link] = "#{linkVal}.html"
-        if linkVal is "index"
-            templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}"
-        else
-            templateDataLive.links[link] = "http://#{year}.igem.org/Team:#{teamName}/#{linkVal}"
 
     return {
         dev: templateDataDev
@@ -67,13 +55,11 @@ dests =
 compileAllHbs = (templateData, dest) ->
     Helpers = require "./helpers"
     helpers = new Helpers(handlebars.Handlebars, templateData)
-    gutil.log(helpers)
 
-    keys = Object.keys(require.cache)
-    for key in keys
+    # Delete Helpers from require cache so that next require gets new version
+    for key in Object.keys(require.cache)
         if key.indexOf('helpers.js') isnt -1 and key.indexOf('node_modules') is -1
             delete require.cache[key]
-
 
     hbsOptions =
         batch: [paths.partials],

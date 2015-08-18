@@ -71,13 +71,18 @@
     };
 
     Helpers.prototype.link = function(linkName, mode) {
-      if (linkName === 'index') {
-        return "index.html";
-      }
       if (mode === 'live') {
-        return linkName;
+        if (linkName === 'index') {
+          return "http://" + templateData.year + ".igem.org/Team:" + templateData.teamName;
+        } else {
+          return "http://" + templateData.year + ".igem.org/Team:" + templateData.teamName + "/" + linkName;
+        }
       } else {
-        return linkName + ".html";
+        if (linkName === 'index') {
+          return 'index.html';
+        } else {
+          return linkName + ".html";
+        }
       }
     };
 
