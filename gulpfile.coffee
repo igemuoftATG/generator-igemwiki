@@ -53,7 +53,7 @@ dests =
         css    : './build-live/css'
 
 # The data for our handlebars templates
-templateData = JSON.parse(fs.readFileSync(files.template))
+# templateData = JSON.parse(fs.readFileSync(files.template))
 
 # **buildTemplateStruct**
 buildTemplateStruct = (templateData, mode) ->
@@ -68,6 +68,7 @@ buildTemplateStruct = (templateData, mode) ->
 
 # **fillTemplates**
 fillTemplates = ->
+    templateData = JSON.parse(fs.readFileSync(files.template))
     # Return `dev` and `live` template datas
     return {
         dev: buildTemplateStruct(templateData, 'dev')
@@ -220,7 +221,7 @@ gulp.task 'serve', ['sass', 'build:dev'], ->
                 '/js'               : dests.dev.js
                 '/preamble'         : './src/preamble'
 
-    watch [globs.hbs, globs.js, globs.md], ->
+    watch [globs.hbs, globs.js, globs.md, files.template], ->
         fillTemplates()
         gulp.start('build:dev')
 
