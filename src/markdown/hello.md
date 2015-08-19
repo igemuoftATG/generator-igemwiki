@@ -22,3 +22,7 @@ var swiggity = function() {
 	console.log('sdsdsd')
 }
 ```
+
+<div>
+     $$ \int_{-\infty}^\infty f(x) \textrm{d}x $$
+</div>
