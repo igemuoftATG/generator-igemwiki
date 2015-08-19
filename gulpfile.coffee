@@ -35,6 +35,7 @@ files =
 
 globs =
     sass      : './src/styles/sass/*.scss'
+    css       : './src/styles/**/*.css'
     libCoffee : './src/lib/**/*.coffee'
     libJS     : './src/lib/**/*.js'
     js        : './src/**/*.js'
@@ -47,7 +48,7 @@ dests =
     live:
         folder : './build-live'
         js     : './src/js'
-        css    : './src/styles'
+        css    : './build-live/css'
 
 # The data for our handlebars templates
 templateData = JSON.parse(fs.readFileSync(files.template))
@@ -174,6 +175,16 @@ gulp.task 'bower:css', ->
 # **bower**
 gulp.task 'bower', ['bower:js', 'bower:css']
 
+gulp.task 'minify:css', ['bower'], ->
+    return gulp
+        .src(globs.css)
+        .pipe(concat('styles.css'))
+        .pipe(cssmin())
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest(dests.live.css))
+
+gulp.task 'minifyAndUglify', ['minify:css']
+
 # **wiredep**
 gulp.task 'wiredep', ['handlebars:dev'], ->
     return gulp
@@ -185,7 +196,7 @@ gulp.task 'wiredep', ['handlebars:dev'], ->
 gulp.task 'build:dev', ['wiredep', 'browserify']
 
 # **build:live**
-gulp.task 'build:live', ['handlebars:live', 'bower']
+gulp.task 'build:live', ['handlebars:live', 'minifyAndUglify']
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->

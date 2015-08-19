@@ -39,7 +39,12 @@ class Helpers
 
     cssInject: (mode) ->
         content = new String()
-        styles = fs.readdirSync('./src/styles')
+        if mode is 'live'
+            dir = './build-live/css'
+        else
+            dir = './src/styles'
+
+        styles = fs.readdirSync(dir)
 
         if mode isnt 'live'
             content += "<!-- bower:css -->\n\t<!-- endbower -->\n\t"
@@ -49,8 +54,7 @@ class Helpers
                 if mode is 'live'
                     content += "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t"
                 else
-                    if stylesheet isnt 'vendor.min.css'
-                        content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />\n\t"
+                    content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />\n\t"
 
         return new hbs.SafeString(content)
 

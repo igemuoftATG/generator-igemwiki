@@ -1,5 +1,5 @@
 class ScrollHandler
 	constructor: ->
-		alert('initiliazed a ScrollHandler!!!')
+		console.log('initiliazed a ScrollHandler!!!')
 
 module.exports = ScrollHandler
