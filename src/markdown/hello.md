@@ -14,6 +14,7 @@ reasons:
 
 * dank
 * yolo
+* others
 
 [google](http://google.ca)
 

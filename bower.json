@@ -29,6 +29,12 @@
         "dist/css/bootstrap.css",
         "less/bootstrap.less"
       ]
+    },
+    "highlightjs": {
+        "main": [
+            "highlight.pack.js",
+            "styles/github.css"
+        ]
     }
   }
 }
