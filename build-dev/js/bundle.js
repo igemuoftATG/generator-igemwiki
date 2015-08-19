@@ -3,7 +3,7 @@ var ScrollHandler;
 
 ScrollHandler = (function() {
   function ScrollHandler() {
-    console.log('initiliazed a ScrollHandler!!!');
+    console.log('initiliazed a ScrollHandler!');
   }
 
   return ScrollHandler;

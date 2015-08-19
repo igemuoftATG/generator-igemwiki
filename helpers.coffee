@@ -22,7 +22,13 @@ class Helpers
 
     jsInject: (mode) ->
         content = new String()
-        scripts = fs.readdirSync('./src/js')
+
+        if mode is 'live'
+            dir = './build-live/js'
+        else
+            dir = './build-dev/js'
+
+        scripts = fs.readdirSync(dir)
 
         if mode isnt 'live'
             content += "<!-- bower:js -->\n\t<!-- endbower -->\n\t"

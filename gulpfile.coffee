@@ -45,9 +45,10 @@ dests =
     dev:
         folder : './build-dev'
         css    : './src/styles'
+        js     : './build-dev/js'
     live:
         folder : './build-live'
-        js     : './src/js'
+        js     : './build-live/js'
         css    : './build-live/css'
 
 # The data for our handlebars templates
@@ -124,7 +125,7 @@ gulp.task 'sass', ->
         .pipe(sass({
             includePaths: ['./bower_components/compass-mixins/lib']
         }).on('error', sass.logError))
-        .pipe(gulp.dest(dests.live.css))
+        .pipe(gulp.dest(dests.dev.css))
         .pipe(browserSync.stream())
 
 # Compile `.coffee` into `.js`; browserify
@@ -147,7 +148,7 @@ gulp.task 'browserify', ->
             buffer(),
             sourcemaps.init({loadMaps: true}),
             sourcemaps.write('./maps'),
-            gulp.dest(dests.live.js)
+            gulp.dest(dests.dev.js)
         ])
 
         combined.on('error', gutil.log)
@@ -183,7 +184,16 @@ gulp.task 'minify:css', ['bower'], ->
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(dests.live.css))
 
-gulp.task 'minifyAndUglify', ['minify:css']
+gulp.task 'uglify:js', ['bower'], ->
+    return gulp
+        .src(globs.js)
+        .pipe(concat('bundle.js'))
+        .pipe(uglify().on('error', gutil.log))
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest(dests.live.js))
+
+
+gulp.task 'minifyAndUglify', ['minify:css', 'uglify:js']
 
 # **wiredep**
 gulp.task 'wiredep', ['handlebars:dev'], ->
@@ -206,7 +216,7 @@ gulp.task 'serve', ['sass', 'build:dev'], ->
             routes:
                 '/styles'           : dests.dev.css
                 '/bower_components' : './bower_components'
-                '/js'               : './src/js'
+                '/js'               : dests.dev.js
                 '/preamble'         : './src/preamble'
 
     watch [globs.hbs, globs.js], ->
