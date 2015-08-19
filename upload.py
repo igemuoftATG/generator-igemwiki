@@ -72,7 +72,7 @@ def upload(page, file, headerfooter=True):
         else:
             resp = opener.open(BASE_URL + "/" + page + "?action=submit", encoded_data.encode('utf8'))
 
-        print (resp.read())
+        # print (resp.read())
         # headers = {"Content-type": "multipart/form-data;",
     except:
         print("Error:", sys.exc_info()[0])
