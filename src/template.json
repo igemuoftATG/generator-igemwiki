@@ -27,5 +27,8 @@
         "footer" : "footer",
         "preamble" : "preamble",
         "all_teams" : "All_Teams"
+    },
+    "markdown": {
+        "hello": "hello"
     }
 }

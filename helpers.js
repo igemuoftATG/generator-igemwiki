@@ -1,9 +1,11 @@
 (function() {
-  var Helpers, fs, hbs, path, templateData;
+  var Helpers, fs, hbs, marked, path, templateData;
 
   fs = require('fs');
 
   path = require('path');
+
+  marked = require('marked');
 
   hbs = new Object();
 
@@ -18,7 +20,8 @@
         capitals: this.capitals,
         link: this.link,
         cssInject: this.cssInject,
-        jsInject: this.jsInject
+        jsInject: this.jsInject,
+        markdown: this.markdown
       };
     }
 
@@ -105,6 +108,10 @@
       } else {
         return new hbs.SafeString(template(templateData));
       }
+    };
+
+    Helpers.prototype.markdown = function(file) {
+      return new hbs.SafeString(marked(fs.readFileSync(__dirname + "/src/markdown/" + file + ".md", 'utf8')));
     };
 
     return Helpers;

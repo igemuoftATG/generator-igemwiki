@@ -1,6 +1,8 @@
 fs   = require 'fs'
 path = require 'path'
 
+marked = require 'marked'
+
 hbs = new Object()
 templateData = new Object()
 
@@ -15,6 +17,7 @@ class Helpers
             link      : @link
             cssInject : @cssInject
             jsInject  : @jsInject
+            markdown  : @markdown
         }
 
     capitals: (str) ->
@@ -88,5 +91,10 @@ class Helpers
             # Assume 'dev' mode if undefined
             # For some reason, get an extra call here with mode undefined when in dev mode
             return new hbs.SafeString(template(templateData))
+
+    markdown: (file) ->
+        # return new hbs.SafeString(marked('I am using __markdown__.'))
+        return new hbs.SafeString(marked(fs.readFileSync("#{__dirname}/src/markdown/#{file}.md", 'utf8')))
+
 
 module.exports = Helpers
