@@ -17,12 +17,14 @@ buffer         = require 'vinyl-buffer'
 coffeeify      = require 'coffeeify'
 globby         = require 'globby'
 mainBowerFiles = require 'main-bower-files'
+phantom        = require 'phantomjs'
 combiner       = require 'stream-combiner2'
 source         = require 'vinyl-source-stream'
 browserSync    = require('browser-sync').create()
 wiredep        = require('wiredep').stream
 
 # NodeJS internal modules
+cp   = require 'child_process'
 fs   = require 'fs'
 path = require 'path'
 
@@ -209,6 +211,20 @@ gulp.task 'build:dev', ['wiredep', 'browserify']
 
 # **build:live**
 gulp.task 'build:live', ['handlebars:live', 'minifyAndUglify']
+
+# **push**
+gulp.task 'push', ->
+    templateData = JSON.parse(fs.readFileSync(files.template))
+    year = templateData.year
+    teamName = templateData.teamName
+
+    args = [
+        "#{__dirname}/phantom/screen.js",
+        "http://#{year}.igem.org/Team:#{teamName}",
+        "phantom/imgs/#{teamName}"
+    ]
+    cp.execFile phantom.path, args, (err, stdout, stderr) ->
+        gutil.log('done')
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->
