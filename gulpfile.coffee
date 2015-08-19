@@ -220,10 +220,16 @@ gulp.task 'push', ->
 
     args = [
         "#{__dirname}/phantom/screen.js",
-        "http://#{year}.igem.org/Team:#{teamName}",
+        "http://#{year}.igem.org/Team:#{teamName}?action=edit",
         "phantom/imgs/#{teamName}"
     ]
     cp.execFile phantom.path, args, (err, stdout, stderr) ->
+        if err
+            gutil.log(err)
+            return
+
+        gutil.log(stderr)
+        gutil.log(stdout)
         gutil.log('done')
 
 # **serve**
