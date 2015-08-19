@@ -1,11 +1,15 @@
 (function() {
-  var Helpers, fs, hbs, marked, path, templateData;
+  var Helpers, fs, gutil, hbs, highlighter, marked, path, templateData;
 
   fs = require('fs');
 
   path = require('path');
 
+  gutil = require('gulp-util');
+
   marked = require('marked');
+
+  highlighter = require('highlight.js');
 
   hbs = new Object();
 
@@ -111,7 +115,12 @@
     };
 
     Helpers.prototype.markdown = function(file) {
-      return new hbs.SafeString(marked(fs.readFileSync(__dirname + "/src/markdown/" + file + ".md", 'utf8')));
+      marked.setOptions({
+        highlight: function(code) {
+          return highlighter.highlightAuto(code).value;
+        }
+      });
+      return new hbs.SafeString(marked(fs.readFileSync(__dirname + "/src/markdown/" + file + ".md", 'utf8').toString()));
     };
 
     return Helpers;

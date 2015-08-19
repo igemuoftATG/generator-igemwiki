@@ -1,7 +1,9 @@
 fs   = require 'fs'
 path = require 'path'
 
+gutil = require 'gulp-util'
 marked = require 'marked'
+highlighter = require 'highlight.js'
 
 hbs = new Object()
 templateData = new Object()
@@ -93,8 +95,13 @@ class Helpers
             return new hbs.SafeString(template(templateData))
 
     markdown: (file) ->
-        # return new hbs.SafeString(marked('I am using __markdown__.'))
-        return new hbs.SafeString(marked(fs.readFileSync("#{__dirname}/src/markdown/#{file}.md", 'utf8')))
+        marked.setOptions({
+            highlight: (code) ->
+                 return highlighter.highlightAuto(code).value
+        })
+
+        # return new hbs.SafeString(marked('```js\n console.log("hello"); \n```'))
+        return new hbs.SafeString(marked(fs.readFileSync("#{__dirname}/src/markdown/#{file}.md", 'utf8').toString()))
 
 
 module.exports = Helpers
