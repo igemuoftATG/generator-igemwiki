@@ -40,6 +40,7 @@
     "nightmare": "^1.8.2",
     "phantomjs": "^1.9.18",
     "stream-combiner2": "^1.0.2",
+    "tar.gz": "^1.0.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "wiredep": "^2.2.2"

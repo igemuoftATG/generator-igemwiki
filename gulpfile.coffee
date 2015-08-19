@@ -19,6 +19,7 @@ globby         = require 'globby'
 mainBowerFiles = require 'main-bower-files'
 phantom        = require 'phantomjs'
 combiner       = require 'stream-combiner2'
+targz          = require 'tar.gz'
 source         = require 'vinyl-source-stream'
 browserSync    = require('browser-sync').create()
 wiredep        = require('wiredep').stream
@@ -232,6 +233,15 @@ gulp.task 'push', ->
         gutil.log(stderr)
         gutil.log(stdout)
         gutil.log('done')
+
+# **extract venv**
+gulp.task 'venv', ->
+    targz().extract './venv-wikigenerator.tar.gz', __dirname, (err) ->
+        gutil.log(err) if err
+
+        gutil.log('done extract')
+
+
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->
