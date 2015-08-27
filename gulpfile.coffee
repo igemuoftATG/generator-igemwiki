@@ -235,15 +235,14 @@ gulp.task 'phantom', ->
         gutil.log(stdout)
         gutil.log('done')
 
-gulp.task 'push', ->
-    LOGIN_URL = 'http://igem.org/Login'
-
+LOGIN_URL = 'http://igem.org/Login'
+# Login and call the callback with the cookie jar
+login = (cb) ->
     username = readlineSync.question('Username: ')
     password = readlineSync.question('Password: ', {hideEchoBack: true})
+    jar = request.jar()
 
-    j = request.jar()
-
-    request({
+    request {
         url: LOGIN_URL,
         method: 'POST'
         form: {
@@ -257,20 +256,43 @@ gulp.task 'push', ->
             Login: 'Log+in',
             search_text: ''
         },
-        jar: j
+        jar: jar
     }, (err, httpResponse, body) ->
-            if !err and httpResponse.statusCode is 200
-                console.log(j.getCookieString(LOGIN_URL))
-                fs.writeFileSync('login.html', body)
-            else if !err and httpResponse.statusCode is 302
-                console.log(j.getCookieString(LOGIN_URL))
-                # Follow redirection
+            if !err and httpResponse.statusCode is 302
+                # Follow redirects to complete login
+                request {
+                    url: httpResponse.headers.location
+                    jar: jar
+                }, (err, httpResponse, body) ->
+                    if !err and httpResponse.statusCode is 200
+                        # Pass cookie jar into callback
+                        cb(jar)
+                    else
+                        gutil.log('err: ', err)
+                        gutil.log('status code: ', httpResponse.statusCode)
+
             else
-                console.log('oops!')
-                console.log('err: ', err)
-                console.log('code: ', httpResponse.statusCode)
-                fs.writeFileSync('response.json', JSON.stringify(httpResponse))
-    )
+                # gutil.log('err: ', err)
+                # gutil.log('status code: ', httpResponse.statusCode)
+                gutil.log('Incorrect Password')
+
+
+gulp.task 'push', ->
+    login (jar) ->
+        request {
+            url: 'http://2015.igem.org/Team:Toronto?action=edit',
+            method: 'GET'
+            # form: {
+            #     wpTextbox1: 'test'
+            # }
+            jar: jar
+        }, (err, httpResponse, body) ->
+            if !err and httpResponse.statusCode is 200
+                fs.writeFileSync('response.html', body)
+                gutil.log('check file')
+            else
+                gutil.log('err: ', err)
+                gutil.log('status code: ', httpResponse.statusCode)
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->
