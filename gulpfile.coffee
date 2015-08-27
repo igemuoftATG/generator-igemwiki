@@ -276,23 +276,40 @@ login = (cb) ->
                 # gutil.log('status code: ', httpResponse.statusCode)
                 gutil.log('Incorrect Password')
 
+logout = (jar) ->
+
+    request {
+        url: 'http://igem.org/cgi/Logout.cgi'
+        jar: jar
+    }, (err, httpResponse, body) ->
+        gutil.log(jar.getCookieString(httpResponse.location))
+        gutil.log('err: ', err)
+        gutil.log('status code: ', httpResponse.statusCode)
 
 gulp.task 'push', ->
     login (jar) ->
         request {
-            url: 'http://2015.igem.org/Team:Toronto?action=edit',
-            method: 'GET'
-            # form: {
-            #     wpTextbox1: 'test'
-            # }
-            jar: jar
+            url: 'http://2015.igem.org/Team:Toronto?action=submit',
+            method: 'POST'
+            formData: {
+                wpTextbox1: fs.readFileSync('build-live/index.html', 'utf8')
+            }
+            jar: jar,
+            followRedirect: false
         }, (err, httpResponse, body) ->
+            gutil.log('cookies1: ', jar.getCookieString('http://2015.igem.org/Team:Toronto?action=submit'))
+
+            gutil.log('cookies2: ', jar.getCookieString(httpResponse.location))
+            fs.writeFileSync('response.json', JSON.stringify(httpResponse))
+
             if !err and httpResponse.statusCode is 200
                 fs.writeFileSync('response.html', body)
                 gutil.log('check file')
             else
                 gutil.log('err: ', err)
                 gutil.log('status code: ', httpResponse.statusCode)
+
+            logout(jar)
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->
