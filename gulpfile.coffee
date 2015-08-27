@@ -18,8 +18,9 @@ coffeeify      = require 'coffeeify'
 globby         = require 'globby'
 mainBowerFiles = require 'main-bower-files'
 phantom        = require 'phantomjs'
+readlineSync   = require 'readline-sync'
+request        = require 'request'
 combiner       = require 'stream-combiner2'
-targz          = require 'tar.gz'
 source         = require 'vinyl-source-stream'
 browserSync    = require('browser-sync').create()
 wiredep        = require('wiredep').stream
@@ -213,8 +214,8 @@ gulp.task 'build:dev', ['wiredep', 'browserify']
 # **build:live**
 gulp.task 'build:live', ['handlebars:live', 'minifyAndUglify']
 
-# **push**
-gulp.task 'push', ->
+# **phantom**
+gulp.task 'phantom', ->
     templateData = JSON.parse(fs.readFileSync(files.template))
     year = templateData.year
     teamName = templateData.teamName
@@ -234,14 +235,42 @@ gulp.task 'push', ->
         gutil.log(stdout)
         gutil.log('done')
 
-# **extract venv**
-gulp.task 'venv', ->
-    targz().extract './venv-wikigenerator.tar.gz', __dirname, (err) ->
-        gutil.log(err) if err
+gulp.task 'push', ->
+    LOGIN_URL = 'http://igem.org/Login'
 
-        gutil.log('done extract')
+    username = readlineSync.question('Username: ')
+    password = readlineSync.question('Password: ', {hideEchoBack: true})
 
+    j = request.jar()
 
+    request({
+        url: LOGIN_URL,
+        method: 'POST'
+        form: {
+            id: '0',
+            new_user_center: '',
+            new_user_right: '',
+            hidden_new_user: '',
+            return_to: '',
+            username: username,
+            password: password,
+            Login: 'Log+in',
+            search_text: ''
+        },
+        jar: j
+    }, (err, httpResponse, body) ->
+            if !err and httpResponse.statusCode is 200
+                console.log(j.getCookieString(LOGIN_URL))
+                fs.writeFileSync('login.html', body)
+            else if !err and httpResponse.statusCode is 302
+                console.log(j.getCookieString(LOGIN_URL))
+                # Follow redirection
+            else
+                console.log('oops!')
+                console.log('err: ', err)
+                console.log('code: ', httpResponse.statusCode)
+                fs.writeFileSync('response.json', JSON.stringify(httpResponse))
+    )
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->

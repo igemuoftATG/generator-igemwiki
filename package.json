@@ -28,6 +28,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",
     "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.4",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
@@ -39,13 +40,14 @@
     "marked": "^0.3.5",
     "nightmare": "^1.8.2",
     "phantomjs": "^1.9.18",
+    "readline-sync": "^1.2.20",
+    "request": "^2.61.0",
     "stream-combiner2": "^1.0.2",
     "tar.gz": "^1.0.0",
+    "tough-cookie": "^2.0.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "wiredep": "^2.2.2"
   },
-  "dependencies": {
-    "gulp-sass": "^2.0.4"
-  }
+  "dependencies": {}
 }
