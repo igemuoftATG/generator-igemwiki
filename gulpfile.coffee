@@ -277,7 +277,6 @@ login = (cb) ->
                 gutil.log('Incorrect Password')
 
 logout = (jar) ->
-
     request {
         url: 'http://igem.org/cgi/Logout.cgi'
         jar: jar
@@ -289,10 +288,10 @@ logout = (jar) ->
 gulp.task 'push', ->
     login (jar) ->
         request {
-            url: 'http://2015.igem.org/Team:Toronto?action=submit',
+            url: 'http://2015.igem.org/Team:Toronto/Team?action=submit',
             method: 'POST'
             formData: {
-                wpTextbox1: fs.readFileSync('build-live/index.html', 'utf8')
+                wpTextbox1: fs.readFileSync('build-live/Team.html', 'utf8')
             }
             jar: jar,
             followRedirect: false
