@@ -16,6 +16,7 @@ browserify     = require 'browserify'
 buffer         = require 'vinyl-buffer'
 coffeeify      = require 'coffeeify'
 globby         = require 'globby'
+htmlparser     = require 'htmlparser2'
 mainBowerFiles = require 'main-bower-files'
 phantom        = require 'phantomjs'
 readlineSync   = require 'readline-sync'
@@ -55,9 +56,6 @@ dests =
         folder : './build-live'
         js     : './build-live/js'
         css    : './build-live/css'
-
-# The data for our handlebars templates
-# templateData = JSON.parse(fs.readFileSync(files.template))
 
 # **buildTemplateStruct**
 buildTemplateStruct = (templateData, mode) ->
@@ -246,15 +244,15 @@ login = (cb) ->
         url: LOGIN_URL,
         method: 'POST'
         form: {
-            id: '0',
-            new_user_center: '',
-            new_user_right: '',
-            hidden_new_user: '',
-            return_to: '',
-            username: username,
-            password: password,
-            Login: 'Log+in',
-            search_text: ''
+            id              : '0',
+            new_user_center : '',
+            new_user_right  : '',
+            hidden_new_user : '',
+            return_to       : '',
+            username        : username,
+            password        : password,
+            Login           : 'Log+in',
+            search_text     : ''
         },
         jar: jar
     }, (err, httpResponse, body) ->
@@ -265,45 +263,85 @@ login = (cb) ->
                     jar: jar
                 }, (err, httpResponse, body) ->
                     if !err and httpResponse.statusCode is 200
+                        gutil.log('Successfully logged in')
                         # Pass cookie jar into callback
                         cb(jar)
                     else
                         gutil.log('err: ', err)
                         gutil.log('status code: ', httpResponse.statusCode)
-
             else
-                # gutil.log('err: ', err)
-                # gutil.log('status code: ', httpResponse.statusCode)
                 gutil.log('Incorrect Password')
 
+# **logout**
 logout = (jar) ->
     request {
         url: 'http://igem.org/cgi/Logout.cgi'
         jar: jar
     }, (err, httpResponse, body) ->
-        gutil.log(jar.getCookieString(httpResponse.location))
-        gutil.log('err: ', err)
-        gutil.log('status code: ', httpResponse.statusCode)
+        if !err and httpResponse.statusCode is 200
+            gutil.log('Successfully logged out')
+        else
+            gutil.log('err: ', err)
+            gutil.log('status code: ', httpResponse.statusCode)
 
+# **push**
 gulp.task 'push', ->
     login (jar) ->
         request {
-            url: 'http://2015.igem.org/Team:Toronto/Team?action=submit',
-            method: 'POST'
-            formData: {
-                wpTextbox1: fs.readFileSync('build-live/Team.html', 'utf8')
-            }
-            jar: jar,
-            followRedirect: false
+            url: 'http://2015.igem.org/Team:Toronto/Team?action=edit',
+            jar: jar
         }, (err, httpResponse, body) ->
-            gutil.log('cookies1: ', jar.getCookieString('http://2015.igem.org/Team:Toronto?action=submit'))
-
-            gutil.log('cookies2: ', jar.getCookieString(httpResponse.location))
-            fs.writeFileSync('response.json', JSON.stringify(httpResponse))
-
             if !err and httpResponse.statusCode is 200
-                fs.writeFileSync('response.html', body)
-                gutil.log('check file')
+                multiform = {
+                    wpSection     : '',
+                    wpStarttime   : '',
+                    wpEdittime    : '',
+                    wpScrolltop   : '',
+                    wpAutoSummary : '',
+                    oldid         : '',
+                    wpTextbox1    : '',
+                    wpSummary     : '',
+                    wpSave        : '',
+                    wpEditToken   : ''
+                }
+
+                parser = new htmlparser.Parser {
+                    onopentag: (name, attr) ->
+                        if attr.name? and multiform[attr.name]?
+                            if !attr.value
+                                multiform[attr.name] = ''
+                            else
+                                multiform[attr.name] = attr.value
+                }, {decodeEntites: true}
+
+                parser.write(body)
+                parser.end();
+
+                # gutil.log(value, multiform[value]) for value of multiform
+
+                multiform['wpTextbox1'] = fs.readFileSync('build-live/Team.html', 'utf8')
+
+                request {
+                    url: 'http://2015.igem.org/Team:Toronto/Team?action=submit',
+                    method: 'POST',
+                    formData: multiform,
+                    jar: jar
+                }, (err, httpResponse, body) ->
+                    if !err and httpResponse.statusCode is 302
+                        # Follow redirects to complete upload
+                        request {
+                            url: httpResponse.headers.location
+                            jar: jar
+                        }, (err, httpResponse, body) ->
+                            if !err and httpResponse.statusCode is 200
+                                gutil.log('Successfully uploaded X')
+                                fs.writeFileSync('response.html', body)
+                            else
+                                gutil.log('err: ', err)
+                                gutil.log('status code: ', httpResponse.statusCode)
+                    else
+                        gutil.log('err: ', err)
+                        gutil.log('status code: ', httpResponse.statusCode)
             else
                 gutil.log('err: ', err)
                 gutil.log('status code: ', httpResponse.statusCode)

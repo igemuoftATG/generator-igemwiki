@@ -37,6 +37,7 @@
     "handlebars": "^3.0.3",
     "highlight": "^0.2.3",
     "highlight.js": "^8.7.0",
+    "htmlparser2": "^3.8.3",
     "main-bower-files": "^2.9.0",
     "marked": "^0.3.5",
     "nightmare": "^1.8.2",
