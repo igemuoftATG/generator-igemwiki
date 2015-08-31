@@ -288,9 +288,65 @@ logout = (jar) ->
         else
             handleRequestError(err, httpResponse)
 
+# Calls cb(multiform)
+prepareUploadForm = (link, jar, cb) ->
+    templateData = JSON.parse(fs.readFileSync(files.template))
+    year = templateData.year
+    teamName = templateData.teamName
+    BASE_URL = "http://#{year}.igem.org/Team:#{teamName}"
+
+    page = templateData.links[link]
+    if page is 'index'
+        url = BASE_URL + '?action=edit'
+    else
+        url = BASE_URL + '/' + page + '?action=edit'
+
+    gutil.log("./build-live/#{page}.html -> ", url)
+
+    request {
+        url : url,
+        jar : jar
+    }, (err, httpResponse, body) ->
+        if !err and httpResponse.statusCode is 200
+            multiform = {
+                wpSection     : ''
+                wpStarttime   : ''
+                wpEdittime    : ''
+                wpScrolltop   : ''
+                wpAutoSummary : ''
+                oldid         : ''
+                wpTextbox1    : ''
+                wpSummary     : ''
+                wpSave        : ''
+                wpEditToken   : ''
+            }
+
+            parser = new htmlparser.Parser {
+                onopentag: (name, attr) ->
+                    if attr.name? and multiform[attr.name]?
+                        if !attr.value
+                            multiform[attr.name] = ''
+                        else
+                            multiform[attr.name] = attr.value
+            }, {decodeEntites: true}
+
+            parser.write(body)
+            parser.end();
+
+            multiform['wpTextbox1'] = fs.readFileSync("./build-live/#{page}.html", 'utf8')
+
+            cb(multiform)
+
 # **push**
 gulp.task 'push', ->
     login (jar) ->
+        templateData = JSON.parse(fs.readFileSync(files.template))
+
+        for link of templateData.links
+            prepareUploadForm link, jar, (multiform) ->
+                gutil.log('wheeee')
+                # gutil.log(multiform)
+
         request {
             url: 'http://2015.igem.org/Team:Toronto/Team?action=edit'
             jar: jar
