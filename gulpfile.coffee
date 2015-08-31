@@ -233,7 +233,13 @@ gulp.task 'phantom', ->
         gutil.log(stdout)
         gutil.log('done')
 
+
+handleRequestError = (err, httpResponse) ->
+    gutil.log('err: ', err)
+    gutil.log('status code: ', httpResponse.statusCode)
+
 LOGIN_URL = 'http://igem.org/Login'
+LOGOUT_URL = 'http://igem.org/cgi/Logout.cgi'
 # Login and call the callback with the cookie jar
 login = (cb) ->
     username = readlineSync.question('Username: ')
@@ -244,14 +250,14 @@ login = (cb) ->
         url: LOGIN_URL,
         method: 'POST'
         form: {
-            id              : '0',
-            new_user_center : '',
-            new_user_right  : '',
-            hidden_new_user : '',
-            return_to       : '',
-            username        : username,
-            password        : password,
-            Login           : 'Log+in',
+            id              : '0'
+            new_user_center : ''
+            new_user_right  : ''
+            hidden_new_user : ''
+            return_to       : ''
+            username        : username
+            password        : password
+            Login           : 'Log+in'
             search_text     : ''
         },
         jar: jar
@@ -263,45 +269,43 @@ login = (cb) ->
                     jar: jar
                 }, (err, httpResponse, body) ->
                     if !err and httpResponse.statusCode is 200
-                        gutil.log('Successfully logged in')
+                        gutil.log("Successfully logged in as #{username}")
                         # Pass cookie jar into callback
                         cb(jar)
                     else
-                        gutil.log('err: ', err)
-                        gutil.log('status code: ', httpResponse.statusCode)
+                        handleRequestError(err, httpResponse)
             else
-                gutil.log('Incorrect Password')
+                gutil.log('Incorrect username/password')
 
 # **logout**
 logout = (jar) ->
     request {
-        url: 'http://igem.org/cgi/Logout.cgi'
+        url: LOGOUT_URL
         jar: jar
     }, (err, httpResponse, body) ->
         if !err and httpResponse.statusCode is 200
             gutil.log('Successfully logged out')
         else
-            gutil.log('err: ', err)
-            gutil.log('status code: ', httpResponse.statusCode)
+            handleRequestError(err, httpResponse)
 
 # **push**
 gulp.task 'push', ->
     login (jar) ->
         request {
-            url: 'http://2015.igem.org/Team:Toronto/Team?action=edit',
+            url: 'http://2015.igem.org/Team:Toronto/Team?action=edit'
             jar: jar
         }, (err, httpResponse, body) ->
             if !err and httpResponse.statusCode is 200
                 multiform = {
-                    wpSection     : '',
-                    wpStarttime   : '',
-                    wpEdittime    : '',
-                    wpScrolltop   : '',
-                    wpAutoSummary : '',
-                    oldid         : '',
-                    wpTextbox1    : '',
-                    wpSummary     : '',
-                    wpSave        : '',
+                    wpSection     : ''
+                    wpStarttime   : ''
+                    wpEdittime    : ''
+                    wpScrolltop   : ''
+                    wpAutoSummary : ''
+                    oldid         : ''
+                    wpTextbox1    : ''
+                    wpSummary     : ''
+                    wpSave        : ''
                     wpEditToken   : ''
                 }
 
@@ -317,18 +321,16 @@ gulp.task 'push', ->
                 parser.write(body)
                 parser.end();
 
-                # gutil.log(value, multiform[value]) for value of multiform
-
                 multiform['wpTextbox1'] = fs.readFileSync('build-live/Team.html', 'utf8')
 
                 request {
-                    url: 'http://2015.igem.org/Team:Toronto/Team?action=submit',
-                    method: 'POST',
-                    formData: multiform,
-                    jar: jar
+                    url      : 'http://2015.igem.org/Team:Toronto/Team?action=submit'
+                    method   : 'POST'
+                    formData : multiform
+                    jar      : jar
                 }, (err, httpResponse, body) ->
                     if !err and httpResponse.statusCode is 302
-                        # Follow redirects to complete upload
+                        # Follow redirect to new page
                         request {
                             url: httpResponse.headers.location
                             jar: jar
@@ -337,14 +339,11 @@ gulp.task 'push', ->
                                 gutil.log('Successfully uploaded X')
                                 fs.writeFileSync('response.html', body)
                             else
-                                gutil.log('err: ', err)
-                                gutil.log('status code: ', httpResponse.statusCode)
+                                handleRequestError(err, httpResponse)
                     else
-                        gutil.log('err: ', err)
-                        gutil.log('status code: ', httpResponse.statusCode)
+                        handleRequestError(err, httpResponse)
             else
-                gutil.log('err: ', err)
-                gutil.log('status code: ', httpResponse.statusCode)
+                handleRequestError(err, httpResponse)
 
             logout(jar)
 
