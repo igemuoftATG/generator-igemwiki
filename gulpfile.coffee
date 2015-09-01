@@ -215,24 +215,42 @@ gulp.task 'build:live', ['handlebars:live', 'minifyAndUglify']
 
 # **phantom**
 gulp.task 'phantom', ->
-    templateData = JSON.parse(fs.readFileSync(files.template))
-    year = templateData.year
-    teamName = templateData.teamName
+    # see: phantom/screen.js
+    templateData = fillTemplates().live
 
-    args = [
-        "#{__dirname}/phantom/screen.js",
-        # "http://#{year}.igem.org/Team:#{teamName}?action=edit",
-        'http://igem.org/Login'
-        "phantom/imgs/#{teamName}"
-    ]
-    cp.execFile phantom.path, args, (err, stdout, stderr) ->
-        if err
-            gutil.log(err)
-            return
+    sizes = ['mobile', 'phablet', 'tablet', 'desktop', 'desktophd']
 
-        gutil.log(stderr)
-        gutil.log(stdout)
-        gutil.log('done')
+    num = sizes.length * Object.keys(templateData.links).length
+
+    gutil.log('Warning'.yellow + ', this will bang the revs on your CPUs. Just started ' + num + ' phantom processes ;)')
+
+    for size in sizes
+        for link of templateData.links
+            page = templateData.links[link]
+
+            if page is 'index'
+                url = "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}"
+            else
+                url = "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{page}"
+
+            args = [
+                "#{__dirname}/phantom/screen.js",
+                url,
+                "#{__dirname}/phantom/#{size}/#{page}",
+                size
+            ]
+
+            process = cp.spawn(phantom.path, args)
+
+            process.stdout.on 'data', (data) ->
+                if data.toString().indexOf('Finished screening') isnt -1
+                    gutil.log(data.toString().slice(0, data.toString().length - 1))
+
+            process.stderr.on 'data', (data) ->
+                gutil.log('stderr: ' + data)
+
+            process.on 'close', (code) ->
+                # gutil.log("Finished screening #{page} for #{size}")
 
 
 handleRequestError = (err, httpResponse) ->
