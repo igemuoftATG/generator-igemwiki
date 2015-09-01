@@ -100,14 +100,19 @@
     };
 
     Helpers.prototype.image = function(img, format, mode) {
-      var content, fmt;
+      var content, fmt, imageStores;
       if (mode === 'live') {
-        if (format === 'file') {
-          fmt = 'File';
-        } else if (format === 'media') {
-          fmt = 'Media';
+        if (format === 'directlink') {
+          imageStores = JSON.parse(fs.readFileSync('images.json'));
+          content = "<img src=\"" + imageStores[img] + "\" />";
+        } else {
+          if (format === 'file') {
+            fmt = 'File';
+          } else if (format === 'media') {
+            fmt = 'Media';
+          }
+          content = "</html> [[" + fmt + ":" + templateData.teamName + "_" + templateData.year + "_" + img + "]] <html>";
         }
-        content = "</html> [[" + fmt + ":" + templateData.teamName + "_" + templateData.year + "_" + img + "]] <html>";
       } else {
         content = "<img src=\"images/" + img + "\" />";
       }

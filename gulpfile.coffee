@@ -290,7 +290,7 @@ logout = (jar) ->
             handleRequestError(err, httpResponse)
 
 # Calls cb(url, file, multiform, jar)
-prepareUploadForm = (link, type, jar, cb, tryLogout) ->
+prepareUploadForm = (link, type, jar, cb, tryLogout, updateImageStores) ->
     templateData = JSON.parse(fs.readFileSync(files.template))
     year = templateData.year
     teamName = templateData.teamName
@@ -341,7 +341,7 @@ prepareUploadForm = (link, type, jar, cb, tryLogout) ->
                 }
             else
                 multiform = {
-                    wpUploadFile         : 'name="wpUploadFile"; filename="image.png"'
+                    wpUploadFile         : ''
                     wpDestFile           : ''
                     wpUploadDescription  : ''
                     wpLicense            : ''
@@ -382,7 +382,7 @@ prepareUploadForm = (link, type, jar, cb, tryLogout) ->
                 multiform['wpUploadFile'] = fs.createReadStream(file)
                 multiform['wpDestFile'] = "#{teamName}_#{year}_#{page}"
 
-            cb(url, file, page, type, multiform, jar, tryLogout)
+            cb(url, file, page, type, multiform, jar, tryLogout, updateImageStores)
         else
             handleRequestError(err, httpResponse)
 
@@ -402,7 +402,7 @@ colourify = (file, url, multiform, type) ->
         return "Uploaded #{file} → #{url}"
 
 # **postEdit**
-postEdit = (url, file, page, type, multiform, jar, tryLogout) ->
+postEdit = (url, file, page, type, multiform, jar, tryLogout, updateImageStores) ->
 
     if type isnt 'image'
         postUrl = url + '?action=submit'
@@ -422,20 +422,41 @@ postEdit = (url, file, page, type, multiform, jar, tryLogout) ->
                 jar: jar
             }, (err, httpResponse, body) ->
                 if !err and httpResponse.statusCode is 200
-                    if page.indexOf('.css') is -1 and page.indexOf('.js') is -1
-                        fs.writeFileSync("responses/#{page}.html", body)
-                    else
-                        fs.writeFileSync("responses/#{page}", body)
+                    if type is 'image'
+                        currentHref = new String()
+                        finalHref   = new String()
 
-                    gutil.log(colourify(file, url, multiform, type))
-                    tryLogout()
+                        parser = new htmlparser.Parser {
+                            onopentag: (name, attr) ->
+                                if name is 'a'
+                                    currentHref = attr.href
+                            ontext: (text) ->
+                                if text is 'Full resolution'
+                                    finalHref = currentHref
+                        }, {decodeEntites: true}
+
+                        parser.write(body)
+                        parser.end()
+
+                        templateData = JSON.parse(fs.readFileSync(files.template))
+                        imageStore = new Object()
+                        imageStore["#{page}"] = "http://#{templateData.year}.igem.org#{finalHref}"
+
+                        fs.writeFileSync("responses/#{page}.html", body)
+                        gutil.log(colourify(file, url, multiform, type))
+                        updateImageStores(imageStore)
+                        tryLogout()
+                    else
+                        fs.writeFileSync("responses/#{page}.html", body)
+                        gutil.log(colourify(file, url, multiform, type))
+                        tryLogout()
                 else
                     handleRequestError(err, httpResponse)
         else
             handleRequestError(err, httpResponse)
 
-upload = (link, type, jar, tryLogout) ->
-    prepareUploadForm(link, type, jar, postEdit, tryLogout)
+upload = (link, type, jar, tryLogout, updateImageStores) ->
+    prepareUploadForm(link, type, jar, postEdit, tryLogout, updateImageStores)
 
 # **push**
 gulp.task 'push', ->
@@ -457,6 +478,16 @@ gulp.task 'push', ->
             if num is total
                 logout(jar)
 
+        imageStores = new Object()
+        imageStoresFile = 'images.json'
+        updateImageStores = (imageStore) ->
+            key = Object.keys(imageStore)[0]
+            imageStores[key] = imageStore[key]
+
+            if Object.keys(imageStores).length is images.length
+                fs.writeFileSync(imageStoresFile, JSON.stringify(imageStores))
+                gutil.log('Full resolution links of images stored in'.green, "#{imageStoresFile}".magenta)
+
         for link of templateData.links
             upload(link, 'page', jar, tryLogout)
         for template of templateData.templates
@@ -466,7 +497,7 @@ gulp.task 'push', ->
         for script in scripts
             upload(script, 'script', jar, tryLogout)
         for image in images
-            upload(image, 'image', jar, tryLogout)
+            upload(image, 'image', jar, tryLogout, updateImageStores)
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->

@@ -81,14 +81,26 @@ class Helpers
 
         return new hbs.SafeString(content)
 
+    # img: String of image filename in ./images/filename
+    # format: use directlink for normal img tag to full resolution of file
+    # use file for inline image using wiki code. this requires breaking and opening html
+    # use media for an anchor that points to the full resolution of file
+    # see images.json, and 'hardcode' your own markup, the links there should not change
+    # note: images.json requires a successful `gulp push` to become populated with new images
+    # for instance, you will probably need to hardcode image links into your markdown files
+    # ATM, I'm not running handlebars compilation on the html compiled from markdown
     image: (img, format, mode) ->
         if mode is 'live'
-            if format is 'file'
-                fmt = 'File'
-            else if format is 'media'
-                fmt = 'Media'
+            if format is 'directlink'
+                imageStores = JSON.parse(fs.readFileSync('images.json'))
+                content = "<img src=\"#{imageStores[img]}\" />"
+            else
+                if format is 'file'
+                    fmt = 'File'
+                else if format is 'media'
+                    fmt = 'Media'
 
-            content = "</html> [[#{fmt}:#{templateData.teamName}_#{templateData.year}_#{img}]] <html>"
+                content = "</html> [[#{fmt}:#{templateData.teamName}_#{templateData.year}_#{img}]] <html>"
         else
             content = "<img src=\"images/#{img}\" />"
 
@@ -125,7 +137,6 @@ class Helpers
                  return highlighter.highlightAuto(code).value
         })
 
-        # return new hbs.SafeString(marked('```js\n console.log("hello"); \n```'))
         return new hbs.SafeString(marked(fs.readFileSync("#{__dirname}/src/markdown/#{file}.md", 'utf8').toString()))
 
 
