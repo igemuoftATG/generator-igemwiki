@@ -289,14 +289,25 @@ logout = (jar) ->
             handleRequestError(err, httpResponse)
 
 # Calls cb(url, file, multiform, jar)
-prepareUploadForm = (link, jar, cb, tryLogout) ->
+prepareUploadForm = (link, type, jar, cb, tryLogout) ->
     templateData = JSON.parse(fs.readFileSync(files.template))
     year = templateData.year
     teamName = templateData.teamName
-    BASE_URL = "http://#{year}.igem.org/Team:#{teamName}"
 
-    page = templateData.links[link]
-    if page is 'index'
+    if type is 'page'
+        BASE_URL = "http://#{year}.igem.org/Team:#{teamName}"
+        page = templateData.links[link]
+    else if type is 'template'
+        BASE_URL = "http://#{year}.igem.org/Template:#{teamName}"
+        page = templateData.templates[link]
+    else if type is 'stylesheet'
+        BASE_URL = "http://#{year}.igem.org/Template:#{teamName}/css"
+        page = link
+    else if type is 'script'
+        BASE_URL = "http://#{year}.igem.org/Template:#{teamName}/js"
+        page = link
+
+    if page is 'index' and type is 'page'
         url = BASE_URL
     else
         url = BASE_URL + '/' + page
@@ -331,7 +342,15 @@ prepareUploadForm = (link, jar, cb, tryLogout) ->
             parser.write(body)
             parser.end();
 
-            file = "#{dests.live.folder}/#{page}.html"
+            if type is 'page'
+                file = "#{dests.live.folder}/#{page}.html"
+            else if type is 'template'
+                file = "#{dests.live.folder}/templates/#{page}.html"
+            else if type is 'stylesheet'
+                file = "#{dests.live.folder}/css/#{page}"
+            else if type is 'script'
+                file = "#{dests.live.folder}/js/#{page}"
+
             multiform['wpTextbox1'] = fs.readFileSync(file, 'utf8')
 
             cb(url, file, page, multiform, jar, tryLogout)
@@ -351,7 +370,11 @@ postEdit = (url, file, page, multiform, jar, tryLogout) ->
                 jar: jar
             }, (err, httpResponse, body) ->
                 if !err and httpResponse.statusCode is 200
-                    fs.writeFileSync("responses/#{page}.html", body)
+                    if page.indexOf('.css') is -1 and page.indexOf('.js') is -1
+                        fs.writeFileSync("responses/#{page}.html", body)
+                    else
+                        fs.writeFileSync("responses/#{page}", body)
+
                     gutil.log("Successfully uploaded #{file} → #{url}")
                     tryLogout()
                 else
@@ -359,22 +382,35 @@ postEdit = (url, file, page, multiform, jar, tryLogout) ->
         else
             handleRequestError(err, httpResponse)
 
-upload = (link, jar, tryLogout) ->
-    prepareUploadForm(link, jar, postEdit, tryLogout)
+upload = (link, type, jar, tryLogout) ->
+    prepareUploadForm(link, type, jar, postEdit, tryLogout)
 
 # **push**
 gulp.task 'push', ->
     login (jar) ->
         templateData = JSON.parse(fs.readFileSync(files.template))
+        stylesheets  = fs.readdirSync(dests.live.css)
+        scripts      = fs.readdirSync(dests.live.js)
 
         num = 0
         tryLogout = ->
             num += 1
-            if num is Object.keys(templateData.links).length
+            total = Object.keys(templateData.links).length +
+                Object.keys(templateData.templates).length +
+                stylesheets.length +
+                scripts.length
+
+            if num is total
                 logout(jar)
 
         for link of templateData.links
-            upload(link, jar, tryLogout)
+            upload(link, 'page', jar, tryLogout)
+        for template of templateData.templates
+            upload(template, 'template', jar, tryLogout)
+        for stylesheet in stylesheets
+            upload(stylesheet, 'stylesheet', jar, tryLogout)
+        for script in scripts
+            upload(script, 'script', jar, tryLogout)
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->
