@@ -222,7 +222,8 @@ gulp.task 'phantom', ->
 
     num = sizes.length * Object.keys(templateData.links).length
 
-    gutil.log('Warning'.yellow + ', this will bang the revs on your CPUs. Just started ' + num + ' phantom processes ;)')
+    gutil.log('Warning'.yellow + ", this will bang the revs on your CPUs. Just started #{num} phantom processes ;)")
+    gutil.log('Use ' + 'gulp phantom:sync'.magenta + ' for slower, yet less CPU intensive usage.')
 
     for size in sizes
         for link of templateData.links
@@ -250,8 +251,39 @@ gulp.task 'phantom', ->
                 gutil.log('stderr: ' + data)
 
             process.on 'close', (code) ->
-                # gutil.log("Finished screening #{page} for #{size}")
+                # gutil.log('Closed')
 
+
+# **phantom:sync**
+gulp.task 'phantom:sync', ->
+    # see: phantom/screen.js
+    templateData = fillTemplates().live
+
+    sizes = ['mobile', 'phablet', 'tablet', 'desktop', 'desktophd']
+
+    num = sizes.length * Object.keys(templateData.links).length
+
+    gutil.log('Use ' + 'gulp phantom '.magenta + 'for faster, yet intensive processing.')
+    gutil.log("You will have to cmd+c #{num} times to end this task.")
+
+    for size in sizes
+        for link of templateData.links
+            page = templateData.links[link]
+
+            if page is 'index'
+                url = "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}"
+            else
+                url = "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{page}"
+
+            args = [
+                "#{__dirname}/phantom/screen.js",
+                url,
+                "#{__dirname}/phantom/#{size}/#{page}",
+                size
+            ]
+
+            process  = cp.spawnSync(phantom.path, args)
+            gutil.log(process.stdout.toString().slice(0, process.stdout.toString().length - 1))
 
 handleRequestError = (err, httpResponse) ->
     gutil.log('err: ', err)
