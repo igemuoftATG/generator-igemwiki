@@ -16,17 +16,26 @@ class Helpers
         templateData = tplateData
 
         return {
-            template  : @template
-            capitals  : @capitals
-            link      : @link
-            cssInject : @cssInject
-            jsInject  : @jsInject
-            markdown  : @markdown
-            image     : @image
+            template   : @template
+            capitals   : @capitals
+            bodyInsert : @bodyInsert
+            link       : @link
+            cssInject  : @cssInject
+            jsInject   : @jsInject
+            markdown   : @markdown
+            image      : @image
         }
 
     capitals: (str) ->
         return str.toUpperCase()
+
+    bodyInsert: (mode) ->
+        if mode isnt 'live'
+            content = '<body></body>'
+        else
+            content = ''
+
+        return new hbs.SafeString(content)
 
     jsInject: (mode) ->
         content = new String()

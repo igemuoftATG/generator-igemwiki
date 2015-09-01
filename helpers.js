@@ -23,6 +23,7 @@
       return {
         template: this.template,
         capitals: this.capitals,
+        bodyInsert: this.bodyInsert,
         link: this.link,
         cssInject: this.cssInject,
         jsInject: this.jsInject,
@@ -33,6 +34,16 @@
 
     Helpers.prototype.capitals = function(str) {
       return str.toUpperCase();
+    };
+
+    Helpers.prototype.bodyInsert = function(mode) {
+      var content;
+      if (mode !== 'live') {
+        content = '<body></body>';
+      } else {
+        content = '';
+      }
+      return new hbs.SafeString(content);
     };
 
     Helpers.prototype.jsInject = function(mode) {
