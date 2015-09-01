@@ -1,8 +1,10 @@
+# NodeJS core modules
 fs   = require 'fs'
 path = require 'path'
 
-gutil = require 'gulp-util'
-marked = require 'marked'
+# NodeJS modules
+gutil       = require 'gulp-util'
+marked      = require 'marked'
 highlighter = require 'highlight.js'
 
 hbs = new Object()
@@ -40,11 +42,16 @@ class Helpers
 
         for script in scripts
             if path.extname(script) is '.js'
-                if mode is 'live'
-                    content += "<script src=http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js></script>\n\t"
+                if mode is 'live' and script isnt 'vendor.min.js'
+                    content += "<script src=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js\"></script>\n\t"
                 else
                     if script isnt 'vendor.min.js'
                         content += "<script src=\"js/#{script}\"></script>\n\t"
+
+        # Append 'vendor.min.js' after all other scripts for live build
+        for script in scripts
+            if script is 'vendor.min.js'
+                content = "<script src=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js\"></script>\n\t" + content
 
         return new hbs.SafeString(content)
 
@@ -62,10 +69,14 @@ class Helpers
 
         for stylesheet in styles
             if path.extname(stylesheet) is '.css'
-                if mode is 'live'
+                if mode is 'live' and stylesheet isnt 'vendor.min.css'
                     content += "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t"
                 else
                     content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />\n\t"
+
+        for stylesheet in styles
+            if stylesheet is 'vendor.min.css'
+                content = "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t" + content
 
         return new hbs.SafeString(content)
 
