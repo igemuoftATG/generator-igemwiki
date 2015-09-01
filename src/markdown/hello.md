@@ -10,6 +10,10 @@
 
 ###### it is
 
+{{capitals teamName}}
+
+<div> <img src="{{image "igem_500w.png" "directlink" mode}}" /> </div>
+
 reasons:
 
 * dank

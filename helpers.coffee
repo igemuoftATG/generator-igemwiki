@@ -97,8 +97,6 @@ class Helpers
     # use media for an anchor that points to the full resolution of file
     # see images.json, and 'hardcode' your own markup, the links there should not change
     # note: images.json requires a successful `gulp push` to become populated with new images
-    # for instance, you will probably need to hardcode image links into your markdown files
-    # ATM, I'm not running handlebars compilation on the html compiled from markdown
     image: (img, format, mode) ->
         if mode is 'live'
             if format is 'directlink'
@@ -150,7 +148,11 @@ class Helpers
                  return highlighter.highlightAuto(code).value
         })
 
-        return new hbs.SafeString(marked(string))
+        # templateData = JSON.parse(fs.readFileSync('./src/template.json'))
+        handlebarsedMarkdown = hbs.compile(string)(templateData)
+        markedHtml = marked(handlebarsedMarkdown)
+
+        return new hbs.SafeString(markedHtml)
 
     markdown: (file) ->
         marked.setOptions({
@@ -158,7 +160,14 @@ class Helpers
                  return highlighter.highlightAuto(code).value
         })
 
-        return new hbs.SafeString(marked(fs.readFileSync("#{__dirname}/src/markdown/#{file}.md", 'utf8').toString()))
+        markdownFile = fs.readFileSync("#{__dirname}/src/markdown/#{file}.md").toString()
+        # templateData = JSON.parse(fs.readFileSync('./src/template.json'))
+
+        handlebarsedMarkdown = hbs.compile(markdownFile)(templateData)
+
+        markedHtml = marked(handlebarsedMarkdown)
+
+        return new hbs.SafeString(markedHtml)
 
 
 module.exports = Helpers

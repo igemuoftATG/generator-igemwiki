@@ -165,21 +165,28 @@
     };
 
     Helpers.prototype.markdownHere = function(string, options) {
+      var handlebarsedMarkdown, markedHtml;
       marked.setOptions({
         highlight: function(code) {
           return highlighter.highlightAuto(code).value;
         }
       });
-      return new hbs.SafeString(marked(string));
+      handlebarsedMarkdown = hbs.compile(string)(templateData);
+      markedHtml = marked(handlebarsedMarkdown);
+      return new hbs.SafeString(markedHtml);
     };
 
     Helpers.prototype.markdown = function(file) {
+      var handlebarsedMarkdown, markdownFile, markedHtml;
       marked.setOptions({
         highlight: function(code) {
           return highlighter.highlightAuto(code).value;
         }
       });
-      return new hbs.SafeString(marked(fs.readFileSync(__dirname + "/src/markdown/" + file + ".md", 'utf8').toString()));
+      markdownFile = fs.readFileSync(__dirname + "/src/markdown/" + file + ".md").toString();
+      handlebarsedMarkdown = hbs.compile(markdownFile)(templateData);
+      markedHtml = marked(handlebarsedMarkdown);
+      return new hbs.SafeString(markedHtml);
     };
 
     return Helpers;
