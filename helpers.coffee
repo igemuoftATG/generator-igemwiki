@@ -22,6 +22,7 @@ class Helpers
             cssInject : @cssInject
             jsInject  : @jsInject
             markdown  : @markdown
+            image     : @image
         }
 
     capitals: (str) ->
@@ -71,12 +72,25 @@ class Helpers
             if path.extname(stylesheet) is '.css'
                 if mode is 'live' and stylesheet isnt 'vendor.min.css'
                     content += "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t"
-                else
+                else if stylesheet isnt 'vendor.min.css'
                     content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />\n\t"
 
         for stylesheet in styles
             if stylesheet is 'vendor.min.css'
                 content = "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t" + content
+
+        return new hbs.SafeString(content)
+
+    image: (img, format, mode) ->
+        if mode is 'live'
+            if format is 'file'
+                fmt = 'File'
+            else if format is 'media'
+                fmt = 'Media'
+
+            content = "</html> [[#{fmt}:#{templateData.teamName}_#{templateData.year}_#{img}]] <html>"
+        else
+            content = "<img src=\"images/#{img}\" />"
 
         return new hbs.SafeString(content)
 

@@ -15,6 +15,7 @@ watch      = require 'gulp-watch'
 browserify     = require 'browserify'
 buffer         = require 'vinyl-buffer'
 coffeeify      = require 'coffeeify'
+colors         = require 'colors'
 globby         = require 'globby'
 htmlparser     = require 'htmlparser2'
 mainBowerFiles = require 'main-bower-files'
@@ -190,7 +191,7 @@ gulp.task 'minify:css', ['bower'], ->
 
 gulp.task 'uglify:js', ['bower'], ->
     return gulp
-        .src(globs.js)
+        .src("#{dests.dev.js}/**/*.js")
         .pipe(concat('bundle.js'))
         .pipe(uglify().on('error', gutil.log))
         .pipe(rename({suffix: '.min'}))
@@ -269,13 +270,13 @@ login = (cb) ->
                     jar: jar
                 }, (err, httpResponse, body) ->
                     if !err and httpResponse.statusCode is 200
-                        gutil.log("Successfully logged in as #{username}")
+                        gutil.log('Successfully logged in'.green + ' as ' + "#{username}".magenta)
                         # Pass cookie jar into callback
                         cb(jar)
                     else
                         handleRequestError(err, httpResponse)
             else
-                gutil.log('Incorrect username/password')
+                gutil.log('Incorrect username/password'.red)
 
 # **logout**
 logout = (jar) ->
@@ -284,7 +285,7 @@ logout = (jar) ->
         jar: jar
     }, (err, httpResponse, body) ->
         if !err and httpResponse.statusCode is 200
-            gutil.log('Successfully logged out')
+            gutil.log('Successfully logged out'.green)
         else
             handleRequestError(err, httpResponse)
 
@@ -306,29 +307,51 @@ prepareUploadForm = (link, type, jar, cb, tryLogout) ->
     else if type is 'script'
         BASE_URL = "http://#{year}.igem.org/Template:#{teamName}/js"
         page = link
+    else if type is 'image'
+        BASE_URL = "http://#{year}.igem.org/Special:Upload"
+        page = link
 
-    if page is 'index' and type is 'page'
+    if type is 'image' or (page is 'index' and type is 'page')
         url = BASE_URL
-    else
+    else if type isnt 'image'
         url = BASE_URL + '/' + page
 
+    if type isnt 'image'
+        editUrl = url + '?action=edit'
+    else
+        editUrl = url
+
     request {
-        url : url + '?action=edit'
+        url : editUrl
         jar : jar
     }, (err, httpResponse, body) ->
         if !err and httpResponse.statusCode is 200
-            multiform = {
-                wpSection     : ''
-                wpStarttime   : ''
-                wpEdittime    : ''
-                wpScrolltop   : ''
-                wpAutoSummary : ''
-                oldid         : ''
-                wpTextbox1    : ''
-                wpSummary     : ''
-                wpSave        : ''
-                wpEditToken   : ''
-            }
+            if type isnt 'image'
+                multiform = {
+                    wpSection     : ''
+                    wpStarttime   : ''
+                    wpEdittime    : ''
+                    wpScrolltop   : ''
+                    wpAutoSummary : ''
+                    oldid         : ''
+                    wpTextbox1    : ''
+                    wpSummary     : ''
+                    wpSave        : ''
+                    wpEditToken   : ''
+                }
+            else
+                multiform = {
+                    wpUploadFile         : 'name="wpUploadFile"; filename="image.png"'
+                    wpDestFile           : ''
+                    wpUploadDescription  : ''
+                    wpLicense            : ''
+                    wpEditToken          : ''
+                    title                : ''
+                    wpDestFileWarningAck : ''
+                    wpUpload             : ''
+                    wpIgnoreWarning      : '1'
+                    # wpWatchthis          : '1'
+                }
 
             parser = new htmlparser.Parser {
                 onopentag: (name, attr) ->
@@ -350,18 +373,47 @@ prepareUploadForm = (link, type, jar, cb, tryLogout) ->
                 file = "#{dests.live.folder}/css/#{page}"
             else if type is 'script'
                 file = "#{dests.live.folder}/js/#{page}"
+            else if type is 'image'
+                file = "./images/#{page}"
 
-            multiform['wpTextbox1'] = fs.readFileSync(file, 'utf8')
+            if type isnt 'image'
+                multiform['wpTextbox1'] = fs.readFileSync(file, 'utf8')
+            else
+                multiform['wpUploadFile'] = fs.createReadStream(file)
+                multiform['wpDestFile'] = "#{teamName}_#{year}_#{page}"
 
-            cb(url, file, page, multiform, jar, tryLogout)
+            cb(url, file, page, type, multiform, jar, tryLogout)
+        else
+            handleRequestError(err, httpResponse)
+
+colourify = (file, url, multiform, type) ->
+    if type is 'image'
+        year = JSON.parse(fs.readFileSync(files.template)).year
+        return "Uploaded #{file} → http://#{year}.igem.org/File:#{multiform['wpDestFile']}".yellow
+    else if path.extname(file) is '.html' and url.indexOf('Template') > 0
+        return "Uploaded #{file} → #{url}".cyan
+    else if path.extname(file) is '.html'
+        return "Uploaded #{file} → #{url}".grey
+    else if path.extname(file) is '.css'
+        return "Uploaded #{file} → #{url}".magenta
+    else if path.extname(file) is '.js'
+        return "Uploaded #{file} → #{url}".blue
+    else
+        return "Uploaded #{file} → #{url}"
 
 # **postEdit**
-postEdit = (url, file, page, multiform, jar, tryLogout) ->
+postEdit = (url, file, page, type, multiform, jar, tryLogout) ->
+
+    if type isnt 'image'
+        postUrl = url + '?action=submit'
+    else
+        postUrl = url
+
     request {
-        url: url + '?action=submit'
-        method: 'POST'
-        formData: multiform
-        jar: jar
+        url      : postUrl
+        method   : 'POST'
+        formData : multiform
+        jar      : jar
     }, (err, httpResponse, body) ->
         if !err and httpResponse.statusCode is 302
             # Follow redirect to new page
@@ -375,7 +427,7 @@ postEdit = (url, file, page, multiform, jar, tryLogout) ->
                     else
                         fs.writeFileSync("responses/#{page}", body)
 
-                    gutil.log("Successfully uploaded #{file} → #{url}")
+                    gutil.log(colourify(file, url, multiform, type))
                     tryLogout()
                 else
                     handleRequestError(err, httpResponse)
@@ -391,6 +443,7 @@ gulp.task 'push', ->
         templateData = JSON.parse(fs.readFileSync(files.template))
         stylesheets  = fs.readdirSync(dests.live.css)
         scripts      = fs.readdirSync(dests.live.js)
+        images       = fs.readdirSync('images')
 
         num = 0
         tryLogout = ->
@@ -398,7 +451,8 @@ gulp.task 'push', ->
             total = Object.keys(templateData.links).length +
                 Object.keys(templateData.templates).length +
                 stylesheets.length +
-                scripts.length
+                scripts.length +
+                images.length
 
             if num is total
                 logout(jar)
@@ -411,6 +465,8 @@ gulp.task 'push', ->
             upload(stylesheet, 'stylesheet', jar, tryLogout)
         for script in scripts
             upload(script, 'script', jar, tryLogout)
+        for image in images
+            upload(image, 'image', jar, tryLogout)
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->
@@ -422,6 +478,7 @@ gulp.task 'serve', ['sass', 'build:dev'], ->
                 '/bower_components' : './bower_components'
                 '/js'               : dests.dev.js
                 '/preamble'         : './src/preamble'
+                '/images'           : './images'
 
     watch [globs.hbs, globs.js, globs.md, files.template], ->
         fillTemplates()

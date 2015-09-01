@@ -26,7 +26,8 @@
         link: this.link,
         cssInject: this.cssInject,
         jsInject: this.jsInject,
-        markdown: this.markdown
+        markdown: this.markdown,
+        image: this.image
       };
     }
 
@@ -84,7 +85,7 @@
         if (path.extname(stylesheet) === '.css') {
           if (mode === 'live' && stylesheet !== 'vendor.min.css') {
             content += "<link rel=\"stylesheet\" href=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/css/" + stylesheet + "?action=raw&ctype=text/css\" type=\"text/css\" />\n\t";
-          } else {
+          } else if (stylesheet !== 'vendor.min.css') {
             content += "<link rel=\"stylesheet\" href=\"styles/" + stylesheet + "\" type=\"text/css\" />\n\t";
           }
         }
@@ -94,6 +95,21 @@
         if (stylesheet === 'vendor.min.css') {
           content = ("<link rel=\"stylesheet\" href=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/css/" + stylesheet + "?action=raw&ctype=text/css\" type=\"text/css\" />\n\t") + content;
         }
+      }
+      return new hbs.SafeString(content);
+    };
+
+    Helpers.prototype.image = function(img, format, mode) {
+      var content, fmt;
+      if (mode === 'live') {
+        if (format === 'file') {
+          fmt = 'File';
+        } else if (format === 'media') {
+          fmt = 'Media';
+        }
+        content = "</html> [[" + fmt + ":" + templateData.teamName + "_" + templateData.year + "_" + img + "]] <html>";
+      } else {
+        content = "<img src=\"images/" + img + "\" />";
       }
       return new hbs.SafeString(content);
     };
