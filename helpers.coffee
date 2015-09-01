@@ -16,14 +16,15 @@ class Helpers
         templateData = tplateData
 
         return {
-            template   : @template
-            capitals   : @capitals
-            bodyInsert : @bodyInsert
-            link       : @link
-            cssInject  : @cssInject
-            jsInject   : @jsInject
-            markdown   : @markdown
-            image      : @image
+            template     : @template
+            capitals     : @capitals
+            bodyInsert   : @bodyInsert
+            link         : @link
+            cssInject    : @cssInject
+            jsInject     : @jsInject
+            markdown     : @markdown
+            markdownHere : @markdownHere
+            image        : @image
         }
 
     capitals: (str) ->
@@ -102,7 +103,7 @@ class Helpers
         if mode is 'live'
             if format is 'directlink'
                 imageStores = JSON.parse(fs.readFileSync('images.json'))
-                content = "<img src=\"#{imageStores[img]}\" />"
+                content = imageStores[img]
             else
                 if format is 'file'
                     fmt = 'File'
@@ -111,7 +112,10 @@ class Helpers
 
                 content = "</html> [[#{fmt}:#{templateData.teamName}_#{templateData.year}_#{img}]] <html>"
         else
-            content = "<img src=\"images/#{img}\" />"
+            if format isnt 'directlink'
+                content = "<img src=\"images/#{img}\" />"
+            else
+                content = "images/#{img}"
 
         return new hbs.SafeString(content)
 
@@ -139,6 +143,14 @@ class Helpers
             # Assume 'dev' mode if undefined
             # For some reason, get an extra call here with mode undefined when in dev mode
             return new hbs.SafeString(template(templateData))
+
+    markdownHere: (string, options) ->
+        marked.setOptions({
+            highlight: (code) ->
+                 return highlighter.highlightAuto(code).value
+        })
+
+        return new hbs.SafeString(marked(string))
 
     markdown: (file) ->
         marked.setOptions({
