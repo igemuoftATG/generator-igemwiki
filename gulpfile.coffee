@@ -431,7 +431,7 @@ postEdit = (url, file, page, type, multiform, jar, tryLogout, updateImageStores)
                                 if name is 'a'
                                     currentHref = attr.href
                             ontext: (text) ->
-                                if text is 'Full resolution'
+                                if text is 'Full resolution' or text is multiform['wpDestFile']
                                     finalHref = currentHref
                         }, {decodeEntites: true}
 
