@@ -288,7 +288,7 @@ logout = (jar) ->
         else
             handleRequestError(err, httpResponse)
 
-# Calls cb(multiform)
+# Calls cb(url, file, multiform, jar)
 prepareUploadForm = (link, jar, cb) ->
     templateData = JSON.parse(fs.readFileSync(files.template))
     year = templateData.year
@@ -297,14 +297,12 @@ prepareUploadForm = (link, jar, cb) ->
 
     page = templateData.links[link]
     if page is 'index'
-        url = BASE_URL + '?action=edit'
+        url = BASE_URL
     else
-        url = BASE_URL + '/' + page + '?action=edit'
-
-    gutil.log("./build-live/#{page}.html -> ", url)
+        url = BASE_URL + '/' + page
 
     request {
-        url : url,
+        url : url + '?action=edit'
         jar : jar
     }, (err, httpResponse, body) ->
         if !err and httpResponse.statusCode is 200
@@ -333,9 +331,37 @@ prepareUploadForm = (link, jar, cb) ->
             parser.write(body)
             parser.end();
 
-            multiform['wpTextbox1'] = fs.readFileSync("./build-live/#{page}.html", 'utf8')
+            file = "#{dests.live.folder}/#{page}.html"
+            multiform['wpTextbox1'] = fs.readFileSync(file, 'utf8')
 
-            cb(multiform)
+            gutil.log("#{file} -> ", url)
+
+            cb(url, file, multiform, jar)
+
+# **postEdit**
+postEdit = (url, file, multiform, jar) ->
+    request {
+        url: url + '?action=submit'
+        method: 'POST'
+        formData: multiform
+        jar: jar
+    }, (err, httpResponse, body) ->
+        if !err and httpResponse.statusCode is 302
+            # Follow redirect to new page
+            request {
+                url: httpResponse.headers.location
+                jar: jar
+            }, (err, httpResponse, body) ->
+                if !err and httpResponse.statusCode is 200
+                    gutil.log("Successfully uploaded #{file} -> #{url}")
+                    fs.writeFileSync("response/#{file}.html", body)
+                else
+                    handleRequestError(err, httpResponse)
+        else
+            handleRequestError(err, httpResponse)
+
+upload = (link, jar) ->
+    prepareUploadForm(link, jar, postEdit)
 
 # **push**
 gulp.task 'push', ->
