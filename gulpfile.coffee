@@ -289,7 +289,7 @@ logout = (jar) ->
             handleRequestError(err, httpResponse)
 
 # Calls cb(url, file, multiform, jar)
-prepareUploadForm = (link, jar, cb) ->
+prepareUploadForm = (link, jar, cb, tryLogout) ->
     templateData = JSON.parse(fs.readFileSync(files.template))
     year = templateData.year
     teamName = templateData.teamName
@@ -334,12 +334,10 @@ prepareUploadForm = (link, jar, cb) ->
             file = "#{dests.live.folder}/#{page}.html"
             multiform['wpTextbox1'] = fs.readFileSync(file, 'utf8')
 
-            gutil.log("#{file} -> ", url)
-
-            cb(url, file, multiform, jar)
+            cb(url, file, page, multiform, jar, tryLogout)
 
 # **postEdit**
-postEdit = (url, file, multiform, jar) ->
+postEdit = (url, file, page, multiform, jar, tryLogout) ->
     request {
         url: url + '?action=submit'
         method: 'POST'
@@ -353,81 +351,30 @@ postEdit = (url, file, multiform, jar) ->
                 jar: jar
             }, (err, httpResponse, body) ->
                 if !err and httpResponse.statusCode is 200
-                    gutil.log("Successfully uploaded #{file} -> #{url}")
-                    fs.writeFileSync("response/#{file}.html", body)
+                    fs.writeFileSync("responses/#{page}.html", body)
+                    gutil.log("Successfully uploaded #{file} → #{url}")
+                    tryLogout()
                 else
                     handleRequestError(err, httpResponse)
         else
             handleRequestError(err, httpResponse)
 
-upload = (link, jar) ->
-    prepareUploadForm(link, jar, postEdit)
+upload = (link, jar, tryLogout) ->
+    prepareUploadForm(link, jar, postEdit, tryLogout)
 
 # **push**
 gulp.task 'push', ->
     login (jar) ->
         templateData = JSON.parse(fs.readFileSync(files.template))
 
+        num = 0
+        tryLogout = ->
+            num += 1
+            if num is Object.keys(templateData.links).length
+                logout(jar)
+
         for link of templateData.links
-            prepareUploadForm link, jar, (multiform) ->
-                gutil.log('wheeee')
-                # gutil.log(multiform)
-
-        request {
-            url: 'http://2015.igem.org/Team:Toronto/Team?action=edit'
-            jar: jar
-        }, (err, httpResponse, body) ->
-            if !err and httpResponse.statusCode is 200
-                multiform = {
-                    wpSection     : ''
-                    wpStarttime   : ''
-                    wpEdittime    : ''
-                    wpScrolltop   : ''
-                    wpAutoSummary : ''
-                    oldid         : ''
-                    wpTextbox1    : ''
-                    wpSummary     : ''
-                    wpSave        : ''
-                    wpEditToken   : ''
-                }
-
-                parser = new htmlparser.Parser {
-                    onopentag: (name, attr) ->
-                        if attr.name? and multiform[attr.name]?
-                            if !attr.value
-                                multiform[attr.name] = ''
-                            else
-                                multiform[attr.name] = attr.value
-                }, {decodeEntites: true}
-
-                parser.write(body)
-                parser.end();
-
-                multiform['wpTextbox1'] = fs.readFileSync('build-live/Team.html', 'utf8')
-
-                request {
-                    url      : 'http://2015.igem.org/Team:Toronto/Team?action=submit'
-                    method   : 'POST'
-                    formData : multiform
-                    jar      : jar
-                }, (err, httpResponse, body) ->
-                    if !err and httpResponse.statusCode is 302
-                        # Follow redirect to new page
-                        request {
-                            url: httpResponse.headers.location
-                            jar: jar
-                        }, (err, httpResponse, body) ->
-                            if !err and httpResponse.statusCode is 200
-                                gutil.log('Successfully uploaded X')
-                                fs.writeFileSync('response.html', body)
-                            else
-                                handleRequestError(err, httpResponse)
-                    else
-                        handleRequestError(err, httpResponse)
-            else
-                handleRequestError(err, httpResponse)
-
-            logout(jar)
+            upload(link, jar, tryLogout)
 
 # **serve**
 gulp.task 'serve', ['sass', 'build:dev'], ->
