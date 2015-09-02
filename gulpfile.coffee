@@ -39,24 +39,25 @@ files =
     template : './src/template.json'
     helpers  : 'helpers'
 
-globs =
-    sass      : './src/styles/sass/*.scss'
-    md        : './src/markdown/**/*.md'
-    css       : './src/styles/**/*.css'
-    libCoffee : './src/lib/**/*.coffee'
-    libJS     : './src/lib/**/*.js'
-    js        : './src/**/*.js'
-    hbs       : './src/**/*.hbs'
-
 dests =
     dev:
         folder : './build-dev'
-        css    : './src/styles'
+        css    : './build-dev/css'
         js     : './build-dev/js'
     live:
         folder : './build-live'
         js     : './build-live/js'
         css    : './build-live/css'
+
+globs =
+    sass      : './src/sass/**/*.scss'
+    md        : './src/markdown/**/*.md'
+    css       : dests.dev.css
+    libCoffee : './src/lib/**/*.coffee'
+    libJS     : './src/lib/**/*.js'
+    js        : './src/**/*.js'
+    hbs       : './src/**/*.hbs'
+
 
 # **buildTemplateStruct**
 buildTemplateStruct = (templateData, mode) ->

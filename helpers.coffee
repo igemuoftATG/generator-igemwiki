@@ -71,7 +71,7 @@ class Helpers
         if mode is 'live'
             dir = './build-live/css'
         else
-            dir = './src/styles'
+            dir = './build-dev/css'
 
         styles = fs.readdirSync(dir)
 
