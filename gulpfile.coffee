@@ -23,6 +23,7 @@ phantom        = require 'phantomjs'
 readlineSync   = require 'readline-sync'
 request        = require 'request'
 combiner       = require 'stream-combiner2'
+streamEqual    = require 'stream-equal'
 source         = require 'vinyl-source-stream'
 browserSync    = require('browser-sync').create()
 wiredep        = require('wiredep').stream
@@ -36,8 +37,10 @@ paths =
     partials: './src/templates'
 
 files =
-    template : './src/template.json'
-    helpers  : 'helpers'
+    template     : './src/template.json'
+    helpers      : 'helpers'
+    images       : 'images.json'
+    imagesFolder : './images'
 
 dests =
     dev:
@@ -340,37 +343,72 @@ logout = (jar) ->
         else
             handleRequestError(err, httpResponse)
 
+checkIfImageExists = (link, updateImageStores, cb) ->
+    fs.readFile files.images, (err, data) ->
+        if err
+            gutil.log('No ' + 'images.json'.magenta + ' file')
+            cb(false)
+        else
+            images = JSON.parse(data)
+
+            fileStream = fs.createReadStream("images/#{link}")
+
+            streamEqual request(images[link]), fileStream, (err, equal) ->
+                if err?
+                    gutil.log(err)
+                else
+                    if equal
+                        imageStore = new Object()
+                        imageStore[link] = images[link]
+                        gutil.log("Skipping upload of ".yellow + "#{link}".magenta + " since live version is identical".yellow)
+                        updateImageStores(imageStore)
+                        cb(equal)
+                    else
+                        cb(equal)
+
 # Calls cb(url, file, multiform, jar)
 prepareUploadForm = (link, type, jar, cb, tryLogout, updateImageStores) ->
     templateData = JSON.parse(fs.readFileSync(files.template))
     year = templateData.year
     teamName = templateData.teamName
 
-    if type is 'page'
-        BASE_URL = "http://#{year}.igem.org/Team:#{teamName}"
-        page = templateData.links[link]
-    else if type is 'template'
-        BASE_URL = "http://#{year}.igem.org/Template:#{teamName}"
-        page = templateData.templates[link]
-    else if type is 'stylesheet'
-        BASE_URL = "http://#{year}.igem.org/Template:#{teamName}/css"
-        page = link
-    else if type is 'script'
-        BASE_URL = "http://#{year}.igem.org/Template:#{teamName}/js"
-        page = link
-    else if type is 'image'
-        BASE_URL = "http://#{year}.igem.org/Special:Upload"
-        page = link
-
-    if type is 'image' or (page is 'index' and type is 'page')
-        url = BASE_URL
-    else if type isnt 'image'
-        url = BASE_URL + '/' + page
-
-    if type isnt 'image'
-        editUrl = url + '?action=edit'
+    if type is 'image'
+        checkIfImageExists link, updateImageStores, (equal) ->
+            if equal
+                return;
+            else
+                BASE_URL = "http://#{year}.igem.org/Special:Upload"
+                page = link
+                url = BASE_URL
+                editUrl = url
+                visitEditPage(link, type, jar, cb, tryLogout, updateImageStores, editUrl, page, url)
     else
-        editUrl = url
+        if type is 'page'
+            BASE_URL = "http://#{year}.igem.org/Team:#{teamName}"
+            page = templateData.links[link]
+        else if type is 'template'
+            BASE_URL = "http://#{year}.igem.org/Template:#{teamName}"
+            page = templateData.templates[link]
+        else if type is 'stylesheet'
+            BASE_URL = "http://#{year}.igem.org/Template:#{teamName}/css"
+            page = link
+        else if type is 'script'
+            BASE_URL = "http://#{year}.igem.org/Template:#{teamName}/js"
+            page = link
+
+        if page is 'index' and type is 'page'
+            url = BASE_URL
+        else
+            url = BASE_URL + '/' + page
+
+        editUrl = url + '?action=edit'
+
+        visitEditPage(link, type, jar, cb, tryLogout, updateImageStores, editUrl, page, url)
+
+visitEditPage = (link, type, jar, cb, tryLogout, updateImageStores, editUrl, page, url) ->
+    templateData = JSON.parse(fs.readFileSync(files.template))
+    year = templateData.year
+    teamName = templateData.teamName
 
     request {
         url : editUrl
@@ -507,7 +545,8 @@ postEdit = (url, file, page, type, multiform, jar, tryLogout, updateImageStores)
             handleRequestError(err, httpResponse)
 
 upload = (link, type, jar, tryLogout, updateImageStores) ->
-    prepareUploadForm(link, type, jar, postEdit, tryLogout, updateImageStores)
+    if link isnt '.DS_Store'
+        prepareUploadForm(link, type, jar, postEdit, tryLogout, updateImageStores)
 
 # **push**
 gulp.task 'push', ->
@@ -530,12 +569,17 @@ gulp.task 'push', ->
                 logout(jar)
 
         imageStores = new Object()
-        imageStoresFile = 'images.json'
+        imageStoresFile = files.images
         updateImageStores = (imageStore) ->
             key = Object.keys(imageStore)[0]
             imageStores[key] = imageStore[key]
 
-            if Object.keys(imageStores).length is images.length
+            if '.DS_Store' in fs.readdirSync(files.imagesFolder)
+                len = images.length - 1
+            else
+                len = images.length
+
+            if Object.keys(imageStores).length is len
                 fs.writeFileSync(imageStoresFile, JSON.stringify(imageStores))
                 gutil.log('Full resolution links of images stored in'.green, "#{imageStoresFile}".magenta)
 

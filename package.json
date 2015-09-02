@@ -46,6 +46,7 @@
     "readline-sync": "^1.2.20",
     "request": "^2.61.0",
     "stream-combiner2": "^1.0.2",
+    "stream-equal": "^0.1.5",
     "tar.gz": "^1.0.0",
     "tough-cookie": "^2.0.0",
     "vinyl-buffer": "^1.0.0",
