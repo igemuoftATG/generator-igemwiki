@@ -1,18 +1,15 @@
-<h2>Experiments &amp; Protocols</h2>
+## Experiments & Protocols
 
-<p>Describe the experiments, research and protocols you used in your iGEM project.</p>
+Describe the experiments, research and protocols you used in your iGEM project.
 
-<h5>What should this page contain?</h5>
-<ul>
-	<li> Protocols </li>
-	<li> Experiments </li>
-	<li>Documentation of the development of your project </li>
-</ul>
+##### What should this page contain?
 
+* Protocols
+* Experiments
+* Documentation of the development of your project
 
+#### Inspiration
 
-<h4>Inspiration</h4>
-<ul>
-	<li><a href="http://2014.igem.org/Team:Colombia/Protocols">2014 Colombia </a></li><li><a href="http://2014.igem.org/Team:Imperial/Protocols">2014 Imperial </a></li>
-<li><a href="http://2014.igem.org/Team:Caltech/Project/Experiments">2014 Caltech </a></li>
-</ul>
+* [2014 Colombia](http://2014.igem.org/Team:Colombia/Protocols)
+* [2014 Imperial](http://2014.igem.org/Team:Imperial/Protocols)
+* [2014 Caltech](http://2014.igem.org/Team:Caltech/Project/Experiments)

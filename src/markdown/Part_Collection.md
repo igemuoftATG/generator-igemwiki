@@ -1,11 +1,13 @@
-<h2> Part Collection</h2>
+## Part Collection
 
+#### Note
 
-<div class="highlightBox">
-	<h4>Note</h4>
-	<p>In order to be considered for the <a href="http://2015.igem.org/Judging/Awards#SpecialPrizes">Best Part Collection award</a>, you must fill out this page.</p>
-</div>
+In order to be considered for the [Best Part Collection
+award](http://2015.igem.org/Judging/Awards#SpecialPrizes), you must fill out
+this page.
 
-
-<p>Did your team make a lot of great parts? Is there a theme that ties all your parts together? Do you have more than 10 parts in this collection? Did you make a CRISPR collection, a MoClo collection, or a collection of awesome pigment parts? Describe your
-	parts collection on this page, so the judges can evaluate you for the Best Part Collection award.</p>
+Did your team make a lot of great parts? Is there a theme that ties all your
+parts together? Do you have more than 10 parts in this collection? Did you make
+a CRISPR collection, a MoClo collection, or a collection of awesome pigment
+parts? Describe your parts collection on this page, so the judges can evaluate
+you for the Best Part Collection award.

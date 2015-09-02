@@ -1,31 +1,26 @@
-<h2> Collaborations</h2>
+## Collaborations
 
-<p>
-	Sharing and collaboration are core values of iGEM. We encourage you to reach out and work with other teams on difficult problems that you can more easily solve together.
-</p>
+Sharing and collaboration are core values of iGEM. We encourage you to reach out
+and work with other teams on difficult problems that you can more easily solve
+together.
 
-<div class="highlightBox">
+#### Which other teams can we work with?
 
-	<h4> Which other teams can we work with? </h4>
-	<p>
-		You can work with any other team in the competition, including software, hardware, high school and other tracks. You can also work with non-iGEM research groups, but they do not count towards the <a hreef="http://2015.igem.org/Judging/Awards#Medals">iGEM team collaboration gold medal criterion</a>.
-	</p>
+You can work with any other team in the competition, including software,
+hardware, high school and other tracks. You can also work with non-iGEM research
+groups, but they do not count towards the [iGEM team collaboration gold medal
+criterion](http://2015.igem.org/Judging/Awards#Medals).
 
-	<p>
-		In order to meet the gold medal criteria on helping another team, you must complete this page and detail the nature of your collaboration with another iGEM team.
-	</p>
-</div>
+In order to meet the gold medal criteria on helping another team, you must
+complete this page and detail the nature of your collaboration with another iGEM
+team.
 
-<p>
-	Here are some suggestions for projects you could work on with other teams:
-</p>
+Here are some suggestions for projects you could work on with other teams:
 
-<ul>
-	<li> Improve the function of another team's BioBrick Part or Device</li>
-	<li> Characterize another team's part </li>
-	<li> Debug a construct </li>
-	<li> Model or simulating another team's system </li>
-	<li> Test another team's software</li>
-	<li> Help build and test another team's hardware project</li>
-	<li> Mentor a high-school team</li>
-</ul>
+* Improve the function of another team's BioBrick Part or Device
+* Characterize another team's part
+* Debug a construct
+* Model or simulating another team's system
+* Test another team's software
+* Help build and test another team's hardware project
+* Mentor a high-school team

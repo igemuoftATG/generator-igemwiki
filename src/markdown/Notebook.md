@@ -1,22 +1,19 @@
-<h2>Notebook</h2>
+## Notebook
 
-<p> Document the dates you worked on your project.</p>
+Document the dates you worked on your project.
 
-<h5>What should this page have?</h5>
-<ul>
-<li>Chronological notes of what your team is doing.</li>
-<li> Brief descriptions of daily important events.</li>
-<li>Pictures of your progress. </li>
-<li>Mention who participated in what task.</li>
-</ul>
+##### What should this page have?
 
+* Chronological notes of what your team is doing.
+* Brief descriptions of daily important events.
+* Pictures of your progress.
+* Mention who participated in what task.
 
-<h4>Inspiration</h4>
-<p>You can see what others teams have done to organize their notes:</p>
+#### Inspiration
 
-<ul>
-<li><a href="http://2014.igem.org/Team:ATOMS-Turkiye/Notebook">2014 ATOMS-Turkiye</a></li>
-<li><a href="http://2014.igem.org/Team:Tec-Monterrey/ITESM14_project.html#tab_notebook">2014 Tec Monterrey</a></li>
-<li><a href="http://2014.igem.org/Team:Kyoto/Notebook/Magnetosome_Formation#title">2014 Kyoto</a></li>
-<li><a href="http://2014.igem.org/Team:Cornell/notebook">2014 Cornell</a></li>
-</ul>
+You can see what others teams have done to organize their notes:
+
+* [2014 ATOMS-Turkiye](http://2014.igem.org/Team:ATOMS-Turkiye/Notebook)
+* [2014 Tec Monterrey](http://2014.igem.org/Team:Tec-Monterrey/ITESM14_project.html#tab_notebook)
+* [2014 Kyoto](http://2014.igem.org/Team:Kyoto/Notebook/Magnetosome_Formation#title)
+* [2014 Cornell](http://2014.igem.org/Team:Cornell/notebook)

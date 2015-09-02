@@ -1,33 +1,26 @@
-<h2> Project Results</h2>
+## Project Results
 
-<p>Here you can describe the results of your project and your future plans. </p>
+Here you can describe the results of your project and your future plans.
 
-<h5>What should this page contain?</h5>
-<ul>
-	<li> Clearly and objectively describe the results of your work.</li>
-	<li> Future plans for the project </li>
-	<li> Considerations for replicating the experiments </li>
-</ul>
+##### What should this page contain?
 
+* Clearly and objectively describe the results of your work.
+* Future plans for the project
+* Considerations for replicating the experiments
 
+#### Project Achievements
 
+You can also include a list of bullet points (and links) of the successes and
+failures you have had over your summer. It is a quick reference page for the
+judges to see what you achieved during your summer.
 
+* A list of linked bullet points of the successful results during your project
+* A list of linked bullet points of the unsuccessful results during your project. This is about being scientifically honest. If you worked on an area for a long time with no success, tell us so we know where you put your effort.
 
-<h4> Project Achievements </h4>
+#### Inspiration
 
-<p>You can also include a list of bullet points (and links) of the successes and failures you have had over your summer. It is a quick reference page for the judges to see what you achieved during your summer.</p>
+See how other teams presented their results.
 
-<ul>
-	<li>A list of linked bullet points of the successful results during your project</li>
-	<li>A list of linked bullet points of the unsuccessful results during your project. This is about being scientifically honest. If you worked on an area for a long time with no success, tell us so we know where you put your effort.</li>
-</ul>
-
-
-
-<h4>Inspiration</h4>
-<p>See how other teams presented their results.</p>
-<ul>
-	<li><a href="http://2014.igem.org/Team:TU_Darmstadt/Results/Pathway">2014 TU Darmstadt </a></li>
-	<li><a href="http://2014.igem.org/Team:Imperial/Results">2014 Imperial </a></li>
-	<li><a href="http://2014.igem.org/Team:Paris_Bettencourt/Results">2014 Paris Bettencourt </a></li>
-</ul>
+* [2014 TU Darmstadt](http://2014.igem.org/Team:TU_Darmstadt/Results/Pathway)
+* [2014 Imperial](http://2014.igem.org/Team:Imperial/Results)
+* [2014 Paris Bettencourt](http://2014.igem.org/Team:Paris_Bettencourt/Results)
