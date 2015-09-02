@@ -28,6 +28,25 @@
         "preamble" : "preamble"
     },
     "markdown": {
-        "hello": "hello"
+        "hello": "hello",
+        "home": "home",
+        "attributions"     : "Attributions",
+        "basic_part"       : "Basic_Part",
+        "collaborations"   : "Collaborations",
+        "composite_part"   : "Composite_Part",
+        "description"      : "Description",
+        "design"           : "Design",
+        "entrepreneurship" : "Entrepreneurship",
+        "experiments"      : "Experiments",
+        "measurement"      : "Measurement",
+        "modeling"         : "Modeling",
+        "notebook"         : "Notebook",
+        "part_collection"  : "Part_Collection",
+        "parts"            : "Parts",
+        "practices"        : "Practices",
+        "results"          : "Results",
+        "safety"           : "Safety",
+        "software"         : "Software",
+        "team"             : "Team"
     }
 }

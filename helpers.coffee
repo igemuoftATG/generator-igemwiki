@@ -148,7 +148,6 @@ class Helpers
                  return highlighter.highlightAuto(code).value
         })
 
-        # templateData = JSON.parse(fs.readFileSync('./src/template.json'))
         handlebarsedMarkdown = hbs.compile(string)(templateData)
         markedHtml = marked(handlebarsedMarkdown)
 
@@ -161,8 +160,6 @@ class Helpers
         })
 
         markdownFile = fs.readFileSync("#{__dirname}/src/markdown/#{file}.md").toString()
-        # templateData = JSON.parse(fs.readFileSync('./src/template.json'))
-
         handlebarsedMarkdown = hbs.compile(markdownFile)(templateData)
 
         markedHtml = marked(handlebarsedMarkdown)
