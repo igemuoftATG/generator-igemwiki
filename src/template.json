@@ -34,8 +34,8 @@
         "_parts": {
             "parts"           : "parts",
             "basic_part"      : "basic parts",
-            "composite_part"  : "composite_parts",
-            "part_collection" : "part_collection"
+            "composite_part"  : "composite parts",
+            "part_collection" : "part collection"
         },
         "notebook"         : "notebook",
         "attributions"     : "attributions",

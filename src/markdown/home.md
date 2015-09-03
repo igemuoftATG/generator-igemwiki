@@ -57,7 +57,7 @@ here are a few tips to help you get started:
 You can also view other team wikis for inspiration! Here are some examples:
 
 * [2014 SDU Denmark](http://2014.igem.org/Team:SDU-Denmark/)
-* [2014 Aalto-Helsinki<](http://2014.igem.org/Team:Aalto-Helsinki)
+* [2014 Aalto-Helsinki](http://2014.igem.org/Team:Aalto-Helsinki)
 * [2014 LMU-Munich](http://2014.igem.org/Team:LMU-Munich)
 * [2014 Michigan](http://2014.igem.org/Team:Michigan)
 * [2014 ITESM-Guadalajara](http://2014.igem.org/Team:ITESM-Guadalajara)
