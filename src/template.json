@@ -22,6 +22,31 @@
         "software"         : "Software",
         "team"             : "Team"
     },
+    "navigation": {
+        "index" : "home",
+        "team" : "team",
+        "project": {
+            "description" : "description",
+            "experiments" : "experiments",
+            "results"     : "results",
+            "design"      : "design"
+        },
+        "parts": {
+            "parts"           : "parts",
+            "basic_part"      : "basic parts",
+            "composite_part"  : "composite_parts",
+            "part_collection" : "part_collection"
+        },
+        "notebook"         : "notebook",
+        "attributions"     : "attributions",
+        "collaborations"   : "collaborations",
+        "practices"        : "human practices",
+        "safety"           : "safety",
+        "modeling"         : "modeling",
+        "measurement"      : "measurement",
+        "software"         : "software",
+        "entrepreneurship" : "entrepreneurship"
+    },
     "templates": {
         "head"   : "head",
         "footer" : "footer",

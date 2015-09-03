@@ -19,12 +19,13 @@ class Helpers
             template     : @template
             capitals     : @capitals
             bodyInsert   : @bodyInsert
-            link         : @link
+            link         : link
             cssInject    : @cssInject
             jsInject     : @jsInject
             markdown     : @markdown
             markdownHere : @markdownHere
             image        : @image
+            navigation   : @navigationWrapper
         }
 
     capitals: (str) ->
@@ -117,7 +118,19 @@ class Helpers
 
         return new hbs.SafeString(content)
 
-    link: (linkName, mode) ->
+    # link: (linkName, mode) ->
+    #     if mode is 'live'
+    #         if linkName is 'index'
+    #             return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}"
+    #         else
+    #             return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{linkName}"
+    #     else
+    #         if linkName is 'index'
+    #             return 'index.html'
+    #         else
+    #             return "#{linkName}.html"
+    #
+    link = (linkName, mode) ->
         if mode is 'live'
             if linkName is 'index'
                 return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}"
@@ -128,6 +141,26 @@ class Helpers
                 return 'index.html'
             else
                 return "#{linkName}.html"
+
+    navigation = (field, mode) ->
+        content = "<ul>\n"
+
+        for item, value of field
+            if typeof(value) is 'object'
+                # content += navigation(value, mode)
+                content += "<li><a href=\"#\">#{item}</a>\n"
+                # content += "#{value}"
+                content += navigation(value, mode)
+                content += "</li>"
+            else
+                content += "<li><a href=\"#{link(item, mode)}\">#{value}</a></li>\n"
+
+        content += "</ul>\n"
+
+        return content
+
+    navigationWrapper: (mode) ->
+         return new hbs.SafeString(navigation(templateData.navigation, mode))
 
     template: (templateName, mode) ->
         template = hbs.compile(fs.readFileSync("#{__dirname}/src/templates/#{templateName}.hbs", 'utf8'))
