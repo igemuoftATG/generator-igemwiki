@@ -22,11 +22,11 @@ mainBowerFiles = require 'main-bower-files'
 phantom        = require 'phantomjs'
 readlineSync   = require 'readline-sync'
 request        = require 'request'
+runSequence    = require 'run-sequence'
 combiner       = require 'stream-combiner2'
 streamEqual    = require 'stream-equal'
 source         = require 'vinyl-source-stream'
 browserSync    = require('browser-sync').create()
-wiredep        = require('wiredep').stream
 
 # NodeJS internal modules
 cp   = require 'child_process'
@@ -44,16 +44,16 @@ files =
 
 dests =
     dev:
-        folder : './build-dev'
-        css    : './build-dev/css'
-        js     : './build-dev/js'
+        folder     : './build-dev'
+        css        : './build-dev/css'
+        js         : './build-dev/js'
     live:
         folder : './build-live'
         js     : './build-live/js'
         css    : './build-live/css'
 
 globs =
-    html      : "#{dests.dev.folder}/**/*.html"
+    html      : "#{dests.dev.tempFolder}/**/*.html"
     sass      : './src/sass/**/*.scss'
     md        : './src/markdown/**/*.md'
     css       : dests.dev.css
@@ -110,7 +110,6 @@ compileAllHbs = (templateData, dest) ->
         ),
         gulp.dest(dest)
     ).on 'end', ->
-        # Reload browser on finish
         browserSync.reload()
 
 # **coffeescript:helpers**
@@ -206,18 +205,41 @@ gulp.task 'uglify:js', ['bower'], ->
 gulp.task 'minifyAndUglify', ['minify:css', 'uglify:js']
 
 
-# **wiredep**
-gulp.task 'wiredep', ['handlebars:dev'], ->
-    return gulp
-        .src(globs.html)
-        .pipe(wiredep())
-        .pipe(gulp.dest(dests.dev.folder))
-
 # **build:dev**
-gulp.task 'build:dev', ['wiredep', 'browserify']
+gulp.task 'build:dev', ['handlebars:dev', 'browserify']
 
 # **build:live**
 gulp.task 'build:live', ['handlebars:live', 'minifyAndUglify']
+
+
+# **serve**
+gulp.task 'serve', ['sass', 'build:dev'], ->
+# gulp.task 'serve', ['sass'], ->
+    browserSync.init
+        server:
+            baseDir: dests.dev.folder
+            routes:
+                '/styles'           : dests.dev.css
+                '/bower_components' : './bower_components'
+                '/js'               : dests.dev.js
+                '/preamble'         : './src/preamble'
+                '/images'           : './images'
+
+    watch [globs.hbs, globs.js, globs.md, files.template], ->
+        gulp.start('build:dev')
+
+    watch globs.sass, ->
+        gulp.start('sass')
+
+    watch [globs.libCoffee, globs.libJS], ->
+        gulp.start('browserify')
+
+    watch "#{files.helpers}.coffee", ->
+        gulp.start('coffeescript:helpers')
+
+# What happens when you run `gulp`
+gulp.task "default", ['serve']
+
 
 # **phantom**
 gulp.task 'phantom', ->
@@ -595,31 +617,3 @@ gulp.task 'push', ->
             upload(script, 'script', jar, tryLogout)
         for image in images
             upload(image, 'image', jar, tryLogout, updateImageStores)
-
-# **serve**
-gulp.task 'serve', ['sass', 'build:dev'], ->
-    browserSync.init
-        server:
-            baseDir: dests.dev.folder
-            routes:
-                '/styles'           : dests.dev.css
-                '/bower_components' : './bower_components'
-                '/js'               : dests.dev.js
-                '/preamble'         : './src/preamble'
-                '/images'           : './images'
-
-    watch [globs.hbs, globs.js, globs.md, files.template], ->
-        fillTemplates()
-        gulp.start('build:dev')
-
-    watch globs.sass, ->
-        gulp.start('sass')
-
-    watch [globs.libCoffee, globs.libJS], ->
-        gulp.start('browserify')
-
-    watch "#{files.helpers}.coffee", ->
-        gulp.start('coffeescript:helpers')
-
-# What happens when you run `gulp`
-gulp.task "default", ['serve']

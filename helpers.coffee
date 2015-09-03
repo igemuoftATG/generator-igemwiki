@@ -6,6 +6,7 @@ path = require 'path'
 gutil       = require 'gulp-util'
 marked      = require 'marked'
 highlighter = require 'highlight.js'
+wiredep     = require('wiredep')()
 
 hbs = new Object()
 templateData = new Object()
@@ -50,7 +51,13 @@ class Helpers
         scripts = fs.readdirSync(dir)
 
         if mode isnt 'live'
-            content += "<!-- bower:js -->\n\t<!-- endbower -->\n\t"
+            content += "<!-- bower:js -->\n\t"
+            for script in wiredep.js
+                script = script.slice(script.indexOf('bower_components'))
+
+                content += "<script src=\"#{script}\"></script>\n\t"
+            content += "<!-- endbower -->\n\t"
+
 
         for script in scripts
             if path.extname(script) is '.js'
@@ -77,7 +84,13 @@ class Helpers
         styles = fs.readdirSync(dir)
 
         if mode isnt 'live'
-            content += "<!-- bower:css -->\n\t<!-- endbower -->\n\t"
+            content += "<!-- bower:css -->\n\t"
+            for stylesheet in wiredep.css
+
+                stylesheet = stylesheet.slice(stylesheet.indexOf('bower_components'))
+
+                content += "<link rel=\"stylesheet\" href=\"#{stylesheet}\" type=\"text/css\" />\n\t"
+            content += "<!-- endbower -->\n\t"
 
         for stylesheet in styles
             if path.extname(stylesheet) is '.css'

@@ -1,5 +1,5 @@
 (function() {
-  var Helpers, fs, gutil, hbs, highlighter, marked, path, templateData;
+  var Helpers, fs, gutil, hbs, highlighter, marked, path, templateData, wiredep;
 
   fs = require('fs');
 
@@ -10,6 +10,8 @@
   marked = require('marked');
 
   highlighter = require('highlight.js');
+
+  wiredep = require('wiredep')();
 
   hbs = new Object();
 
@@ -50,7 +52,7 @@
     };
 
     Helpers.prototype.jsInject = function(mode) {
-      var content, dir, i, j, len, len1, script, scripts;
+      var content, dir, i, j, k, len, len1, len2, ref, script, scripts;
       content = new String();
       if (mode === 'live') {
         dir = './build-live/js';
@@ -59,10 +61,17 @@
       }
       scripts = fs.readdirSync(dir);
       if (mode !== 'live') {
-        content += "<!-- bower:js -->\n\t<!-- endbower -->\n\t";
+        content += "<!-- bower:js -->\n\t";
+        ref = wiredep.js;
+        for (i = 0, len = ref.length; i < len; i++) {
+          script = ref[i];
+          script = script.slice(script.indexOf('bower_components'));
+          content += "<script src=\"" + script + "\"></script>\n\t";
+        }
+        content += "<!-- endbower -->\n\t";
       }
-      for (i = 0, len = scripts.length; i < len; i++) {
-        script = scripts[i];
+      for (j = 0, len1 = scripts.length; j < len1; j++) {
+        script = scripts[j];
         if (path.extname(script) === '.js') {
           if (mode === 'live' && script !== 'vendor.min.js') {
             content += "<script src=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/js/" + script + "?action=raw&type=text/js\"></script>\n\t";
@@ -73,8 +82,8 @@
           }
         }
       }
-      for (j = 0, len1 = scripts.length; j < len1; j++) {
-        script = scripts[j];
+      for (k = 0, len2 = scripts.length; k < len2; k++) {
+        script = scripts[k];
         if (script === 'vendor.min.js') {
           content = ("<script src=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/js/" + script + "?action=raw&type=text/js\"></script>\n\t") + content;
         }
@@ -83,7 +92,7 @@
     };
 
     Helpers.prototype.cssInject = function(mode) {
-      var content, dir, i, j, len, len1, styles, stylesheet;
+      var content, dir, i, j, k, len, len1, len2, ref, styles, stylesheet;
       content = new String();
       if (mode === 'live') {
         dir = './build-live/css';
@@ -92,10 +101,17 @@
       }
       styles = fs.readdirSync(dir);
       if (mode !== 'live') {
-        content += "<!-- bower:css -->\n\t<!-- endbower -->\n\t";
+        content += "<!-- bower:css -->\n\t";
+        ref = wiredep.css;
+        for (i = 0, len = ref.length; i < len; i++) {
+          stylesheet = ref[i];
+          stylesheet = stylesheet.slice(stylesheet.indexOf('bower_components'));
+          content += "<link rel=\"stylesheet\" href=\"" + stylesheet + "\" type=\"text/css\" />\n\t";
+        }
+        content += "<!-- endbower -->\n\t";
       }
-      for (i = 0, len = styles.length; i < len; i++) {
-        stylesheet = styles[i];
+      for (j = 0, len1 = styles.length; j < len1; j++) {
+        stylesheet = styles[j];
         if (path.extname(stylesheet) === '.css') {
           if (mode === 'live' && stylesheet !== 'vendor.min.css') {
             content += "<link rel=\"stylesheet\" href=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/css/" + stylesheet + "?action=raw&ctype=text/css\" type=\"text/css\" />\n\t";
@@ -104,8 +120,8 @@
           }
         }
       }
-      for (j = 0, len1 = styles.length; j < len1; j++) {
-        stylesheet = styles[j];
+      for (k = 0, len2 = styles.length; k < len2; k++) {
+        stylesheet = styles[k];
         if (stylesheet === 'vendor.min.css') {
           content = ("<link rel=\"stylesheet\" href=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/css/" + stylesheet + "?action=raw&ctype=text/css\" type=\"text/css\" />\n\t") + content;
         }
