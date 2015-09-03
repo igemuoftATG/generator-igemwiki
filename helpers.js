@@ -52,7 +52,7 @@
     };
 
     Helpers.prototype.jsInject = function(mode) {
-      var content, dir, i, j, k, len, len1, len2, ref, script, scripts;
+      var content, dir, j, k, l, len, len1, len2, ref, script, scripts;
       content = new String();
       if (mode === 'live') {
         dir = './build-live/js';
@@ -63,15 +63,15 @@
       if (mode !== 'live') {
         content += "<!-- bower:js -->\n\t";
         ref = wiredep.js;
-        for (i = 0, len = ref.length; i < len; i++) {
-          script = ref[i];
+        for (j = 0, len = ref.length; j < len; j++) {
+          script = ref[j];
           script = script.slice(script.indexOf('bower_components'));
           content += "<script src=\"" + script + "\"></script>\n\t";
         }
         content += "<!-- endbower -->\n\t";
       }
-      for (j = 0, len1 = scripts.length; j < len1; j++) {
-        script = scripts[j];
+      for (k = 0, len1 = scripts.length; k < len1; k++) {
+        script = scripts[k];
         if (path.extname(script) === '.js') {
           if (mode === 'live' && script !== 'vendor.min.js') {
             content += "<script src=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/js/" + script + "?action=raw&type=text/js\"></script>\n\t";
@@ -82,8 +82,8 @@
           }
         }
       }
-      for (k = 0, len2 = scripts.length; k < len2; k++) {
-        script = scripts[k];
+      for (l = 0, len2 = scripts.length; l < len2; l++) {
+        script = scripts[l];
         if (script === 'vendor.min.js') {
           content = ("<script src=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/js/" + script + "?action=raw&type=text/js\"></script>\n\t") + content;
         }
@@ -92,7 +92,7 @@
     };
 
     Helpers.prototype.cssInject = function(mode) {
-      var content, dir, i, j, k, len, len1, len2, ref, styles, stylesheet;
+      var content, dir, j, k, l, len, len1, len2, ref, styles, stylesheet;
       content = new String();
       if (mode === 'live') {
         dir = './build-live/css';
@@ -103,15 +103,15 @@
       if (mode !== 'live') {
         content += "<!-- bower:css -->\n\t";
         ref = wiredep.css;
-        for (i = 0, len = ref.length; i < len; i++) {
-          stylesheet = ref[i];
+        for (j = 0, len = ref.length; j < len; j++) {
+          stylesheet = ref[j];
           stylesheet = stylesheet.slice(stylesheet.indexOf('bower_components'));
           content += "<link rel=\"stylesheet\" href=\"" + stylesheet + "\" type=\"text/css\" />\n\t";
         }
         content += "<!-- endbower -->\n\t";
       }
-      for (j = 0, len1 = styles.length; j < len1; j++) {
-        stylesheet = styles[j];
+      for (k = 0, len1 = styles.length; k < len1; k++) {
+        stylesheet = styles[k];
         if (path.extname(stylesheet) === '.css') {
           if (mode === 'live' && stylesheet !== 'vendor.min.css') {
             content += "<link rel=\"stylesheet\" href=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/css/" + stylesheet + "?action=raw&ctype=text/css\" type=\"text/css\" />\n\t";
@@ -120,8 +120,8 @@
           }
         }
       }
-      for (k = 0, len2 = styles.length; k < len2; k++) {
-        stylesheet = styles[k];
+      for (l = 0, len2 = styles.length; l < len2; l++) {
+        stylesheet = styles[l];
         if (stylesheet === 'vendor.min.css') {
           content = ("<link rel=\"stylesheet\" href=\"http://" + templateData.year + ".igem.org/Template:" + templateData.teamName + "/css/" + stylesheet + "?action=raw&ctype=text/css\" type=\"text/css\" />\n\t") + content;
         }
@@ -169,25 +169,54 @@
       }
     };
 
-    navigation = function(field, mode) {
-      var content, item, value;
+    navigation = function(field, mode, active1, active2) {
+      var active, actives, arg, content, i, isActive, item, j, k, l, len, len1, newItem, ref, value;
       content = "<ul>\n";
+      actives = new Array();
+      for (i = j = 0, len = arguments.length; j < len; i = ++j) {
+        arg = arguments[i];
+        if (i >= 2) {
+          actives.push(arg);
+        }
+      }
       for (item in field) {
         value = field[item];
+        isActive = false;
+        for (k = 0, len1 = actives.length; k < len1; k++) {
+          active = actives[k];
+          if (item === active) {
+            isActive = true;
+          }
+        }
+        if (item[0] === '_') {
+          newItem = '';
+          for (i = l = 1, ref = item.length - 1; 1 <= ref ? l <= ref : l >= ref; i = 1 <= ref ? ++l : --l) {
+            newItem += item[i];
+          }
+          item = newItem;
+        }
         if (typeof value === 'object') {
-          content += "<li><a href=\"#\">" + item + "</a>\n";
-          content += navigation(value, mode);
+          if (isActive) {
+            content += "<li><a class=\"active\" href=\"#\">" + item + "</a>\n";
+          } else {
+            content += "<li><a href=\"#\">" + item + "</a>\n";
+          }
+          content += navigation(value, mode, active1, active2);
           content += "</li>";
         } else {
-          content += "<li><a href=\"" + (link(item, mode)) + "\">" + value + "</a></li>\n";
+          if (isActive) {
+            content += "<li><a class=\"active\" href=\"" + (link(item, mode)) + "\">" + value + "</a></li>\n";
+          } else {
+            content += "<li><a class=\"" + item + "\" href=\"" + (link(item, mode)) + "\">" + value + "</a></li>\n";
+          }
         }
       }
       content += "</ul>\n";
       return content;
     };
 
-    Helpers.prototype.navigationWrapper = function(mode) {
-      return new hbs.SafeString(navigation(templateData.navigation, mode));
+    Helpers.prototype.navigationWrapper = function(mode, active1, active2) {
+      return new hbs.SafeString(navigation(templateData.navigation, mode, active1, active2));
     };
 
     Helpers.prototype.template = function(templateName, mode) {

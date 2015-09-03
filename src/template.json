@@ -31,7 +31,7 @@
             "results"     : "results",
             "design"      : "design"
         },
-        "parts": {
+        "_parts": {
             "parts"           : "parts",
             "basic_part"      : "basic parts",
             "composite_part"  : "composite_parts",

@@ -53,7 +53,6 @@ dests =
         css    : './build-live/css'
 
 globs =
-    html      : "#{dests.dev.tempFolder}/**/*.html"
     sass      : './src/sass/**/*.scss'
     md        : './src/markdown/**/*.md'
     css       : dests.dev.css

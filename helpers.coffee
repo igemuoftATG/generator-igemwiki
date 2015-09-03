@@ -155,25 +155,46 @@ class Helpers
             else
                 return "#{linkName}.html"
 
-    navigation = (field, mode) ->
+    navigation = (field, mode, active1, active2) ->
         content = "<ul>\n"
 
+        actives = new Array()
+        for arg,i in arguments
+            if i >= 2
+                actives.push(arg)
+
         for item, value of field
+            isActive = false
+
+            for active in actives
+                if item is active
+                    isActive = true
+
+            if item[0] is '_'
+                newItem = ''
+                for i in [1..item.length-1]
+                    newItem += item[i]
+                item = newItem
+
             if typeof(value) is 'object'
-                # content += navigation(value, mode)
-                content += "<li><a href=\"#\">#{item}</a>\n"
-                # content += "#{value}"
-                content += navigation(value, mode)
+                if isActive
+                    content += "<li><a class=\"active\" href=\"#\">#{item}</a>\n"
+                else
+                    content += "<li><a href=\"#\">#{item}</a>\n"
+                content += navigation(value, mode, active1, active2)
                 content += "</li>"
             else
-                content += "<li><a href=\"#{link(item, mode)}\">#{value}</a></li>\n"
+                if isActive
+                    content += "<li><a class=\"active\" href=\"#{link(item, mode)}\">#{value}</a></li>\n"
+                else
+                    content += "<li><a class=\"#{item}\" href=\"#{link(item, mode)}\">#{value}</a></li>\n"
 
         content += "</ul>\n"
 
         return content
 
-    navigationWrapper: (mode) ->
-         return new hbs.SafeString(navigation(templateData.navigation, mode))
+    navigationWrapper: (mode, active1, active2) ->
+         return new hbs.SafeString(navigation(templateData.navigation, mode, active1, active2))
 
     template: (templateName, mode) ->
         template = hbs.compile(fs.readFileSync("#{__dirname}/src/templates/#{templateName}.hbs", 'utf8'))
