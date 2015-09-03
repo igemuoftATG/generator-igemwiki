@@ -131,7 +131,7 @@ gulp.task 'sass', ->
     return gulp
         .src(globs.sass)
         .pipe(sass({
-            includePaths: ['./bower_components/compass-mixins/lib']
+            includePaths: ['./bower_components/compass-mixins/lib', './bower_components/normalize-libsass/']
         }).on('error', sass.logError))
         .pipe(gulp.dest(dests.dev.css))
         .pipe(browserSync.stream())

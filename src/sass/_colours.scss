@@ -1,6 +1,10 @@
 // see: http://ui.lumapps.com/css/colors
 
-$header-bg: $teal-500;
-$sidebar-bg: $cyan-500;
-$sidebar-controls-hover: $deep-purple-500;
-$nav-col: $grey-400;
+// Scrollbar
+$scrollbarColour: $teal-500;
+$scrollbarBG: lighten($scrollbarColour, 10%);
+
+// Navigation links
+$navLinkColour: $blue-900;
+$navLinkColourOuterActive: $blue-500;
+$navLinkColourInnerActive: $blue-200;

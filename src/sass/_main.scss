@@ -3,6 +3,73 @@ html, body {
     width  : 100%;
 }
 
-.active {
-    color: red;
+#navigation {
+    width: 200px;
+
+    a {
+        text-transform: capitalize;
+        text-decoration: none;
+        color: $navLinkColour;
+    }
+
+    .active {
+        a {
+            color: $navLinkColourOuterActive;
+        }
+
+        ul li {
+            a {
+                color: $navLinkColour;
+            }
+
+            &.active a {
+                color: $navLinkColourInnerActive;
+            }
+        }
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+
+        // clear:both after floating ul's contents
+        &:after {
+            content: '';
+            clear: both;
+        }
+    }
+
+    li {
+        list-style: none;
+        position: relative;
+        // float: left;
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin:0;
+        padding:0;
+        margin-right: 5px;
+
+        a {
+            display: block;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        &:hover {
+            a {
+                background: rgba(12,223,145,0.2);
+            }
+
+            ul {
+                left: 200;
+                top: 0;
+            }
+        }
+    }
+
+    ul ul {
+        position: absolute;
+        left: -9001px;
+    }
 }

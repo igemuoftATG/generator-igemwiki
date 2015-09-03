@@ -17,10 +17,11 @@
     "compass-mixins": "~1.0.2"
   },
   "dependencies": {
-    "jquery": "~2.1.4",
     "bootstrap": "~3.3.5",
     "flexboxgrid": "~6.2.0",
-    "highlightjs": "~8.7.0"
+    "highlightjs": "~8.7.0",
+    "jquery": "~2.1.4",
+    "normalize-libsass": "~1.0.3"
   },
   "overrides": {
     "bootstrap": {
@@ -31,10 +32,10 @@
       ]
     },
     "highlightjs": {
-        "main": [
-            "highlight.pack.js",
-            "styles/github.css"
-        ]
+      "main": [
+        "highlight.pack.js",
+        "styles/github.css"
+      ]
     }
   }
 }

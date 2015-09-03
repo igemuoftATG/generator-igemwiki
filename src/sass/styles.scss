@@ -1,17 +1,22 @@
 // When importing, you *do not* include the '_' prefix
 // Files prefixed with '_' will not compile for themselves
 
+// see: https://github.com/krisbulman/normalize-libsass
+@import 'normalize';
+
 // see: https://github.com/Igosuki/compass-mixins
 @import 'compass';
 // custom mixins a.ka. "functions"
 @import 'mixins';
+
 // see: http://ui.lumapps.com/css/colors
 @import 'lumxcolors';
-
 // Our colour definitions
 @import 'colours';
+
 // Our dimensioning definitions
 @import 'dimensions';
+
 // Some scrollbar styles for Chrome
 @import 'scrollbar';
 

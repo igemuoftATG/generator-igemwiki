@@ -131,18 +131,6 @@ class Helpers
 
         return new hbs.SafeString(content)
 
-    # link: (linkName, mode) ->
-    #     if mode is 'live'
-    #         if linkName is 'index'
-    #             return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}"
-    #         else
-    #             return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{linkName}"
-    #     else
-    #         if linkName is 'index'
-    #             return 'index.html'
-    #         else
-    #             return "#{linkName}.html"
-    #
     link = (linkName, mode) ->
         if mode is 'live'
             if linkName is 'index'
@@ -178,23 +166,27 @@ class Helpers
 
             if typeof(value) is 'object'
                 if isActive
-                    content += "<li><a class=\"active\" href=\"#\">#{item}</a>\n"
+                    content += "<li class=\"active\"><a href=\"#\">#{item}</a>\n"
                 else
                     content += "<li><a href=\"#\">#{item}</a>\n"
                 content += navigation(value, mode, active1, active2)
                 content += "</li>"
             else
                 if isActive
-                    content += "<li><a class=\"active\" href=\"#{link(item, mode)}\">#{value}</a></li>\n"
+                    content += "<li class=\"active\"><a href=\"#{link(item, mode)}\">#{value}</a></li>\n"
                 else
-                    content += "<li><a class=\"#{item}\" href=\"#{link(item, mode)}\">#{value}</a></li>\n"
+                    content += "<li><a href=\"#{link(item, mode)}\">#{value}</a></li>\n"
 
         content += "</ul>\n"
 
         return content
 
     navigationWrapper: (mode, active1, active2) ->
-         return new hbs.SafeString(navigation(templateData.navigation, mode, active1, active2))
+        content = "<div id=\"navigation\">\n"
+        content += navigation(templateData.navigation, mode, active1, active2)
+        content += "</div>"
+
+        return new hbs.SafeString(content)
 
     template: (templateName, mode) ->
         template = hbs.compile(fs.readFileSync("#{__dirname}/src/templates/#{templateName}.hbs", 'utf8'))

@@ -197,7 +197,7 @@
         }
         if (typeof value === 'object') {
           if (isActive) {
-            content += "<li><a class=\"active\" href=\"#\">" + item + "</a>\n";
+            content += "<li class=\"active\"><a href=\"#\">" + item + "</a>\n";
           } else {
             content += "<li><a href=\"#\">" + item + "</a>\n";
           }
@@ -205,9 +205,9 @@
           content += "</li>";
         } else {
           if (isActive) {
-            content += "<li><a class=\"active\" href=\"" + (link(item, mode)) + "\">" + value + "</a></li>\n";
+            content += "<li class=\"active\"><a href=\"" + (link(item, mode)) + "\">" + value + "</a></li>\n";
           } else {
-            content += "<li><a class=\"" + item + "\" href=\"" + (link(item, mode)) + "\">" + value + "</a></li>\n";
+            content += "<li><a href=\"" + (link(item, mode)) + "\">" + value + "</a></li>\n";
           }
         }
       }
@@ -216,7 +216,11 @@
     };
 
     Helpers.prototype.navigationWrapper = function(mode, active1, active2) {
-      return new hbs.SafeString(navigation(templateData.navigation, mode, active1, active2));
+      var content;
+      content = "<div id=\"navigation\">\n";
+      content += navigation(templateData.navigation, mode, active1, active2);
+      content += "</div>";
+      return new hbs.SafeString(content);
     };
 
     Helpers.prototype.template = function(templateName, mode) {
