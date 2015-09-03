@@ -53,6 +53,7 @@ dests =
         css    : './build-live/css'
 
 globs =
+    html      : "#{dests.dev.folder}/**/*.html"
     sass      : './src/sass/**/*.scss'
     md        : './src/markdown/**/*.md'
     css       : dests.dev.css
@@ -204,10 +205,11 @@ gulp.task 'uglify:js', ['bower'], ->
 
 gulp.task 'minifyAndUglify', ['minify:css', 'uglify:js']
 
+
 # **wiredep**
 gulp.task 'wiredep', ['handlebars:dev'], ->
     return gulp
-        .src("#{dests.dev.folder}/index.html")
+        .src(globs.html)
         .pipe(wiredep())
         .pipe(gulp.dest(dests.dev.folder))
 
