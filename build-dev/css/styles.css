@@ -379,7 +379,7 @@ html, body {
   width: 100%; }
 
 #navigation {
-  width: 200px; }
+  display: inline-block; }
   #navigation a {
     text-transform: capitalize;
     text-decoration: none;
@@ -408,12 +408,56 @@ html, body {
     #navigation li a {
       display: block;
       padding: 10px;
-      background: rgba(0, 0, 0, 0.2); }
+      background: rgba(0, 0, 0, 0.2);
+      -webkit-transition: all false false, 500ms false false, ease false false;
+      -moz-transition: all false false false, 500ms false false false, ease false false false;
+      -o-transition: all false false false, 500ms false false false, ease false false false;
+      transition: all 500ms ease; }
     #navigation li:hover a {
-      background: rgba(12, 223, 145, 0.2); }
+      background: #0cdf91;
+      color: white; }
     #navigation li:hover ul {
-      left: 200;
+      left: 100%;
       top: 0; }
+      #navigation li:hover ul li:hover a {
+        background: #820cd2; }
   #navigation ul ul {
     position: absolute;
     left: -9001px; }
+
+#navigation {
+  float: left; }
+
+.content {
+  overflow: hidden;
+  padding-left: 20px;
+  padding-right: 20px; }
+
+#top_menu_under {
+  position: absolute;
+  border: 0; }
+
+#top_menu_14 {
+  opacity: 0; }
+  #top_menu_14:hover {
+    opacity: 1; }
+
+#globalWrapper {
+  font-size: 100%; }
+  #globalWrapper #bodyContent {
+    line-height: 1.42857143; }
+    #globalWrapper #bodyContent h1.firstHeading {
+      display: none; }
+    #globalWrapper #bodyContent h1, #globalWrapper #bodyContent h2, #globalWrapper #bodyContent h3, #globalWrapper #bodyContent h4, #globalWrapper #bodyContent h5, #globalWrapper #bodyContent h6 {
+      border: 0;
+      padding: 0;
+      margin-bottom: 10px; }
+    #globalWrapper #bodyContent p {
+      margin: 0;
+      line-height: 1.42857143; }
+    #globalWrapper #bodyContent li {
+      margin-bottom: 0; }
+    #globalWrapper #bodyContent #content {
+      border: 0;
+      padding: 0;
+      width: 100%; }

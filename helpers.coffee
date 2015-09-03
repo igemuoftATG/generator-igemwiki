@@ -136,7 +136,7 @@ class Helpers
             if linkName is 'index'
                 return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}"
             else
-                return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{linkName}"
+                return "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{templateData.links[linkName]}"
         else
             if linkName is 'index'
                 return 'index.html'

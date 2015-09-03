@@ -55,7 +55,7 @@ dests =
 globs =
     sass      : './src/sass/**/*.scss'
     md        : './src/markdown/**/*.md'
-    css       : dests.dev.css
+    css       : dests.dev.css + '/**/*.css'
     libCoffee : './src/lib/**/*.coffee'
     libJS     : './src/lib/**/*.js'
     js        : './src/**/*.js'
@@ -366,7 +366,7 @@ logout = (jar) ->
         else
             handleRequestError(err, httpResponse)
 
-checkIfImageExists = (link, updateImageStores, cb) ->
+checkIfImageExists = (link, updateImageStores, tryLogout, cb) ->
     fs.readFile files.images, (err, data) ->
         if err
             gutil.log('No ' + 'images.json'.magenta + ' file')
@@ -385,6 +385,7 @@ checkIfImageExists = (link, updateImageStores, cb) ->
                         imageStore[link] = images[link]
                         gutil.log("Skipping upload of ".yellow + "#{link}".magenta + " since live version is identical".yellow)
                         updateImageStores(imageStore)
+                        tryLogout()
                         cb(equal)
                     else
                         cb(equal)
@@ -396,7 +397,7 @@ prepareUploadForm = (link, type, jar, cb, tryLogout, updateImageStores) ->
     teamName = templateData.teamName
 
     if type is 'image'
-        checkIfImageExists link, updateImageStores, (equal) ->
+        checkIfImageExists link, updateImageStores, tryLogout, (equal) ->
             if equal
                 return;
             else
@@ -587,6 +588,13 @@ gulp.task 'push', ->
                 stylesheets.length +
                 scripts.length +
                 images.length
+
+            if '.DS_Store' in stylesheets
+                total -= 1
+            if '.DS_Store' in scripts
+                total -= 1
+            if '.DS_Store' in images
+                total -= 1
 
             if num is total
                 logout(jar)
