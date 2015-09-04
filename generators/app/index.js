@@ -1,30 +1,14 @@
-// Extending a base generator
-
-// var generators = require('yeoman-generator');
-//
-// module.exports = generators.Base.extend();
-
-// If you'd like to require a name argument for your generator (for example foo
-// in yo name:router foo) that will be assigned to this.name, you can instead do
-// the following:
-
-// var generators = require('yeoman-generator');
-//
-// module.exports = generators.NamedBase.extend();
-
 var generators = require('yeoman-generator');
 var colors = require('colors');
 var requestSync = require('sync-request');
-var cheerio = require('cheerio');
 
 module.exports = generators.Base.extend({
-	// The name `constructor` is important here
 	constructor: function() {
-		// Calling the super constructor is important so our generator is correctly set up
 		generators.Base.apply(this, arguments);
 
 		// --skip-install flag
 		this.option('skip-install');
+		// --skip-repo flag
 		this.option('skip-repo');
 	},
 	initializing: function() {
@@ -54,61 +38,58 @@ module.exports = generators.Base.extend({
 
 		if (!this.options['skip-repo']) {
 			questions.push({
-					type: 'input',
-					name: 'repo',
-					message: 'What is the GitHub repository for this project? (Provided as ' + 'username/repo'.magenta + ')',
-					validate: function(input) {
-						var good = false
-						for (var i = 0; i < input.length; i++) {
-							if (input[i] === '/' && good === false) {
-								good = true;
-							} else if (input[i] === '/' && good === true) {
-								good = false;
-								return;
-							}
-						}
-
-						if (!good)
-							return 'Follow ' + 'username'.magenta + '/' + 'repo'.magenta + ' format.'
-
-						base_url = 'https://github.com/'
-
-						var httpResponse = requestSync('GET', base_url + input);
-
-						if (httpResponse.statusCode === 200) {
-							return true
-						} else if (httpResponse.statusCode === 404) {
-							return 'Nice try, the page ' + base_url.blue + input.blue + ' returned a ' + '404'.red
-						} else {
-							return false
+				type: 'input',
+				name: 'repo',
+				message: 'What is the GitHub repository for this project? (Provided as ' + 'username/repo'.magenta + ')',
+				validate: function(input) {
+					var good = false
+					for (var i = 0; i < input.length; i++) {
+						if (input[i] === '/' && good === false) {
+							good = true;
+						} else if (input[i] === '/' && good === true) {
+							good = false;
+							return;
 						}
 					}
-				})
-			}
 
-			this.prompt(questions, function(answers) {
-				this.answers = {
-						year: answers.year,
-						teamName: answers.teamName,
-						repo: answers.repo
+					if (!good)
+						return 'Follow ' + 'username'.magenta + '/' + 'repo'.magenta + ' format.'
+
+					base_url = 'https://github.com/'
+
+					var httpResponse = requestSync('GET', base_url + input);
+
+					if (httpResponse.statusCode === 200) {
+						return true
+					} else if (httpResponse.statusCode === 404) {
+						return 'Nice try, the page ' + base_url.blue + input.blue + ' returned a ' + '404'.red
+					} else {
+						return false
 					}
-					// this.log(answers.year);
-					// this.log(answers.teamName)
-				done();
-			}.bind(this));
+				}
+			})
+		}
+
+		this.prompt(questions, function(answers) {
+			this.config.set({
+				year: answers.year,
+				teamName: answers.teamName,
+				repo: answers.repo ? answers.repo : ''
+			})
+			done();
+		}.bind(this));
 	},
 	configuring: function() {
-		this.log('configuring');
+		// this.log('configuring');
 	},
 	default: function() {
-		this.log('default');
+		// this.log('default');
 	},
 	writing: function() {
-		// this.log('writing');
 		this.fs.copyTpl(
 			this.templatePath('template.json'),
 			this.destinationPath('src/template.json'),
-			this.answers
+			this.config.getAll()
 		)
 	},
 	install: function() {
@@ -119,6 +100,6 @@ module.exports = generators.Base.extend({
 		}
 	},
 	end: function() {
-		this.log('end');
+		this.log('Good Bye!');
 	}
 });
