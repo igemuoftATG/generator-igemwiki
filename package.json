@@ -12,6 +12,9 @@
   "author": "Julian Mazzitelli <julian.mazzitelli@mail.utoronto.ca>",
   "license": "MIT",
   "dependencies": {
+    "cheerio": "^0.19.0",
+    "colors": "^1.1.2",
+    "sync-request": "^2.0.1",
     "yeoman-generator": "^0.20.3"
   }
 }
