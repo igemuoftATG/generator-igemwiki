@@ -1,0 +1,17 @@
+{
+  "name": "generator-igemwiki",
+  "version": "1.0.0",
+  "description": "iGEM wiki generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "author": "Julian Mazzitelli <julian.mazzitelli@mail.utoronto.ca>",
+  "license": "MIT",
+  "dependencies": {
+    "yeoman-generator": "^0.20.3"
+  }
+}
