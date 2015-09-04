@@ -1,148 +1,105 @@
+// I always set these to 100%
 html, body {
     height : 100%;
     width  : 100%;
 }
 
+body {
+    background-color: $bodyBG;
+}
+
+.content {
+    // Any overflow other than 'visible' triggers a block formatting context.
+    // BFCs don't allow descendant floats to escape them, nor do they allow
+    // sibling/ancestor floats to intrude into them. The net effect here is that
+    // the floated div will do it's thing, then the second div will be an
+    // ordinary block, taking up all available width except that occupied by the
+    // float. This trick is used in conjunction with #navigation{float: left;}
+    // see: http://stackoverflow.com/questions/1260122/expand-div-to-take-remaining-width
+    overflow: hidden;
+    min-height: 100%;
+
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: $contentBG;
+}
+
+// Navigation styles
+// We have a ul of li > a's, some of which may contain another ul of li > a's
 #navigation {
-    // width: 200px;
-    // position: fixed;
+    float: left;
+    // By setting display to inline-block, the div will expand its width
+    // based on the contents. i.e. we can change the font size and this
+    // will automatically readjust.
     display: inline-block;
-
-    a {
-        text-transform: capitalize;
-        text-decoration: none;
-        color: $navLinkColour;
-    }
-
-    .active {
-        a {
-            color: $navLinkColourOuterActive;
-        }
-
-        ul li {
-            a {
-                color: $navLinkColour;
-            }
-
-            &.active a {
-                color: $navLinkColourInnerActive;
-            }
-        }
-    }
 
     ul {
         margin: 0;
         padding: 0;
 
-        // clear:both after floating ul's contents
-        &:after {
-            content: '';
-            clear: both;
-        }
-    }
-
-    li {
-        list-style: none;
-        position: relative;
-        // float: left;
-        display: block;
-        width: 100%;
-        text-align: center;
-        margin:0;
-        padding:0;
-        margin-right: 5px;
-
-        a {
+        li {
+            position: relative;
             display: block;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
+            width: 100%;
+            list-style: none;
+            text-align: center;
 
-            @include transition(all 500ms ease);
-        }
-
-        &:hover {
             a {
-                background: rgba(12,223,145,1);
-                color: white;
+                display: block;
+                text-transform: capitalize;
+                text-decoration: none;
+                padding: 10px;
+                padding-left: 20px;
+                padding-right: 20px;
+                color: $navLinkColour;
+                background-color: $navLinkBG;
+                @include transition(all 200ms ease);
             }
 
             ul {
-                left: 100%;
-                top: 0;
+                // Hide inner navs offscreen for now
+                position: absolute;
+                left: -9001px;
+            }
 
-                li:hover {
-                    a {
-                        background: rgb(130,12,210)
+            &:hover {
+                a {
+                    color: $navLinkOuterHoverColor;
+                    background: $navLinkOuterHoverBG;
+                }
+
+                ul {
+                    left: 100%;
+                    top: 0;
+
+                    a:hover {
+                        color: $navLinkInnerHoverColour;
+                    }
+
+                    li:hover a {
+                        background: $navLinkInnerHoverBG;
                     }
                 }
             }
-        }
-    }
 
-    ul ul {
-        position: absolute;
-        left: -9001px;
-    }
-}
+            &.active {
+                a {
+                    color: $navLinkActiveOuterColour;
+                    background-color: $navLinkActiveBG;
+                }
 
+                ul li {
+                    a {
+                        color: $navLinkColour;
+                        background-color: $navLinkOuterHoverBG;
+                    }
 
-#navigation {
-    float: left;
-}
-.content {
-    overflow: hidden;
-    padding-left: 20px;
-    padding-right: 20px;
-
-
-    // p {
-    //     border-bottom: 10px;
-    // }
-}
-
-// resets for default wiki styles
-#top_menu_under {
-    // toggle this, with 'on' the page goes under the top bar
-    position: absolute;
-    border: 0;
-}
-
-#top_menu_14 {
-    opacity: 0;
-
-    &:hover {
-        opacity: 1;
-    }
-}
-
-#globalWrapper {
-    font-size: 100%;
-
-    #bodyContent {
-        h1.firstHeading {
-            display: none;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            border: 0;
-            padding: 0;
-            margin-bottom: 10px;
-        }
-
-        line-height: 1.42857143;
-
-        p {
-            margin: 0;
-            line-height: 1.42857143;
-        }
-        li {
-            margin-bottom: 0;
-        }
-
-        #content {
-            border: 0;
-            padding: 0;
-            width: 100%;
+                    &.active a {
+                        color: $navLinkActiveInnerColour;
+                        background-color: $navLinkActiveInnerBG;
+                    }
+                }
+            }
         }
     }
 }
