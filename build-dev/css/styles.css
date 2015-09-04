@@ -353,41 +353,6 @@ td,
 th {
   padding: 0; }
 
-#top_menu_under {
-  position: absolute;
-  border: 0; }
-
-#top_menu_14 {
-  opacity: 0; }
-  #top_menu_14:hover {
-    opacity: 1; }
-
-#content {
-  border: 0;
-  padding: 0;
-  width: 100%; }
-
-#globalWrapper {
-  font-size: 100%; }
-
-h1.firstHeading {
-  display: none; }
-
-h1, h2, h3, h4, h5, h6 {
-  border: 0;
-  padding: 0;
-  margin-bottom: 10px; }
-
-p {
-  margin: 0;
-  line-height: 1.42857143; }
-
-li {
-  margin-bottom: 0; }
-
-#bodyContent {
-  line-height: 1.42857143; }
-
 /*
  * A partial implementation of the Ruby list functions from Compass:
  * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
@@ -409,6 +374,46 @@ html::-webkit-scrollbar-track-piece {
 html::-webkit-scrollbar-thumb {
   background: #00b5e6; }
 
+#top_menu_under {
+  position: absolute;
+  border: 0; }
+
+#top_menu_14 {
+  opacity: 0; }
+  #top_menu_14:hover {
+    opacity: 1; }
+
+#globalWrapper, #content, #bodyContent {
+  height: 100%; }
+
+#globalWrapper {
+  font-size: 100%;
+  padding-bottom: 0; }
+
+#content {
+  border: 0;
+  padding: 0;
+  width: 100%; }
+
+#bodyContent {
+  line-height: 1.42857143;
+  background: #004389; }
+
+h1.firstHeading {
+  display: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  border: 0;
+  padding: 0;
+  margin-bottom: 10px; }
+
+p {
+  margin: 0;
+  line-height: 1.42857143; }
+
+li {
+  margin-bottom: 0; }
+
 html, body {
   height: 100%;
   width: 100%; }
@@ -416,17 +421,16 @@ html, body {
 body {
   background-color: #004389; }
 
-#navigation {
-  float: left; }
-
 .content {
   overflow: hidden;
   min-height: 100%;
   padding-left: 20px;
   padding-right: 20px;
+  padding-bottom: 20px;
   background-color: white; }
 
 #navigation {
+  float: left;
   display: inline-block; }
   #navigation ul {
     margin: 0;
@@ -454,8 +458,8 @@ body {
         position: absolute;
         left: -9001px; }
       #navigation ul li:hover a {
-        background: #73ca9a;
-        color: white; }
+        color: white;
+        background: #73ca9a; }
       #navigation ul li:hover ul {
         left: 100%;
         top: 0; }

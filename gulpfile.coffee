@@ -184,7 +184,7 @@ gulp.task 'bower:css', ->
 # **bower**
 gulp.task 'bower', ['bower:js', 'bower:css']
 
-gulp.task 'minify:css', ['bower'], ->
+gulp.task 'minify:css', ['bower', 'sass'], ->
     return gulp
         .src(globs.css)
         .pipe(concat('styles.css'))
@@ -573,7 +573,7 @@ upload = (link, type, jar, tryLogout, updateImageStores) ->
         prepareUploadForm(link, type, jar, postEdit, tryLogout, updateImageStores)
 
 # **push**
-gulp.task 'push', ->
+gulp.task 'push', ['build:live'], ->
     login (jar) ->
         templateData = JSON.parse(fs.readFileSync(files.template))
         stylesheets  = fs.readdirSync(dests.live.css)

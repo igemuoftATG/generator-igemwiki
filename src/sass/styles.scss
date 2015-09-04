@@ -3,9 +3,6 @@
 
 // see: https://github.com/krisbulman/normalize-libsass
 @import 'normalize';
-// styles elements that contain your wiki
-// removes bounding width, hides h1.firstHeading, styles top bar, ...
-@import 'igemreset';
 
 // see: https://github.com/Igosuki/compass-mixins
 @import 'compass';
@@ -22,6 +19,10 @@
 
 // Some scrollbar styles for Chrome
 @import 'scrollbar';
+
+// styles elements that contain your wiki
+// removes bounding width, hides h1.firstHeading, styles top bar, ...
+@import 'igemreset';
 
 // Our main styles
 @import 'main';

@@ -19,6 +19,8 @@ $igemDarkBlue: #004389;
 // Some main background colours
 $bodyBG: $igemDarkBlue;
 $contentBG: white;
+// see: _igemreset.scss
+$bodyContentBG: $bodyBG;
 
 // Scrollbar
 $scrollbarColour: $igemBlue;
@@ -34,4 +36,4 @@ $navLinkInnerHoverBG: $igemPurple;
 $navLinkActiveBG: lighten($navLinkBG, 50%);
 $navLinkActiveOuterColour: black;
 $navLinkActiveInnerColour: black;
-$navLinkActiveInnerBG: lighten($navLinkOuterHover, 10%);
+$navLinkActiveInnerBG: lighten($navLinkOuterHoverBG, 10%);
