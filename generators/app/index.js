@@ -1,14 +1,12 @@
-var generators = require('yeoman-generator');
-var colors = require('colors');
+var generators  = require('yeoman-generator');
+var colors      = require('colors');
 var requestSync = require('sync-request');
 
 module.exports = generators.Base.extend({
 	constructor: function() {
 		generators.Base.apply(this, arguments);
 
-		// --skip-install flag
 		this.option('skip-install');
-		// --skip-repo flag
 		this.option('skip-repo');
 	},
 	initializing: function() {
