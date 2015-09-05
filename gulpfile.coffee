@@ -158,7 +158,7 @@ gulp.task 'coffeescript:helpers', ->
         .pipe(gulp.dest('.'))
 
 # **handlebars:dev**
-gulp.task "handlebars:dev", ->
+gulp.task "handlebars:dev", ['sass'], ->
     return compileAllHbs(fillTemplates().dev, dests.dev.folder)
 
 # **handlebars:live**
@@ -267,11 +267,8 @@ gulp.task 'serve', ['sass', 'build:dev'], ->
                 '/preamble'         : './src/preamble'
                 '/images'           : './images'
 
-    watch [globs.hbs, globs.js, globs.md, files.template], ->
+    watch [globs.hbs, globs.js, globs.md, globs.sass, files.template], ->
         gulp.start('build:dev')
-
-    watch globs.sass, ->
-        gulp.start('sass')
 
     watch [globs.libCoffee, globs.libJS], ->
         gulp.start('browserify')
