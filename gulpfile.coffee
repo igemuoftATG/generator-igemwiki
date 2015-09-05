@@ -4,6 +4,7 @@ coffee     = require 'gulp-coffee'
 handlebars = require 'gulp-compile-handlebars'
 concat     = require 'gulp-concat'
 cssmin     = require 'gulp-cssmin'
+header     = require 'gulp-header'
 rename     = require 'gulp-rename'
 sass       = require 'gulp-sass'
 sourcemaps = require 'gulp-sourcemaps'
@@ -60,7 +61,7 @@ globs =
     css       : dests.dev.css + '/**/*.css'
     libCoffee : './src/lib/**/*.coffee'
     libJS     : './src/lib/**/*.js'
-    js        : './src/**/*.js'
+    js        : dests.dev.js + '/**/*.js'
     hbs       : './src/**/*.hbs'
 
 
@@ -83,6 +84,39 @@ fillTemplates = ->
         dev: buildTemplateStruct(templateData, 'dev')
         live: buildTemplateStruct(templateData, 'live')
     }
+
+headerCreator = (fileType) ->
+    _package = JSON.parse(fs.readFileSync('package.json'))
+    if fileType is 'html'
+        opener = '<!--'
+        closer = '-->'
+        spacer = "   "
+    else if fileType is 'js'
+        opener = '//'
+        closer = ''
+        spacer = "     "
+    else if fileType is 'css'
+        opener = '/*'
+        closer = '*/'
+        spacer = "    "
+
+    headerText = new String()
+
+
+
+    if fileType is 'html'
+        headerText += '<html>\n'
+
+    headerText += "#{opener} ####################################################### #{closer}\n"
+    headerText += "#{opener} #  This #{fileType} was produced by the igemwiki generator#{spacer}# #{closer}\n"
+    headerText += "#{opener} #  https://github.com/igemuoftATG/generator-igemwiki  # #{closer}\n"
+    headerText += "#{opener} ####################################################### #{closer}\n"
+    headerText += "\n#{opener} repo for this wiki: #{_package.repository.url} #{closer}\n\n"
+
+    if fileType is 'html'
+        headerText += '</html>\n'
+
+    return headerText
 
 # **compileAllHbs**
 compileAllHbs = (templateData, dest) ->
@@ -109,6 +143,7 @@ compileAllHbs = (templateData, dest) ->
         rename((path) ->
             path.extname = ".html"
         ),
+        header(headerCreator('html')),
         gulp.dest(dest)
     ).on 'end', ->
         browserSync.reload()
@@ -172,6 +207,7 @@ gulp.task 'bower:js', ->
         .pipe(concat('vendor.js'))
         .pipe(uglify().on('error', gutil.log))
         .pipe(rename({suffix: '.min'}))
+        .pipe(header(headerCreator('js')))
         .pipe(gulp.dest(dests.live.js))
 
 # **bower:css**
@@ -181,6 +217,7 @@ gulp.task 'bower:css', ->
         .pipe(concat('vendor.css'))
         .pipe(cssmin())
         .pipe(rename({suffix: '.min'}))
+        .pipe(header(headerCreator('css')))
         .pipe(gulp.dest(dests.live.css))
 
 # **bower**
@@ -192,14 +229,16 @@ gulp.task 'minify:css', ['bower', 'sass'], ->
         .pipe(concat('styles.css'))
         .pipe(cssmin())
         .pipe(rename({suffix: '.min'}))
+        .pipe(header(headerCreator('css')))
         .pipe(gulp.dest(dests.live.css))
 
 gulp.task 'uglify:js', ['bower'], ->
     return gulp
-        .src("#{dests.dev.js}/**/*.js")
+        .src(globs.js)
         .pipe(concat('bundle.js'))
         .pipe(uglify().on('error', gutil.log))
         .pipe(rename({suffix: '.min'}))
+        .pipe(header(headerCreator('js')))
         .pipe(gulp.dest(dests.live.js))
 
 

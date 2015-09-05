@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/igemuoftATG/wiki2015.git"
+    "url": "https://github.com/igemuoftATG/wiki2015.git"
   },
   "author": "Julian Mazzitelli <julian.mazzitelli@mail.utoronto.ca>",
   "license": "MIT",
@@ -30,6 +30,7 @@
     "gulp-compile-handlebars": "^0.5.0",
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",
+    "gulp-header": "^1.7.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.0.4",
     "gulp-sourcemaps": "^1.5.2",
