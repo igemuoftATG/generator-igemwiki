@@ -36,8 +36,10 @@ fs   = require 'fs'
 path = require 'path'
 
 paths =
-    partials: './src/templates'
-    pulled: './pulled'
+    partials  : './src/templates'
+    pulled    : './pulled'
+    responses : 'responses'
+    phantom   : 'phantom'
 
 files =
     template     : './src/template.json'
@@ -288,6 +290,10 @@ gulp.task 'phantom', ->
 
     sizes = ['mobile', 'phablet', 'tablet', 'desktop', 'desktophd']
 
+    for size in sizes
+        if fs.readdirSync(paths.phantom).indexOf(size) is -1
+            fs.mkdirSync("#{paths.phantom}/#{size}")
+
     num = sizes.length * Object.keys(templateData.links).length
 
     gutil.log('Warning'.yellow + ", this will bang the revs on your CPUs. Just started #{num} phantom processes ;)")
@@ -303,9 +309,9 @@ gulp.task 'phantom', ->
                 url = "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{page}"
 
             args = [
-                "#{__dirname}/phantom/screen.js",
+                "#{__dirname}/#{paths.phantom}/screen.js",
                 url,
-                "#{__dirname}/phantom/#{size}/#{page}",
+                "#{__dirname}/#{paths.phantom}/#{size}/#{page}",
                 size
             ]
 
@@ -329,6 +335,10 @@ gulp.task 'phantom:sync', ->
 
     sizes = ['mobile', 'phablet', 'tablet', 'desktop', 'desktophd']
 
+    for size in sizes
+        if fs.readdirSync(paths.phantom).indexOf(size) is -1
+            fs.mkdirSync("#{paths.phantom}/#{size}")
+
     num = sizes.length * Object.keys(templateData.links).length
 
     gutil.log('Use ' + 'gulp phantom '.magenta + 'for faster, yet intensive processing.')
@@ -344,9 +354,9 @@ gulp.task 'phantom:sync', ->
                 url = "http://#{templateData.year}.igem.org/Team:#{templateData.teamName}/#{page}"
 
             args = [
-                "#{__dirname}/phantom/screen.js",
+                "#{__dirname}/#{paths.phantom}/screen.js",
                 url,
-                "#{__dirname}/phantom/#{size}/#{page}",
+                "#{__dirname}/#{paths.phantom}/#{size}/#{page}",
                 size
             ]
 
@@ -576,6 +586,9 @@ postEdit = (url, file, page, type, multiform, jar, tryLogout, updateImageStores)
                 jar: jar
             }, (err, httpResponse, body) ->
                 if !err and httpResponse.statusCode is 200
+                    if fs.readdirSync(__dirname).indexOf(paths.responses) is -1
+                        fs.mkdirSync(paths.responses)
+
                     if type is 'image'
                         currentHref = new String()
                         finalHref   = new String()
@@ -596,12 +609,12 @@ postEdit = (url, file, page, type, multiform, jar, tryLogout, updateImageStores)
                         imageStore = new Object()
                         imageStore["#{page}"] = "http://#{templateData.year}.igem.org#{finalHref}"
 
-                        fs.writeFileSync("responses/#{page}.html", body)
+                        fs.writeFileSync("#{paths.responses}/#{page}.html", body)
                         gutil.log(colourify(file, url, multiform, type))
                         updateImageStores(imageStore)
                         tryLogout()
                     else
-                        fs.writeFileSync("responses/#{page}.html", body)
+                        fs.writeFileSync("#{paths.responses}/#{page}.html", body)
                         gutil.log(colourify(file, url, multiform, type))
                         tryLogout()
                 else
