@@ -162,7 +162,7 @@ gulp.task "handlebars:dev", ['sass'], ->
     return compileAllHbs(fillTemplates().dev, dests.dev.folder)
 
 # **handlebars:live**
-gulp.task "handlebars:live", ->
+gulp.task "handlebars:live", ['minifyAndUglify'], ->
     return compileAllHbs(fillTemplates().live, dests.live.folder)
 
 # Compile `.scss` into `.css`
@@ -234,7 +234,7 @@ gulp.task 'minify:css', ['bower', 'sass'], ->
         .pipe(header(headerCreator('css')))
         .pipe(gulp.dest(dests.live.css))
 
-gulp.task 'uglify:js', ['bower'], ->
+gulp.task 'uglify:js', ['bower', 'browserify'], ->
     return gulp
         .src(globs.js)
         .pipe(concat('bundle.js'))
@@ -251,7 +251,7 @@ gulp.task 'minifyAndUglify', ['minify:css', 'uglify:js']
 gulp.task 'build:dev', ['handlebars:dev', 'browserify']
 
 # **build:live**
-gulp.task 'build:live', ['handlebars:live', 'minifyAndUglify']
+gulp.task 'build:live', ['handlebars:live']
 
 
 # **serve**
