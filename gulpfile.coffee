@@ -16,6 +16,7 @@ browserify     = require 'browserify'
 buffer         = require 'vinyl-buffer'
 coffeeify      = require 'coffeeify'
 colors         = require 'colors'
+cheerio        = require 'cheerio'
 globby         = require 'globby'
 htmlparser     = require 'htmlparser2'
 mainBowerFiles = require 'main-bower-files'
@@ -35,6 +36,7 @@ path = require 'path'
 
 paths =
     partials: './src/templates'
+    pulled: './pulled'
 
 files =
     template     : './src/template.json'
@@ -624,3 +626,95 @@ gulp.task 'push', ['build:live'], ->
             upload(script, 'script', jar, tryLogout)
         for image in images
             upload(image, 'image', jar, tryLogout, updateImageStores)
+
+
+getPageNames = (namespace, cb) ->
+    templateData = JSON.parse(fs.readFileSync(files.template))
+    year = templateData.year
+    teamName = templateData.teamName
+
+    if namespace is '0'
+        url = "http://#{year}.igem.org/wiki/index.php?title=Special:AllPages&from=Team:#{teamName}&namespace=#{namespace}"
+    else if namespace is '10'
+        url = "http://#{year}.igem.org/wiki/index.php?title=Special:AllPages&from=#{teamName}&namespace=#{namespace}"
+
+    request {
+        url: url
+    }, (err, httpResponse, body) ->
+        pages = new Array()
+        if !err and httpResponse.statusCode is 200
+            currentHref = new String()
+
+            parser = new htmlparser.Parser {
+                onopentag: (name, attr) ->
+                    if name is 'a'
+                        currentHref = attr.href
+                ontext: (text) ->
+                    if namespace is '0'
+                        if text.indexOf("Team:#{teamName}") isnt -1
+                            pages.push("http://#{year}.igem.org#{currentHref}")
+                    else if namespace is '10'
+                        if text.indexOf("#{teamName}") isnt -1
+                            pages.push("http://#{year}.igem.org#{currentHref}")
+            }, {decodeEntites: true}
+
+            parser.write(body)
+            parser.end()
+
+            cb(pages)
+        else
+            handleRequestError(err, httpResponse)
+
+
+downloadPage = (jar, page, namespace, tryLogout) ->
+    templateData = JSON.parse(fs.readFileSync(files.template))
+    year = templateData.year
+    teamName = templateData.teamName
+
+    request {
+        url: page + '?action=edit'
+    }, (err, httpResponse, body) ->
+        if !err and httpResponse.statusCode is 200
+            $ = cheerio.load(body)
+            textBoxContent = $('#wpTextbox1').text()
+
+            if fs.readdirSync('.').indexOf(paths.pulled.split('./')[1]) is -1
+                fs.mkdirSync(paths.pulled)
+
+            # if namespace is '0'
+            #     pageName = page.split("http://#{year}.igem.org/Team:#{teamName}/")[1]
+            # else if namespace is '10'
+            #     pageName = page.split("http://#{year}.igem.org/#{teamName}/")[1]
+
+            pageName = page.split("/")[page.split("/").length - 1]
+            while pageName.indexOf(':') isnt -1
+                pageName = pageName.replace(':', '-')
+
+            if pageName?
+                fileName = "#{paths.pulled}/#{pageName}.html"
+            else
+                fileName = "#{paths.pulled}/index.html"
+
+            gutil.log(fileName)
+            fs.writeFileSync(fileName, textBoxContent)
+
+            tryLogout()
+        else
+            handleRequestError(err, httpResponse)
+
+gulp.task 'pull', ->
+    getPageNames '0', (pages) ->
+        getPageNames '10', (templates) ->
+            login (jar) ->
+                num = 0
+                tryLogout = ->
+                    num += 1
+                    total = pages.length + templates.length
+
+                    if num is total
+                        logout(jar)
+
+                for page in pages
+                    downloadPage(jar, page, '0', tryLogout)
+                for template in templates
+                    downloadPage(jar, template, '10', tryLogout)
