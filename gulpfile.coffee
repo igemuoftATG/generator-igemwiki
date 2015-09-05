@@ -158,11 +158,11 @@ gulp.task 'coffeescript:helpers', ->
         .pipe(gulp.dest('.'))
 
 # **handlebars:dev**
-gulp.task "handlebars:dev", ['sass'], ->
+gulp.task "handlebars:dev", ['sass', 'coffeescript:helpers'], ->
     return compileAllHbs(fillTemplates().dev, dests.dev.folder)
 
 # **handlebars:live**
-gulp.task "handlebars:live", ['minifyAndUglify'], ->
+gulp.task "handlebars:live", ['minifyAndUglify', 'coffeescript:helpers'], ->
     return compileAllHbs(fillTemplates().live, dests.live.folder)
 
 # Compile `.scss` into `.css`
