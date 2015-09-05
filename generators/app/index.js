@@ -32,6 +32,10 @@ module.exports = generators.Base.extend({
 					return true;
 				}
 			}
+		}, {
+			type: 'input',
+			name: 'author',
+			message: 'Author? (optional) `Name <email>`'
 		}];
 
 		if (!this.options['skip-repo']) {
@@ -72,7 +76,8 @@ module.exports = generators.Base.extend({
 			this.config.set({
 				year: answers.year,
 				teamName: answers.teamName,
-				repo: answers.repo ? answers.repo : ''
+				repo: answers.repo ? 'https://github.com/' + answers.repo : '',
+				author: answers
 			})
 			done();
 		}.bind(this));
