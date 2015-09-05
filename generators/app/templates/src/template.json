@@ -1,0 +1,77 @@
+{
+    "teamName": "Toronto",
+    "year": "2015",
+    "links": {
+        "home"             : "index",
+        "attributions"     : "Attributions",
+        "basic_part"       : "Basic_Part",
+        "collaborations"   : "Collaborations",
+        "composite_part"   : "Composite_Part",
+        "description"      : "Description",
+        "design"           : "Design",
+        "entrepreneurship" : "Entrepreneurship",
+        "experiments"      : "Experiments",
+        "measurement"      : "Measurement",
+        "modeling"         : "Modeling",
+        "notebook"         : "Notebook",
+        "part_collection"  : "Part_Collection",
+        "parts"            : "Parts",
+        "practices"        : "Practices",
+        "results"          : "Results",
+        "safety"           : "Safety",
+        "software"         : "Software",
+        "team"             : "Team"
+    },
+    "navigation": {
+        "index" : "home",
+        "team" : "team",
+        "project": {
+            "description" : "description",
+            "experiments" : "experiments",
+            "results"     : "results",
+            "design"      : "design"
+        },
+        "_parts": {
+            "parts"           : "parts",
+            "basic_part"      : "basic parts",
+            "composite_part"  : "composite parts",
+            "part_collection" : "part collection"
+        },
+        "notebook"         : "notebook",
+        "attributions"     : "attributions",
+        "collaborations"   : "collaborations",
+        "practices"        : "human practices",
+        "safety"           : "safety",
+        "modeling"         : "modeling",
+        "measurement"      : "measurement",
+        "software"         : "software",
+        "entrepreneurship" : "entrepreneurship"
+    },
+    "templates": {
+        "head"   : "head",
+        "footer" : "footer",
+        "preamble" : "preamble"
+    },
+    "markdown": {
+        "hello": "hello",
+        "home": "home",
+        "attributions"     : "Attributions",
+        "basic_part"       : "Basic_Part",
+        "collaborations"   : "Collaborations",
+        "composite_part"   : "Composite_Part",
+        "description"      : "Description",
+        "design"           : "Design",
+        "entrepreneurship" : "Entrepreneurship",
+        "experiments"      : "Experiments",
+        "measurement"      : "Measurement",
+        "modeling"         : "Modeling",
+        "notebook"         : "Notebook",
+        "part_collection"  : "Part_Collection",
+        "parts"            : "Parts",
+        "practices"        : "Practices",
+        "results"          : "Results",
+        "safety"           : "Safety",
+        "software"         : "Software",
+        "team"             : "Team"
+    }
+}

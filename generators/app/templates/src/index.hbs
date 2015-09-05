@@ -1,0 +1,25 @@
+{{template templates.head mode}}
+<html>
+<!-- <a href="{{image "igem.png" "directlink" mode}}" > direct image linking </a>
+
+<img src="{{image "igem_500w.png" "directlink" mode}}" />
+
+{{#markdownHere "
+
+Inline **markdown**!
+
+{{capitals teamName}}
+
+More working md?
+
+* yes
+* no
+
+"}}{{/markdownHere}} -->
+
+{{navigation mode "index"}}
+<div class="content">
+	{{markdown markdown.home}}
+</div>
+</html>
+{{template templates.footer mode}}

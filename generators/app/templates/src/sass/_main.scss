@@ -1,0 +1,106 @@
+// I always set these to 100%
+html, body {
+    height : 100%;
+    width  : 100%;
+}
+
+body {
+    background-color: $bodyBG;
+}
+
+.content {
+    // Any overflow other than 'visible' triggers a block formatting context.
+    // BFCs don't allow descendant floats to escape them, nor do they allow
+    // sibling/ancestor floats to intrude into them. The net effect here is that
+    // the floated div will do it's thing, then the second div will be an
+    // ordinary block, taking up all available width except that occupied by the
+    // float. This trick is used in conjunction with #navigation{float: left;}
+    // see: http://stackoverflow.com/questions/1260122/expand-div-to-take-remaining-width
+    overflow: hidden;
+    min-height: 100%;
+
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    background-color: $contentBG;
+}
+
+// Navigation styles
+// We have a ul of li > a's, some of which may contain another ul of li > a's
+#navigation {
+    float: left;
+    // By setting display to inline-block, the div will expand its width
+    // based on the contents. i.e. we can change the font size and this
+    // will automatically readjust.
+    display: inline-block;
+
+    ul {
+        margin: 0;
+        padding: 0;
+
+        li {
+            position: relative;
+            display: block;
+            width: 100%;
+            list-style: none;
+            text-align: center;
+
+            a {
+                display: block;
+                text-transform: capitalize;
+                text-decoration: none;
+                padding: 10px;
+                padding-left: 20px;
+                padding-right: 20px;
+                color: $navLinkColour;
+                background-color: $navLinkBG;
+                @include transition(all 200ms ease);
+            }
+
+            ul {
+                // Hide inner navs offscreen for now
+                position: absolute;
+                left: -9001px;
+            }
+
+            &:hover {
+                a {
+                    color: $navLinkOuterHoverColor;
+                    background: $navLinkOuterHoverBG;
+                }
+
+                ul {
+                    left: 100%;
+                    top: 0;
+
+                    a:hover {
+                        color: $navLinkInnerHoverColour;
+                    }
+
+                    li:hover a {
+                        background: $navLinkInnerHoverBG;
+                    }
+                }
+            }
+
+            &.active {
+                a {
+                    color: $navLinkActiveOuterColour;
+                    background-color: $navLinkActiveBG;
+                }
+
+                ul li {
+                    a {
+                        color: $navLinkColour;
+                        background-color: $navLinkOuterHoverBG;
+                    }
+
+                    &.active a {
+                        color: $navLinkActiveInnerColour;
+                        background-color: $navLinkActiveInnerBG;
+                    }
+                }
+            }
+        }
+    }
+}
