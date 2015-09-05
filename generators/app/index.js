@@ -84,11 +84,36 @@ module.exports = generators.Base.extend({
 		// this.log('default');
 	},
 	writing: function() {
+
 		this.fs.copyTpl(
-			this.templatePath('template.json'),
-			this.destinationPath('src/template.json'),
+			this.templatePath('bower.json'),
+			this.destinationPath('bower.json'),
+			this.config.getAll()
+		);
+		this.fs.copyTpl(
+			this.templatePath('gulpfile.coffee'),
+			this.destinationPath('gulpfile.coffee'),
+			this.config.getAll()
+		);
+		this.fs.copyTpl(
+			this.templatePath('helpers.coffee'),
+			this.destinationPath('helpers.coffee'),
+			this.config.getAll()
+		);
+		this.fs.copyTpl(
+			this.templatePath('package.json'),
+			this.destinationPath('package.json'),
+			this.config.getAll()
+		);
+
+		this.directory('src', './src');
+		this.fs.copyTpl(
+			this.templatePath('_template.json'),
+			this.destinationPath('./src/template.json'),
 			this.config.getAll()
 		)
+		this.directory('phantom', './phantom');
+		this.directory('images', './images');
 	},
 	install: function() {
 		if (this.options['skip-install']) {
