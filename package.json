@@ -1,19 +1,23 @@
 {
-  "name": "generator-igemwiki",
-  "version": "1.0.0",
-  "description": "iGEM wiki generator",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "yeoman-generator"
-  ],
-  "author": "Julian Mazzitelli <julian.mazzitelli@mail.utoronto.ca>",
-  "license": "MIT",
-  "dependencies": {
-    "colors": "^1.1.2",
-    "sync-request": "^2.0.1",
-    "yeoman-generator": "^0.20.3"
-  }
+	"name": "generator-igemwiki",
+	"version": "1.0.0",
+	"description": "iGEM wiki generator",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"yeoman-generator"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/igemuoftATG/generator-igemwiki"
+	},
+	"author": "Julian Mazzitelli <julian.mazzitelli@mail.utoronto.ca>",
+	"license": "MIT",
+	"dependencies": {
+		"colors": "^1.1.2",
+		"sync-request": "^2.0.1",
+		"yeoman-generator": "^0.20.3"
+	}
 }
