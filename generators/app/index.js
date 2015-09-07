@@ -1,6 +1,8 @@
 var generators  = require('yeoman-generator');
+var fs          = require('fs');
 var colors      = require('colors');
 var requestSync = require('sync-request');
+var beautify    = require('js-beautify').js_beautify;
 
 module.exports = generators.Base.extend({
 	constructor: function() {
@@ -77,7 +79,7 @@ module.exports = generators.Base.extend({
 				year: answers.year,
 				teamName: answers.teamName,
 				repo: answers.repo ? 'https://github.com/' + answers.repo : '',
-				author: answers
+				author: answers.author
 			})
 			done();
 		}.bind(this));
@@ -121,6 +123,10 @@ module.exports = generators.Base.extend({
 		this.directory('images', './images');
 	},
 	install: function() {
+		pkg = JSON.parse(fs.readFileSync('package.json'))
+		pkg.author = this.config.get('author')
+		fs.writeFileSync('package.json', beautify(JSON.stringify(pkg)))
+
 		if (this.options['skip-install']) {
 			this.log('Skipping ' + 'npm install'.magenta + ' and ' + 'bower install'.magenta + '. Run these yourself.')
 		} else {

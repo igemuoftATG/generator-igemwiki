@@ -1,18 +1,18 @@
 {
-  "name": "<$= teamName =>2-wiki-<%= year =>",
+  "name": "<%= teamName %>-wiki-<%= year %>",
   "version": "0.0.1",
-  "description": "iGEM wiki for team <%= teamName =>.",
+  "description": "iGEM wiki for team <%= teamName %>.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "<%= repo =>"
+    "url": "<%= repo %>"
   },
-  "author": "<%= author =>",
+  "author": "<%= author %>",
   "license": "MIT",
-  "homepage": "<%= repo =>#readme",
+  "homepage": "<%= repo %>#readme",
   "devDependencies": {
     "browser-sync": "^2.8.2",
     "browserify": "^11.0.1",
