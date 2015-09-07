@@ -49,8 +49,7 @@
     },
     "templates": {
         "head"     : "head",
-        "footer"   : "footer",
-        "preamble" : "preamble"
+        "footer"   : "footer"
     },
     "markdown": {
         "home"             : "home",

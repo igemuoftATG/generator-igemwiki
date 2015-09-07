@@ -114,8 +114,11 @@ class Helpers
     image: (img, format, mode) ->
         if mode is 'live'
             if format is 'directlink'
-                imageStores = JSON.parse(fs.readFileSync('images.json'))
-                content = imageStores[img]
+                if fs.readdirSync(__dirname).indexOf('images.json') isnt -1
+                    imageStores = JSON.parse(fs.readFileSync('images.json'))
+                    content = imageStores[img]
+                else
+                    content = ''
             else
                 if format is 'file'
                     fmt = 'File'
