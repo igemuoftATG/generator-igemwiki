@@ -32,7 +32,7 @@ face some `PATH` issues on Windows (see below).
 
 ### NPM
 
-[NPM]((https://www.npmjs.com/) is *node package manager* and is the "largest
+[NPM](https://www.npmjs.com/) is *node package manager* and is the "largest
 ecosystem of open source libraries in the world". All of this project's
 dependencies are held on npm, and this package is published on npm.
 
