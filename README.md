@@ -255,6 +255,17 @@ gulp pull
 
 Run this to download all current live files into `./pulled`.
 
+### Phantom
+
+```
+gulp phantom
+gulp phantom:sync
+```
+
+Spawn up some [Phantom](http://phantomjs.org/) process and store screenshots
+of your wiki across mobile, phablet, tablet, desktop, and desktophd resolutions
+in `./phantom/mobile`, `./phantom/phablet`, ...
+
 ## Important Files
 
 ### Template
