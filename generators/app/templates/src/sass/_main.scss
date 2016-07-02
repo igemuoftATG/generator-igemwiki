@@ -1,0 +1,462 @@
+// I always set these to 100%
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    // background-color: $bodyBG;
+    position: relative;
+}
+
+.team {
+    .tableofcontents {
+        display: none;
+    }
+
+    .col {
+        margin: 0 auto;
+    }
+}
+
+svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    @include translate(-50%, -50%);
+    width: 50%;
+    height: auto;
+}
+
+#homepush {
+    position: relative;
+    height: 100%;
+}
+
+#homecontent {
+    display: none;
+}
+
+#bgimgwrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    @include transition(all 1s ease);
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+#homepage {
+    // background-image: url('http://2015.igem.org/wiki/images/4/48/Toronto_2015_Alberta_river_bright.jpg');
+    background: $igemDarkBlue;
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    position: relative;
+
+    @include transition(all 1s ease);
+
+    overflow-x: hidden;
+
+
+    text-align: center;
+
+    // h1 span,
+    // h2 span {
+    //     background-color: rgba(0, 0, 0, 0.7);
+    //     color: $white;
+    //     display: inline-block;
+    //     font-size: 2em;
+    //     font-style: italic;
+    //     padding: 20px;
+    //
+    //     &:after {
+    //         content: '';
+    //         display: block;
+    //     }
+    // }
+}
+
+.iframewrapper {
+    margin-left: $navbarIconWidth;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+}
+
+.content {
+    // Any overflow other than 'visible' triggers a block formatting context.
+    // BFCs don't allow descendant floats to escape them, nor do they allow
+    // sibling/ancestor floats to intrude into them. The net effect here is that
+    // the floated div will do it's thing, then the second div will be an
+    // ordinary block, taking up all available width except that occupied by the
+    // float. This trick is used in conjunction with #navigation{float: left;}
+    // see: http://stackoverflow.com/questions/1260122/expand-div-to-take-remaining-width
+    background-color: $contentBG;
+    margin-left: $navbarIconWidth;
+    min-height: 100%;
+    overflow: hidden;
+    // padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    .tableofcontents {
+        list-style: none;
+        margin-top: 20px;
+        max-height: 100%;
+        overflow-y: scroll;
+        // position: fixed;
+        // right: 0;
+        // width: 400px;
+
+        li {
+            a {
+                border-left: $sidebarBorderThickness solid transparent;
+                color: $sidebarInactiveColor;
+                padding-left: $sidebarPaddingLevel1;
+                text-decoration: none;
+            }
+
+            ul {
+                display: none;
+                list-style: none;
+                padding: 0;
+
+                li {
+                    a {
+                        padding-left: $sidebarPaddingLevel2;
+                    }
+
+                    ul {
+                        display: none;
+
+                        li a {
+                            padding-left: $sidebarPaddingLevel3;
+                        }
+                    }
+
+                    &:hover {
+                        a {
+                            border-left: $sidebarBorderThickness solid rgba($sidebarBorderColor2, 0.5);
+                        }
+                    }
+                }
+            }
+
+            &:hover {
+                a {
+                    border-left: $sidebarBorderThickness solid rgba($sidebarBorderColor1, 0.5);
+                }
+
+                ul {
+                    display: block;
+
+                    li {
+                        a {
+                            border-left: $sidebarBorderThickness solid transparent;
+                        }
+
+                        ul {
+                            display: none;
+                        }
+
+                        &:hover {
+                            a {
+                                border-left: $sidebarBorderThickness solid rgba($sidebarBorderColor2, 0.5);
+                            }
+
+                            ul {
+                                display: block;
+
+                                li {
+                                    a {
+                                        border-left: $sidebarBorderThickness solid transparent;
+                                        color: $sidebarInactiveColor;
+                                    }
+
+                                    &:hover {
+                                        a {
+                                            border-left: $sidebarBorderThickness solid rgba($sidebarBorderColor3, 0.5);
+                                        }
+                                    }
+
+                                    &.active {
+                                        a {
+                                            border-left: $sidebarBorderThickness solid $sidebarBorderColor;
+                                            color: $sidebarActiveColor;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.active {
+                a {
+                    border-left: $sidebarBorderThickness solid $sidebarBorderColor1;
+                    color: $sidebarActiveColor;
+                }
+
+                ul {
+                    display: block;
+
+                    li {
+                        a {
+                            border-left: $sidebarBorderThickness solid transparent;
+                            color: $sidebarInactiveColor;
+                        }
+
+                        ul {
+                            display: none;
+                        }
+
+                        &:hover {
+                            ul {
+                                display: block;
+                            }
+                        }
+
+                        &.active {
+                            a {
+                                border-left: $sidebarBorderThickness solid $sidebarBorderColor2;
+                                color: $sidebarActiveColor;
+                            }
+
+                            ul {
+                                display: block;
+
+                                li {
+                                    a {
+                                        border-left: $sidebarBorderThickness solid transparent;
+                                        color: $sidebarInactiveColor;
+                                    }
+
+                                    &.active {
+                                        a {
+                                            border-left: $sidebarBorderThickness solid $sidebarBorderColor3;
+                                            color: $sidebarActiveColor;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .content-main {
+        // float: left;
+        @include box-shadow(0px 2px 4px 2px rgba(0, 0, 0, 0.5));
+        background-color: $white-1;
+        font-family: 'proxima-nova', sans-serif;
+        margin: 0 auto;
+        max-width: 640px;
+        padding: 20px;
+    }
+}
+
+#content-main {
+    // @include box-shadow(0px 2px 4px 2px rgba(0, 0, 0, 0.5));
+    background-image: url('http://2015.igem.org/wiki/images/6/67/Toronto_2015_subtle-pattern-10.jpg');
+}
+
+// Navigation styles
+// We have a ul of li > a's, some of which may contain another ul of li > a's
+#navigation {
+    @include transform(translateX(calc(-100% + 50px)));
+    @include transition(all 500ms ease);
+    @include box-shadow(0px 2px 4px 2px rgba(0, 0, 0, 0.5));
+    background-color: rgba($sidebarBG, 1);
+    // border-bottom: 9999px solid $sidebarBG;
+    // By setting display to inline-block, the div will expand its width
+    // based on the contents. i.e. we can change the font size and this
+    // will automatically readjust.
+    display: inline-block;
+    // float: left;
+    height: 100%;
+    position: fixed;
+
+    &:hover {
+        @include transform(translateX(0));
+        z-index: 9002;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+
+        li {
+            display: block;
+            list-style: none;
+            position: relative;
+            text-align: center;
+            width: 100%;
+
+            a {
+                @include transition(all 200ms ease);
+                // background-color: rgba($navLinkBG, 0.8);
+                color: $navLinkColour;
+                display: block;
+                font-size: 1em;
+                padding: 10px;
+                // height: 50px;
+                // line-height: 50px;
+                // padding-left: 20px;
+                // padding-right: 20px;
+                text-decoration: none;
+                text-transform: capitalize;
+
+                span {
+                    margin-right: 50px;
+                }
+
+                i {
+                    @include transform(translateY(-55%));
+                    position: absolute;
+                    right: 0;
+                    top: 50%;
+                    font-size: 2em;
+                    width: 50px;
+                }
+
+                &:after {
+                    clear: both;
+                    content: '';
+                }
+            }
+
+            // span {
+            //     @include border-radius(5px);
+            //     @include transform(translateY(-50%));
+            //     background-color: $black;
+            //     color: $white;
+            //     font-size: 1.2em;
+            //     left: -9999px;
+            //     padding: 10px;
+            //     position: absolute;
+            //     text-transform: capitalize;
+            //
+            //     &:before {
+            //         @include transform(translateY(-50%));
+            //         border-color: transparent $black transparent transparent;
+            //         border-style: solid;
+            //         border-width: $navigationTooltipTriangleHeight $navigationTooltipSpacing $navigationTooltipTriangleHeight 0;
+            //         content: '';
+            //         height: 0;
+            //         left: -$navigationTooltipSpacing;
+            //         position: absolute;
+            //         top: 50%;
+            //         width: 0;
+            //     }
+            // }
+
+            ul {
+                // Hide inner navs offscreen for now
+                @include box-shadow(5px 0 5px rgba(0, 0, 0, 0.5));
+                left: -9999px;
+                line-height: 100%;
+                position: absolute;
+                z-index: 9000;
+
+                li a span {
+                    margin-right: 0;
+                    font-size: 1em;
+                }
+
+                ul {
+                    background-color: $navLinkOuterHoverBG;
+                }
+            }
+
+            &:hover {
+                a {
+                    background-color: $navLinkOuterHoverBG;
+                    color: $navLinkOuterHoverColor;
+                }
+
+                span {
+                    left: calc(100% + #{$navigationTooltipSpacing});
+                    top: 50%;
+                }
+
+                ul {
+                    left: 100%;
+                    top: 0;
+
+                    li {
+                        span {
+                            // Keep inner tooltip hidden for now
+                            left: -9999px;
+                        }
+
+                        &:hover {
+                            span {
+                                left: calc(100% + #{$navigationTooltipSpacing});
+                                top: 50%;
+                            }
+                        }
+                    }
+
+                    a:hover {
+                        color: $navLinkInnerHoverColour;
+                    }
+
+                    li:hover a {
+                        background: $navLinkInnerHoverBG;
+                    }
+                }
+            }
+
+            &.active {
+                a {
+                    background-color: $navLinkActiveBG;
+                    color: $navLinkActiveOuterColour;
+                }
+
+                ul li {
+                    a {
+                        background-color: $navLinkOuterHoverBG;
+                        color: $navLinkColour;
+                    }
+
+                    &.active a {
+                        background-color: $navLinkActiveInnerBG;
+                        color: $navLinkActiveInnerColour;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.image-wrapper {
+    text-align: center;
+
+    img {
+        @include border-radius(5px);
+        // @include box-shadow(0px 2px 4px 2px rgba(0, 0, 0, 0.5));
+        background-color: $imageBG;
+        // border-bottom: 2px solid darken($grey-200, 15%);
+        height: auto;
+        border: 5px solid $imageBG;
+        // padding: 5px;
+        width: 50%;
+	}
+}

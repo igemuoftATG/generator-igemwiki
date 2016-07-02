@@ -1,0 +1,48 @@
+{
+  "name": "wiki2015",
+  "version": "0.0.0",
+  "homepage": "https://github.com/igemuoftATG/wiki2015",
+  "authors": [
+    "Julian Mazzitelli <mazzitelli.julian@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "compass-mixins": "~1.0.2"
+  },
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "flexboxgrid": "~6.2.0",
+    "font-awesome": "fontawesome#~4.4.0",
+    "highlightjs": "~8.7.0",
+    "jquery": "~2.1.4",
+    "normalize-libsass": "~1.0.3",
+    "vivus": "~0.2.3"
+  },
+  "overrides": {
+    "font-awesome": {
+      "main": [
+        "css/font-awesome.min.css"
+      ]
+    },
+    "bootstrap": {
+      "main": [
+        "dist/js/bootstrap.js",
+        "dist/css/bootstrap.css",
+        "less/bootstrap.less"
+      ]
+    },
+    "highlightjs": {
+      "main": [
+        "highlight.pack.js",
+        "styles/github.css"
+      ]
+    }
+  }
+}

@@ -1,0 +1,28 @@
+linters:
+  BorderZero:
+    enabled: false
+
+  Indentation:
+    exclude:
+      - 'path/to/file.scss'
+      - 'path/to/directory/**'
+    severity: warning
+    width: 4
+
+  NameFormat:
+    enabled: false
+
+  IdSelector:
+    enabled: false
+
+  SelectorDepth:
+    enabled: false
+
+  NestingDepth:
+    enabled: false
+
+  QualifyingElement:
+    enabled: false
+
+  LeadingZero:
+    enabled: false

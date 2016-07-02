@@ -1,0 +1,66 @@
+// resets for default wiki styles
+#top_menu_under {
+    // toggle this, with 'on' the page goes under the top bar
+    position: absolute;
+    border: 0;
+}
+
+#top_menu_14 {
+    opacity: 0;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+
+#globalWrapper, #content, #bodyContent {
+    height: 100%;
+}
+
+#globalWrapper {
+    font-size: 100%;
+    padding-bottom: 0;
+}
+
+#content {
+    border: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#bodyContent {
+    line-height: 1.42857143;
+    background: $bodyContentBG;
+}
+
+#mw-content-text {
+    height: 100%;
+}
+
+h1.firstHeading {
+    display: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    border: 0;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+p {
+    line-height: 1.42857143;
+    margin: 0;
+}
+li {
+    margin-bottom: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.mw-content-ltr ul, .mw-content-rtl .mw-content-ltr ul {
+    margin: 0;
+}

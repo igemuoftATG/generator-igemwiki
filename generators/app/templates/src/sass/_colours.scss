@@ -1,0 +1,51 @@
+// _lumxcolours.scss is imported before this file
+// see: http://ui.lumapps.com/css/colors
+
+// ==== Descriptive Colours =====
+// Define HEX/rgb/rgba values here
+
+// the colours from this banner
+// http://2015.igem.org/wiki/images/4/48/DemoBannerforTeams.pdf
+$igemPurple: #3b2b55;
+$igemGreen: #73ca9a;
+$igemYellow: #e7e247;
+$igemBlue: #00b5e6;
+$igemDarkBlue: #004389;
+
+
+// ==== Functional Colours ====
+// Define which elements use what colours here
+
+// Some main background colours
+$bodyBG: $igemDarkBlue;
+$sidebarBG: $igemDarkBlue;
+$contentBG: white;
+// see: _igemreset.scss
+$bodyContentBG: $bodyBG;
+
+// Scrollbar
+$scrollbarColour: $igemBlue;
+$scrollbarBG: $igemDarkBlue;
+
+// Navigation links
+$navLinkColour: white;
+$navLinkBG: $igemDarkBlue;
+$navLinkOuterHoverColor: white;
+$navLinkOuterHoverBG: $igemGreen;
+$navLinkInnerHoverColour: white;
+$navLinkInnerHoverBG: $igemPurple;
+$navLinkActiveBG: lighten($navLinkBG, 50%);
+$navLinkActiveOuterColour: black;
+$navLinkActiveInnerColour: black;
+$navLinkActiveInnerBG: lighten($navLinkOuterHoverBG, 10%);
+
+// Sidebar
+$sidebarInactiveColor: $grey-700;
+$sidebarActiveColor: $grey-900;
+$sidebarBorderColor: $igemGreen;
+$sidebarBorderColor1: $igemGreen;
+$sidebarBorderColor2: $igemPurple;
+$sidebarBorderColor3: $igemDarkBlue;
+
+// Images
+$imageBG: $grey-200
