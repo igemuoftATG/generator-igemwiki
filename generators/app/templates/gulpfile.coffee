@@ -388,21 +388,21 @@ login = (cb) ->
         },
         jar: jar
     }, (err, httpResponse, body) ->
-            if !err and httpResponse.statusCode is 302
-                # Follow redirects to complete login
-                request {
-                    url: httpResponse.headers.location
-                    jar: jar
-                }, (err, httpResponse, body) ->
-                    if !err and httpResponse.statusCode is 200
-                        gutil.log('Successfully logged in'.green + ' as ' + "#{username}".magenta)
-                        # Pass cookie jar into callback
-                        cb(jar)
-                    else
-                        gutil.log('Request fail 1')
-                        handleRequestError(err, httpResponse)
-            else
-                gutil.log('Incorrect username/password'.red)
+        if !err and httpResponse.statusCode is 302
+            # Follow redirects to complete login
+            request {
+                url: httpResponse.headers.location
+                jar: jar
+            }, (err, httpResponse, body) ->
+                if !err and httpResponse.statusCode is 200
+                    gutil.log('Successfully logged in'.green + ' as ' + "#{username}".magenta)
+                    # Pass cookie jar into callback
+                    cb(jar)
+                else
+                    gutil.log('Request fail 1')
+                    handleRequestError(err, httpResponse)
+        else
+            gutil.log('Incorrect username/password'.red)
 
 # **logout**
 logout = (jar) ->
@@ -449,7 +449,7 @@ prepareUploadForm = (link, type, jar, cb, tryLogout, updateImageStores) ->
     if type is 'image'
         checkIfImageExists link, updateImageStores, tryLogout, (equal) ->
             if equal
-                return;
+                return
             else
                 BASE_URL = "http://#{year}.igem.org/Special:Upload"
                 page = link
@@ -526,7 +526,7 @@ visitEditPage = (link, type, jar, cb, tryLogout, updateImageStores, editUrl, pag
             }, {decodeEntites: true}
 
             parser.write(body)
-            parser.end();
+            parser.end()
 
             if type is 'page'
                 file = "#{dests.live.folder}/#{page}.html"
