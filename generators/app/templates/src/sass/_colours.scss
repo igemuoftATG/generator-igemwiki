@@ -18,6 +18,7 @@ $igemDarkBlue: #004389;
 
 // Some main background colours
 $bodyBG: $igemDarkBlue;
+$sidebarBG: $igemDarkBlue;
 $contentBG: white;
 // see: _igemreset.scss
 $bodyContentBG: $bodyBG;
@@ -37,3 +38,14 @@ $navLinkActiveBG: lighten($navLinkBG, 50%);
 $navLinkActiveOuterColour: black;
 $navLinkActiveInnerColour: black;
 $navLinkActiveInnerBG: lighten($navLinkOuterHoverBG, 10%);
+
+// Sidebar
+$sidebarInactiveColor: $grey-700;
+$sidebarActiveColor: $grey-900;
+$sidebarBorderColor: $igemGreen;
+$sidebarBorderColor1: $igemGreen;
+$sidebarBorderColor2: $igemPurple;
+$sidebarBorderColor3: $igemDarkBlue;
+
+// Images
+$imageBG: $grey-200

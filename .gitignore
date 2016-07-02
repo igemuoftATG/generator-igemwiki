@@ -4,3 +4,9 @@ bower_components
 *.swp
 *.map
 phantom/**/*.png
+build-dev
+build-live
+responses
+pulled
+helpers.js
+.yo-rc.json

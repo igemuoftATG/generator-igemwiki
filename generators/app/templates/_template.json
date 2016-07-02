@@ -21,7 +21,7 @@
         "safety"           : "Safety",
         "software"         : "Software",
         "team"             : "Team"
-    },
+   },
     "navigation": {
         "index" : "home",
         "team"  : "team",
@@ -45,7 +45,7 @@
         "modeling"         : "modeling",
         "measurement"      : "measurement",
         "software"         : "software",
-        "entrepreneurship" : "entrepreneurship"
+       "entrepreneurship" : "entrepreneurship"
     },
     "templates": {
         "head"     : "head",

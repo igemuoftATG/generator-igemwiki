@@ -16,13 +16,176 @@ body {
     // ordinary block, taking up all available width except that occupied by the
     // float. This trick is used in conjunction with #navigation{float: left;}
     // see: http://stackoverflow.com/questions/1260122/expand-div-to-take-remaining-width
-    overflow: hidden;
+    background-color: $contentBG;
+    margin-left: $navbarIconWidth;
     min-height: 100%;
-
+    overflow: hidden;
+    // padding-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
-    padding-bottom: 20px;
-    background-color: $contentBG;
+
+    .tableofcontents {
+        list-style: none;
+        margin-top: 20px;
+        max-height: 100%;
+        overflow-y: scroll;
+        // position: fixed;
+        // right: 0;
+        // width: 400px;
+
+        li {
+            a {
+                border-left: $sidebarBorderThickness solid transparent;
+                color: $sidebarInactiveColor;
+                padding-left: $sidebarPaddingLevel1;
+                text-decoration: none;
+            }
+
+            ul {
+                display: none;
+                list-style: none;
+                padding: 0;
+
+                li {
+                    a {
+                        padding-left: $sidebarPaddingLevel2;
+                    }
+
+                    ul {
+                        display: none;
+
+                        li a {
+                            padding-left: $sidebarPaddingLevel3;
+                        }
+                    }
+
+                    &:hover {
+                        a {
+                            border-left: $sidebarBorderThickness solid rgba($sidebarBorderColor2, 0.5);
+                        }
+                    }
+                }
+            }
+
+            &:hover {
+                a {
+                    border-left: $sidebarBorderThickness solid rgba($sidebarBorderColor1, 0.5);
+                }
+
+                ul {
+                    display: block;
+
+                    li {
+                        a {
+                            border-left: $sidebarBorderThickness solid transparent;
+                        }
+
+                        ul {
+                            display: none;
+                        }
+
+                        &:hover {
+                            a {
+                                border-left: $sidebarBorderThickness solid rgba($sidebarBorderColor2, 0.5);
+                            }
+
+                            ul {
+                                display: block;
+
+                                li {
+                                    a {
+                                        border-left: $sidebarBorderThickness solid transparent;
+                                        color: $sidebarInactiveColor;
+                                    }
+
+                                    &:hover {
+                                        a {
+                                            border-left: $sidebarBorderThickness solid rgba($sidebarBorderColor3, 0.5);
+                                        }
+                                    }
+
+                                    &.active {
+                                        a {
+                                            border-left: $sidebarBorderThickness solid $sidebarBorderColor;
+                                            color: $sidebarActiveColor;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.active {
+                a {
+                    border-left: $sidebarBorderThickness solid $sidebarBorderColor1;
+                    color: $sidebarActiveColor;
+                }
+
+                ul {
+                    display: block;
+
+                    li {
+                        a {
+                            border-left: $sidebarBorderThickness solid transparent;
+                            color: $sidebarInactiveColor;
+                        }
+
+                        ul {
+                            display: none;
+                        }
+
+                        &:hover {
+                            ul {
+                                display: block;
+                            }
+                        }
+
+                        &.active {
+                            a {
+                                border-left: $sidebarBorderThickness solid $sidebarBorderColor2;
+                                color: $sidebarActiveColor;
+                            }
+
+                            ul {
+                                display: block;
+
+                                li {
+                                    a {
+                                        border-left: $sidebarBorderThickness solid transparent;
+                                        color: $sidebarInactiveColor;
+                                    }
+
+                                    &.active {
+                                        a {
+                                            border-left: $sidebarBorderThickness solid $sidebarBorderColor3;
+                                            color: $sidebarActiveColor;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .content-main {
+        // float: left;
+        @include box-shadow(0px 2px 4px 2px rgba(0, 0, 0, 0.5));
+        background-color: $white-1;
+        font-family: 'proxima-nova', sans-serif;
+        margin: 0 auto;
+        max-width: 640px;
+        padding: 20px;
+    }
+}
+
+#content-main {
+    // @include box-shadow(0px 2px 4px 2px rgba(0, 0, 0, 0.5));
+    background-image: url('http://2015.igem.org/wiki/images/6/67/Toronto_2015_subtle-pattern-10.jpg');
 }
 
 // Navigation styles
@@ -85,22 +248,37 @@ body {
 
             &.active {
                 a {
-                    color: $navLinkActiveOuterColour;
                     background-color: $navLinkActiveBG;
+                    color: $navLinkActiveOuterColour;
                 }
 
                 ul li {
                     a {
-                        color: $navLinkColour;
                         background-color: $navLinkOuterHoverBG;
+                        color: $navLinkColour;
                     }
 
                     &.active a {
-                        color: $navLinkActiveInnerColour;
                         background-color: $navLinkActiveInnerBG;
+                        color: $navLinkActiveInnerColour;
                     }
                 }
             }
         }
     }
+}
+
+.image-wrapper {
+    text-align: center;
+
+    img {
+        @include border-radius(5px);
+        // @include box-shadow(0px 2px 4px 2px rgba(0, 0, 0, 0.5));
+        background-color: $imageBG;
+        // border-bottom: 2px solid darken($grey-200, 15%);
+        height: auto;
+        border: 5px solid $imageBG;
+        // padding: 5px;
+        width: 50%;
+	}
 }

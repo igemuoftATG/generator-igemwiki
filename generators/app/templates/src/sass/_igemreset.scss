@@ -34,6 +34,10 @@
     background: $bodyContentBG;
 }
 
+#mw-content-text {
+    height: 100%;
+}
+
 h1.firstHeading {
     display: none;
 }
@@ -45,9 +49,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-    margin: 0;
     line-height: 1.42857143;
+    margin: 0;
 }
 li {
     margin-bottom: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+.mw-content-ltr ul, .mw-content-rtl .mw-content-ltr ul {
+    margin: 0;
 }

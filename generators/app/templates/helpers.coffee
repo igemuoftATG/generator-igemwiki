@@ -5,6 +5,7 @@ path = require 'path'
 # NodeJS modules
 gutil       = require 'gulp-util'
 marked      = require 'marked'
+toc         = require 'markdown-toc'
 highlighter = require 'highlight.js'
 wiredep     = require('wiredep')()
 
@@ -58,19 +59,18 @@ class Helpers
                 content += "<script src=\"#{script}\"></script>\n\t"
             content += "<!-- endbower -->\n\t"
 
-
         for script in scripts
-            if path.extname(script) is '.js'
-                if mode is 'live' and script isnt 'vendor.min.js'
-                    content += "<script src=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js\"></script>\n\t"
-                else
-                    if script isnt 'vendor.min.js'
-                        content += "<script src=\"js/#{script}\"></script>\n\t"
+            # if path.extname(script) is '.js'
+            if mode is 'live' and script isnt 'vendor_min_js'
+                content += "<script src=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&ctype=text/javascript\"></script>\n\t"
+            else
+                if script isnt 'vendor_min_js'
+                    content += "<script src=\"js/#{script}\"></script>\n\t"
 
         # Append 'vendor.min.js' after all other scripts for live build
         for script in scripts
-            if script is 'vendor.min.js'
-                content = "<script src=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&type=text/js\"></script>\n\t" + content
+            if script is 'vendor_min_js'
+                content = "<script src=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/js/#{script}?action=raw&ctype=text/javascript\"></script>\n\t" + content
 
         return new hbs.SafeString(content)
 
@@ -92,15 +92,21 @@ class Helpers
                 content += "<link rel=\"stylesheet\" href=\"#{stylesheet}\" type=\"text/css\" />\n\t"
             content += "<!-- endbower -->\n\t"
 
-        for stylesheet in styles
-            if path.extname(stylesheet) is '.css'
-                if mode is 'live' and stylesheet isnt 'vendor.min.css'
-                    content += "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t"
-                else if stylesheet isnt 'vendor.min.css'
-                    content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />\n\t"
+        if mode is 'live'
+            content += '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">\n\t'
 
         for stylesheet in styles
-            if stylesheet is 'vendor.min.css'
+            # if path.extname(stylesheet) is '.css'
+            # if mode is 'live' and stylesheet isnt 'vendor.min.css'
+            if mode is 'live' and stylesheet isnt 'vendor_min_css'
+                content += "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t"
+            # else if stylesheet isnt 'vendor.min.css'
+            else if stylesheet isnt 'vendor_min_css'
+                content += "<link rel=\"stylesheet\" href=\"styles/#{stylesheet}\" type=\"text/css\" />\n\t"
+
+        for stylesheet in styles
+            # if stylesheet is 'vendor.min.css'
+            if stylesheet is 'vendor_min_css'
                 content = "<link rel=\"stylesheet\" href=\"http://#{templateData.year}.igem.org/Template:#{templateData.teamName}/css/#{stylesheet}?action=raw&ctype=text/css\" type=\"text/css\" />\n\t" + content
 
         return new hbs.SafeString(content)
@@ -125,7 +131,9 @@ class Helpers
                 else if format is 'media'
                     fmt = 'Media'
 
-                content = "</html> [[#{fmt}:#{templateData.teamName}_#{templateData.year}_#{img}]] <html>"
+                # content = "</html> [[#{fmt}:#{templateData.teamName}_#{templateData.year}_#{img}]] <html>"
+                # Quick n' dirty fix
+                content = "</html> [[File:#{templateData.teamName}_#{templateData.year}_#{img}]] <html>"
         else
             if format isnt 'directlink'
                 content = "<img src=\"images/#{img}\" />"
@@ -146,7 +154,7 @@ class Helpers
             else
                 return "#{linkName}.html"
 
-    navigation = (field, mode, active1, active2) ->
+    navigation = (field, mode, active1, active2, recursed) ->
         content = "<ul>\n"
 
         actives = new Array()
@@ -156,6 +164,11 @@ class Helpers
 
         for item, value of field
             isActive = false
+
+            if recursed
+                icon = ""
+            else
+                icon = "<i class=\"fa #{templateData.icons[item]}\"></i>"
 
             for active in actives
                 if item is active
@@ -169,17 +182,25 @@ class Helpers
 
             if typeof(value) is 'object'
                 if isActive
-                    content += "<li class=\"active\"><a href=\"#\">#{item}</a>\n"
+                    content += "<li class=\"active\"><a href=\"#\"><span>#{item}</span><i class=\"fa #{templateData.icons[item]}\"></i></a>\n"
+                    # content += "<li class=\"active\"><a href=\"#\"><i class=\"fa #{templateData.icons[item]}\"></i></a>\n"
                 else
-                    content += "<li><a href=\"#\">#{item}</a>\n"
-                content += navigation(value, mode, active1, active2)
-                content += "</li>"
+                    content += "<li><a href=\"#\"><span>#{item}</span><i class=\"fa #{templateData.icons[item]}\"></i></a>\n"
+                    # content += "<li><a href=\"#\"><i class=\"fa #{templateData.icons[item]}\"></i></a>\n"
+                # content += "<div class=\"inner-menu\"><span>#{item}</span>"
+                content += navigation(value, mode, active1, active2, true)
+                # content += "</div></li>"
             else
+                # if item is 'index'
+                #     item = 'home'
                 if isActive
-                    content += "<li class=\"active\"><a href=\"#{link(item, mode)}\">#{value}</a></li>\n"
+                    content += "<li class=\"active\"><a href=\"#{link(item, mode)}\"><span>#{value}</span>#{icon}</a></li>\n"
+                    # content += "<li class=\"active\"><a href=\"#{link(item, mode)}\"><i class=\"fa #{templateData.icons[item]}\"></i></a>"
                 else
-                    content += "<li><a href=\"#{link(item, mode)}\">#{value}</a></li>\n"
-
+                    content += "<li><a href=\"#{link(item, mode)}\"><span>#{value}</span>#{icon}</a></li>\n"
+                    # content += "<li><a href=\"#{link(item, mode)}\"><i class=\"fa #{templateData.icons[item]}\"></i></a>"
+                # content += "<span>#{item}</span>"
+                content += "</li>\n"
         content += "</ul>\n"
 
         return content
@@ -207,7 +228,7 @@ class Helpers
     markdownHere: (string, options) ->
         marked.setOptions({
             highlight: (code) ->
-                 return highlighter.highlightAuto(code).value
+                return highlighter.highlightAuto(code).value
         })
 
         handlebarsedMarkdown = hbs.compile(string)(templateData)
@@ -218,15 +239,22 @@ class Helpers
     markdown: (file) ->
         marked.setOptions({
             highlight: (code) ->
-                 return highlighter.highlightAuto(code).value
+                return highlighter.highlightAuto(code).value
         })
-
         markdownFile = fs.readFileSync("#{__dirname}/src/markdown/#{file}.md").toString()
         handlebarsedMarkdown = hbs.compile(markdownFile)(templateData)
 
-        markedHtml = marked(handlebarsedMarkdown)
+        content = '<div class="content" id="content-main">'
+        content += '<div class="row">'
 
-        return new hbs.SafeString(markedHtml)
+        content += '<div class="col col-lg-8 col-md-12"><div class="content-main">' + marked(handlebarsedMarkdown) + '</div></div>'
+        content += '<div id="tableofcontents" class="tableofcontents affix sidebar col-lg-4 hidden-xs hidden-sm hidden-md visible-lg-3"><ul class="nav">' +
+                         marked(toc(handlebarsedMarkdown, {firsth1: false, maxdepth: 5}).content).slice(4) +
+                     '</div>'
+
+        content += "</div></div>"
+
+        return new hbs.SafeString(content)
 
 
 module.exports = Helpers

@@ -208,7 +208,8 @@ gulp.task 'bower:js', ->
         .src(mainBowerFiles('**/*.js'), { base: './bower_components'})
         .pipe(concat('vendor.js'))
         .pipe(uglify().on('error', gutil.log))
-        .pipe(rename({suffix: '.min'}))
+        # .pipe(rename({suffix: '.min'}))
+        .pipe(rename('vendor_min_js'))
         .pipe(header(headerCreator('js')))
         .pipe(gulp.dest(dests.live.js))
 
@@ -218,7 +219,8 @@ gulp.task 'bower:css', ->
         .src(mainBowerFiles('**/*.css'), { base: './bower_components'})
         .pipe(concat('vendor.css'))
         .pipe(cssmin())
-        .pipe(rename({suffix: '.min'}))
+        # .pipe(rename({suffix: '.min'}))
+        .pipe(rename('vendor_min_css'))
         .pipe(header(headerCreator('css')))
         .pipe(gulp.dest(dests.live.css))
 
@@ -230,7 +232,8 @@ gulp.task 'minify:css', ['bower', 'sass'], ->
         .src(globs.css)
         .pipe(concat('styles.css'))
         .pipe(cssmin())
-        .pipe(rename({suffix: '.min'}))
+        # .pipe(rename({suffix: '.min'}))
+        .pipe(rename('styles_min_css'))
         .pipe(header(headerCreator('css')))
         .pipe(gulp.dest(dests.live.css))
 
@@ -239,7 +242,8 @@ gulp.task 'uglify:js', ['bower', 'browserify'], ->
         .src(globs.js)
         .pipe(concat('bundle.js'))
         .pipe(uglify().on('error', gutil.log))
-        .pipe(rename({suffix: '.min'}))
+        # .pipe(rename({suffix: '.min'}))
+        .pipe(rename('bundle_min_js'))
         .pipe(header(headerCreator('js')))
         .pipe(gulp.dest(dests.live.js))
 
@@ -267,14 +271,15 @@ gulp.task 'serve', ['sass', 'build:dev'], ->
                 '/preamble'         : './src/preamble'
                 '/images'           : './images'
 
-    watch [globs.hbs, globs.js, globs.md, globs.sass, files.template], ->
+    watch [globs.hbs, globs.libCoffee, globs.libJS, globs.md, globs.sass, files.template, "#{files.helpers}.coffee"], ->
+        # gutil.log(vinyl.inspect())
         gulp.start('build:dev')
 
     watch [globs.libCoffee, globs.libJS], ->
         gulp.start('browserify')
 
-    watch "#{files.helpers}.coffee", ->
-        gulp.start('coffeescript:helpers')
+    # watch "#{files.helpers}.coffee", ->
+    #     gulp.start('coffeescript:helpers')
 
 # What happens when you run `gulp`
 gulp.task "default", ['serve']
@@ -424,21 +429,24 @@ checkIfImageExists = (link, updateImageStores, tryLogout, cb) ->
         else
             images = JSON.parse(data)
 
-            fileStream = fs.createReadStream("images/#{link}")
+            if not images[link]?
+                cb(false)
+            else
+                fileStream = fs.createReadStream("images/#{link}")
 
-            streamEqual request(images[link]), fileStream, (err, equal) ->
-                if err?
-                    gutil.log(err)
-                else
-                    if equal
-                        imageStore = new Object()
-                        imageStore[link] = images[link]
-                        gutil.log("Skipping upload of ".yellow + "#{link}".magenta + " since live version is identical".yellow)
-                        updateImageStores(imageStore)
-                        tryLogout()
-                        cb(equal)
+                streamEqual request(images[link]), fileStream, (err, equal) ->
+                    if err?
+                        gutil.log(err)
                     else
-                        cb(equal)
+                        if equal
+                            imageStore = new Object()
+                            imageStore[link] = images[link]
+                            gutil.log("Skipping upload of ".yellow + "#{link}".magenta + " since live version is identical".yellow)
+                            updateImageStores(imageStore)
+                            tryLogout()
+                            cb(equal)
+                        else
+                            cb(equal)
 
 # Calls cb(url, file, multiform, jar)
 prepareUploadForm = (link, type, jar, cb, tryLogout, updateImageStores) ->
@@ -547,8 +555,9 @@ visitEditPage = (link, type, jar, cb, tryLogout, updateImageStores, editUrl, pag
 
             cb(url, file, page, type, multiform, jar, tryLogout, updateImageStores, link)
         else
-            gutil.log('Request fail 3')
-            handleRequestError(err, httpResponse)
+            gutil.log('Request fail 3, trying again')
+            upload(link, type, jar, tryLogout, updateImageStores)
+            # handleRequestError(err, httpResponse)
 
 colourify = (file, url, multiform, type) ->
     if type is 'image'
@@ -581,12 +590,20 @@ postEdit = (url, file, page, type, multiform, jar, tryLogout, updateImageStores,
         formData : multiform
         jar      : jar
     }, (err, httpResponse, body) ->
+        if not httpResponse?
+            gutil.log('Trying again')
+            upload(link, type, jar, tryLogout, updateImageStores)
+
         if !err and httpResponse.statusCode is 302
             # Follow redirect to new page
             request {
                 url: httpResponse.headers.location
                 jar: jar
             }, (err, httpResponse, body) ->
+                if not httpResponse?
+                    console.log('Got an undefined httpResponse')
+                    upload(link, type, jar, tryLogout, updateImageStores)
+
                 if !err and httpResponse.statusCode is 200
                     if fs.readdirSync(__dirname).indexOf(paths.responses) is -1
                         fs.mkdirSync(paths.responses)
@@ -600,7 +617,7 @@ postEdit = (url, file, page, type, multiform, jar, tryLogout, updateImageStores,
                                 if name is 'a'
                                     currentHref = attr.href
                             ontext: (text) ->
-                                if text is 'Full resolution' or text is multiform['wpDestFile']
+                                if text is 'Full resolution' or text is multiform['wpDestFile'] or text is 'Original file'
                                     finalHref = currentHref
                         }, {decodeEntites: true}
 
@@ -622,34 +639,24 @@ postEdit = (url, file, page, type, multiform, jar, tryLogout, updateImageStores,
                 else
                     gutil.log('Request fail 4')
                     handleRequestError(err, httpResponse)
-        else if httpResponse.statusCode is 200
-            gutil.log('Upload failed for '.yellow + file + ', trying again.'.yellow)
-            # if type is 'page'
-            #     upload(link, 'page', jar, tryLogout)
-            # else if type is 'template'
-            #     upload(link, 'template', jar, tryLogout)
-            # else if type is 'stylesheet'
-            #     upload(link, 'stylesheet', jar, tryLogout)
-            # else if type is 'script'
-            #     upload(link, 'script', jar, tryLogout)
-            # else if type is 'image'
-            #     upload(link, 'image', jar, tryLogout, updateImageStores)
+        else if httpResponse? and httpResponse.statusCode is 200
+            gutil.log('Upload failed for '.red + file + ', trying again.'.red)
             upload(link, type, jar, tryLogout, updateImageStores)
         else
             gutil.log('Request fail 5')
-            handleRequestError(err, httpResponse)
+            upload(link, type, jar, tryLogout, updateImageStores)
+            # handleRequestError(err, httpResponse)
 
 upload = (link, type, jar, tryLogout, updateImageStores) ->
     if link isnt '.DS_Store'
         prepareUploadForm(link, type, jar, postEdit, tryLogout, updateImageStores)
 
 # **push**
-gulp.task 'push', ['build:live'], ->
+gulp.task 'push', ->
     login (jar) ->
         templateData = JSON.parse(fs.readFileSync(files.template))
         stylesheets  = fs.readdirSync(dests.live.css)
         scripts      = fs.readdirSync(dests.live.js)
-        images       = fs.readdirSync('images')
 
         num = 0
         tryLogout = ->
@@ -657,13 +664,34 @@ gulp.task 'push', ['build:live'], ->
             total = Object.keys(templateData.links).length +
                 Object.keys(templateData.templates).length +
                 stylesheets.length +
-                scripts.length +
-                images.length
+                scripts.length
 
             if '.DS_Store' in stylesheets
                 total -= 1
             if '.DS_Store' in scripts
                 total -= 1
+
+            if num is total
+                logout(jar)
+
+        for link of templateData.links
+            upload(link, 'page', jar, tryLogout)
+        for template of templateData.templates
+            upload(template, 'template', jar, tryLogout)
+        for stylesheet in stylesheets
+            upload(stylesheet, 'stylesheet', jar, tryLogout)
+        for script in scripts
+            upload(script, 'script', jar, tryLogout)
+
+gulp.task 'push:images', ->
+    login (jar) ->
+        images = fs.readdirSync('images')
+
+        num = 0
+        tryLogout = ->
+            num += 1
+            total = images.length
+
             if '.DS_Store' in images
                 total -= 1
 
@@ -676,6 +704,8 @@ gulp.task 'push', ['build:live'], ->
             key = Object.keys(imageStore)[0]
             imageStores[key] = imageStore[key]
 
+            fs.writeFileSync(imageStoresFile, JSON.stringify(imageStores))
+
             if '.DS_Store' in fs.readdirSync(files.imagesFolder)
                 len = images.length - 1
             else
@@ -685,14 +715,6 @@ gulp.task 'push', ['build:live'], ->
                 fs.writeFileSync(imageStoresFile, JSON.stringify(imageStores))
                 gutil.log('Full resolution links of images stored in'.green, "#{imageStoresFile}".magenta)
 
-        for link of templateData.links
-            upload(link, 'page', jar, tryLogout)
-        for template of templateData.templates
-            upload(template, 'template', jar, tryLogout)
-        for stylesheet in stylesheets
-            upload(stylesheet, 'stylesheet', jar, tryLogout)
-        for script in scripts
-            upload(script, 'script', jar, tryLogout)
         for image in images
             upload(image, 'image', jar, tryLogout, updateImageStores)
 
