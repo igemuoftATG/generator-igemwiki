@@ -1,9 +1,9 @@
 {
-  "name": "wiki2015",
-  "version": "0.0.0",
-  "homepage": "https://github.com/igemuoftATG/wiki2015",
+  "name": "<%= teamName %>-wiki-<%= year %>",
+  "version": "0.0.1",
+  "homepage": "<%= repo %>#readme",
   "authors": [
-    "Julian Mazzitelli <mazzitelli.julian@gmail.com>"
+    "<%= author %>"
   ],
   "license": "MIT",
   "ignore": [
