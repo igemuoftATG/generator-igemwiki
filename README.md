@@ -103,11 +103,11 @@ You will be asked for
 * team name is it appears **exactly** on the wiki (needed for push to live wiki)
 * author (optional)
 * [GitHub](https://github.com/) repo in the format *username/repo*
-	* **Why?** As you will see, this generator exposes features which it make it
-	  applicable for **collobarative content editing** when using the repo to
-	  modify markdown files.
-	* Still confused? You can skip this by passing in the option `--skip-repo`.
-	  You can always push to a repo later.
+  * **Why?** As you will see, this generator exposes features which it make it
+    applicable for **collobarative content editing** when using the repo to
+    modify markdown files.
+  * Still confused? You can skip this by passing in the option `--skip-repo`.
+    You can always push to a repo later.
 
 ### Options
 
@@ -129,8 +129,7 @@ they are each doing in order to use them effectively.
 
 [Bower](http://bower.io/) is "a package manager for the web". Use it to install
 frontend dependencies, such as [bootstrap](http://getbootstrap.com/) or
-[fontawesome](https://fortawesome.github.io/Font-Awesome/) (*todo: push font
-files to wiki**). Install packages like so:
+[fontawesome](https://fortawesome.github.io/Font-Awesome/) ( *todo: push font files to wiki*). Install packages like so:
 
 ```
 bower install --save bootstrap
@@ -139,7 +138,7 @@ bower install --save bootstrap
 The `--save` is important as it adds bootstrap to the dependencies object in the
 `bower.json` file, and will be used by
 [wiredep](https://github.com/taptapship/wiredep) to inject the proper css and
-script tags into the outputted html. Browser all the Bower packages
+script tags into the outputted html. Browse all the Bower packages
 [here](http://bower.io/search/).
 
 ### Gulp
@@ -153,7 +152,7 @@ Feel free to add your own tasks and submit a pull request!
 
 ### Handlebars
 
-[Handlebars](http://handlebarsjs.com/) is used to write templates. This
+[Handlebars](http://handlebarsjs.com/) is used to write templates. These
 templates, when combined with helper functions and a set of object values can be
 very powerful. This is how I am building links for development and live using
 the same source files. The custom helper functions are all [here](https://github.com/igemuoftATG/generator-igemwiki/blob/master/generators/app/templates/helpers.coffee).
@@ -193,7 +192,7 @@ Okay, that works, but in markdown it is sooo much cleaner:
 You can use `#` to `######` for `<h1>` to `<h6>`, respectably. Still not convinced?
 
 ```html
-<img src="http://45.55.193.224/logo_grey.png" />
+<img src="http://45.55.193.224:1234/logo_grey.png" />
 <ul>
 	<li> <a href="http://igemuoft.github.io">iGEM UofT Computational Biology</a> </li>
 	<li> <b>wheeeee</b> </li>
@@ -242,10 +241,10 @@ compiling templates, and minifies Bower css into `vendor.min.css`, personal css
 into `styles.min.css`. Likewise for JS, except it uglifies as well, and personal
 JS goes into `bundle.min.js`. Then using the
 [request](https://www.npmjs.com/package/request) package (in combination with
-Chrome's web inspector Network tab), I've emulated to "go to
-pageName?action=edit, copy/paste into textbox, click save". You will be asked
-for your username and password of course, and will automatically log out when
-all uploads are complete.
+Chrome's web inspector Network tab), I've emulated the "go to
+``pageName?action=edit``, copy/paste into textbox, click save" workflow some of
+you might be familiar with. You will be asked for your username and password of
+course, and will automatically log out when all uploads are complete.
 
 ### Pull
 
@@ -274,8 +273,8 @@ The main template file is at `./src/template.json`. This stores the team name,
 year, links, markdown files, and navigation bar settings. It's used in almost
 every helper function in `./helpers.coffee`, and has a mode, either `dev` or
 `live` appended into it by the gulpfile before being used with handlebars.
-If you want to add new pages, change the ordering of the navigation, add new
-markdown files, edit this.
+**If you want to add new pages, change the ordering of the navigation, add new
+markdown files, edit this.**
 
 ### Styles
 
@@ -284,12 +283,12 @@ which gets compiled into `./build-dev/css/styles.css`. All the other files here
 are prefixed with `_` so that they don't compile for themselves (they are
 imported within `styles.scss`). [Sass](http://sass-lang.com/) lets you use
 variables and functions in CSS, and is super awesome. It's very easy to learn,
-if you already know css, you know sass.
+**if you already know css, you know sass**.
 
 ### Scripts
 
 You can write JS and CoffeeScript inside `./src/lib`. You can use `require` syntax
-because [Browserify](http://browserify.org/) is employed. Everything here will
+because [Browserify](http://browserify.org/) is used. Everything here will
 get bundled into `./build-dev/js/bundle.js`
 
 ### Pages
@@ -319,9 +318,9 @@ Here is a summary of the helper functions which take parameters (other than
 
 `image` is the filename exactly as it appears in `./images`, including the
 extension. `format` can be:
-* "file" -> inline image using wiki code. forces breaking/reopening html
-* "media" -> wiki code link to image without showing image, same as above with regards to html
-* "directlink" -> The preferred method. Requires `images.json` to already store the image link.
+* `file` -> inline image using wiki code. forces breaking/reopening html
+* `media` -> wiki code link to image without showing image, same as above with regards to html
+* `directlink` -> The preferred method. Requires `images.json` to already store the image link.
 
 ## License
 
