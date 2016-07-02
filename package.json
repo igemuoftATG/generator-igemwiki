@@ -16,11 +16,7 @@
     "type": "git",
     "url": "https://github.com/igemuoftATG/generator-igemwiki"
   },
-  "author": {
-    "name": "Julian Mazzitelli",
-    "email": "mazzitelli.julian@gmail.com",
-    "url": "http://jmazz.me"
-  },
+  "author": "Julian Mazzitelli <mazzitelli.julian@gmail.com> (http://jmazz.me)", 
   "bugs": {
     "url": "https://github.com/igemuoftATG/generator-igemwiki/issues"
   },
