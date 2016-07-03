@@ -10,7 +10,7 @@
     "type": "git",
     "url": "<%= repo %>"
   },
-  "author": "<%= author %>",
+  "author": "<%- author %>",
   "license": "MIT",
   "homepage": "<%= repo %>#readme",
   "devDependencies": {

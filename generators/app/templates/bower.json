@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "homepage": "<%= repo %>#readme",
   "authors": [
-    "<%= author %>"
+    "<%- author %>"
   ],
   "license": "MIT",
   "ignore": [
