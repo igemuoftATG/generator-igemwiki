@@ -112,6 +112,10 @@ module.exports = generators.Base.extend({
       this.destinationPath('package.json'),
       this.config.getAll()
     )
+    this.fs.copyTpl(
+      this.templatePath('.gitignore'),
+      this.destinationPath('.gitignore')
+    )
 
     this.directory('src', './src')
     this.fs.copyTpl(
