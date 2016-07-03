@@ -814,6 +814,6 @@ gulp.task 'pulled-to-md', ->
             content = fs.readFileSync(entry, 'utf-8')
             md = toMarkdown(content)
             mdFile = entry.split('.').slice(0, entry.split('.').length - 1).join('.') + '.md'
-            fs.writeFileSync(mdFile, content)
+            fs.writeFileSync(mdFile, md)
             gutil.log("Wrote #{mdFile}")
     
