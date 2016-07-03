@@ -14,6 +14,7 @@ watch      = require 'gulp-watch'
 
 # NodeJS modules
 browserify     = require 'browserify'
+browserSync    = require('browser-sync').create()
 buffer         = require 'vinyl-buffer'
 coffeeify      = require 'coffeeify'
 colors         = require 'colors'
@@ -28,7 +29,7 @@ runSequence    = require 'run-sequence'
 combiner       = require 'stream-combiner2'
 streamEqual    = require 'stream-equal'
 source         = require 'vinyl-source-stream'
-browserSync    = require('browser-sync').create()
+toMarkdown     = require('to-markdown')
 
 # NodeJS internal modules
 cp   = require 'child_process'
@@ -806,3 +807,13 @@ gulp.task 'pull', ->
                     downloadPage(jar, page, '0', tryLogout)
                 for template in templates
                     downloadPage(jar, template, '10', tryLogout)
+
+gulp.task 'pulled-to-md', ->
+    globby ['./pulled/**/*.html'], (err,entries) ->
+        entries.forEach (entry) ->
+            content = fs.readFileSync(entry, 'utf-8')
+            md = toMarkdown(content)
+            mdFile = entry.split('.').slice(0, entry.split('.').length - 1).join('.') + '.md'
+            fs.writeFileSync(mdFile, content)
+            gutil.log("Wrote #{mdFile}")
+    
