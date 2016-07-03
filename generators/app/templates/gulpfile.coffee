@@ -370,7 +370,7 @@ handleRequestError = (err, httpResponse) ->
     gutil.log('status code: ', httpResponse.statusCode)
 
 LOGIN_URL = 'https://igem.org/Login2'
-LOGOUT_URL = 'http://igem.org/cgi/Logout.cgi'
+LOGOUT_URL = 'http://igem.org/Logout'
 # Login and call the callback with the cookie jar
 login = (cb) ->
     username = readlineSync.question('Username: ')
