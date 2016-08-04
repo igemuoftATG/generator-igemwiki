@@ -1,6 +1,6 @@
 {
   "name": "generator-igemwiki",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "iGEM wiki generator",
   "main": "generators/app/index.js",
   "files": [
@@ -16,7 +16,7 @@
     "type": "git",
     "url": "https://github.com/igemuoftATG/generator-igemwiki"
   },
-  "author": "Julian Mazzitelli <mazzitelli.julian@gmail.com> (http://jmazz.me)", 
+  "author": "Julian Mazzitelli <mazzitelli.julian@gmail.com> (http://jmazz.me)",
   "bugs": {
     "url": "https://github.com/igemuoftATG/generator-igemwiki/issues"
   },
