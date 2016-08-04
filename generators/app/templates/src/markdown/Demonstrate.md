@@ -20,4 +20,3 @@ See how other teams presented their results.
 *   [2014 TU Darmstadt](http://2014.igem.org/Team:TU_Darmstadt/Results/Pathway)
 *   [2014 Imperial](http://2014.igem.org/Team:Imperial/Results)
 *   [2014 Paris Bettencourt](http://2014.igem.org/Team:Paris_Bettencourt/Results)
-

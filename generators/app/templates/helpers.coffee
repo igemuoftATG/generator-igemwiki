@@ -165,11 +165,11 @@ class Helpers
         for item, value of field
             isActive = false
 
-            if recursed
-                icon = ""
-            else
-                icon = "<i class=\"fa #{templateData.icons[item]}\"></i>"
-
+            # if recursed
+            #     icon = ""
+            # else
+            #     icon = "<i class=\"fa #{templateData.icons[item]}\"></i>"
+ 
             for active in actives
                 if item is active
                     isActive = true
@@ -182,10 +182,10 @@ class Helpers
 
             if typeof(value) is 'object'
                 if isActive
-                    content += "<li class=\"active\"><a href=\"#\"><span>#{item}</span><i class=\"fa #{templateData.icons[item]}\"></i></a>\n"
+                    content += "<li class=\"active\"><a href=\"#\"><span>#{item}</span></a>\n"
                     # content += "<li class=\"active\"><a href=\"#\"><i class=\"fa #{templateData.icons[item]}\"></i></a>\n"
                 else
-                    content += "<li><a href=\"#\"><span>#{item}</span><i class=\"fa #{templateData.icons[item]}\"></i></a>\n"
+                    content += "<li><a href=\"#\"><span>#{item}</span></a>\n"
                     # content += "<li><a href=\"#\"><i class=\"fa #{templateData.icons[item]}\"></i></a>\n"
                 # content += "<div class=\"inner-menu\"><span>#{item}</span>"
                 content += navigation(value, mode, active1, active2, true)
@@ -194,15 +194,15 @@ class Helpers
                 # if item is 'index'
                 #     item = 'home'
                 if isActive
-                    content += "<li class=\"active\"><a href=\"#{link(item, mode)}\"><span>#{value}</span>#{icon}</a></li>\n"
+                    content += "<li class=\"active\"><a href=\"#{link(item, mode)}\"><span>#{value}</span></a></li>\n"
                     # content += "<li class=\"active\"><a href=\"#{link(item, mode)}\"><i class=\"fa #{templateData.icons[item]}\"></i></a>"
                 else
-                    content += "<li><a href=\"#{link(item, mode)}\"><span>#{value}</span>#{icon}</a></li>\n"
+                    content += "<li><a href=\"#{link(item, mode)}\"><span>#{value}</span></a></li>\n"
                     # content += "<li><a href=\"#{link(item, mode)}\"><i class=\"fa #{templateData.icons[item]}\"></i></a>"
                 # content += "<span>#{item}</span>"
                 content += "</li>\n"
         content += "</ul>\n"
-
+ 
         return content
 
     navigationWrapper: (mode, active1, active2) ->

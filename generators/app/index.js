@@ -117,10 +117,10 @@ module.exports = generators.Base.extend({
       this.destinationPath('README.md'),
       this.config.getAll()
     )
-    this.fs.copyTpl(
-      this.templatePath('.gitignore'),
-      this.destinationPath('.gitignore')
-    )
+    // this.fs.copyTpl(
+    //   this.templatePath('.gitignore'),
+    //   this.destinationPath('.gitignore')
+    // )
 
     this.directory('src', './src')
     this.fs.copyTpl(
