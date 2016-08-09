@@ -4,6 +4,11 @@
 wikis. Sets up a development environment with the ability to push entire
 codebase (including images) to live wiki pages.
 
+> ## Notice
+> We are not responsible for your wiki not being completed on time. Do not leave it to the last day. We are not responsible for you losing your current wiki. Run a `gulp pull` and back that up before you ever do your first `gulp push`. If you have problems open one, or email the author/collaborators identified in `package.json`.
+> ### Looking for maintainers!
+> I may not be able to keep this project up to date as the years go by and as I am become less active within my school's iGEM team. If things like webpack, gulp, handlebars, (or other templating libraries: EJS, Pug, etc), (or other view libraries with server side rendering: React, Vue2, Angular2), headlessly uploading content, JavaScript, CSS and its ecosystem of preprocesors (SCSS), or even CSSNEXT, markdown based content, continous integration on a github pages site, etc, do not scare you (in fact, they should excite!), then please get in touch with the author.
+
 ## Install
 
 ### kek bro, whats the package name?
@@ -109,6 +114,9 @@ You will be asked for
   * Still confused? You can skip this by passing in the option `--skip-repo`.
     You can always push to a repo later.
 
+*Example*
+![image](https://cloud.githubusercontent.com/assets/1270998/17503627/51ce777c-5dbf-11e6-8632-443f8e007ce3.png)
+
 ### Options
 
 ```
@@ -118,7 +126,7 @@ yo igemwiki --skip-install --skip-repo
 `--skip-install` will prevent `bower install` and `npm install` from
 automatically running. Use this if you know you need sudo to npm install and it
 won't work anyways. `--skip-repo` will prevent the prompt asking you for your
-repository.
+repository. **Not using a repository is not recommended. You should setup a repo, run a `gulp pull`, then push the `pulled` folder to GitHub, so that you have a backup**. 
 
 ## Tools
 
