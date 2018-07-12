@@ -1,5 +1,9 @@
 # generator-igemwiki
 
+## WARN
+
+This project is unmaintained. A feature-complete [igemwiki-api](https://github.com/igemuoftATG/igemwiki-api) is available, which is stable and can be used for upload/download of your wiki files.
+
 [Yeoman](http://yeoman.io/) generator for [iGEM](http://igem.org/Main_Page)
 wikis. Sets up a development environment with the ability to push entire
 codebase (including images) to live wiki pages.
